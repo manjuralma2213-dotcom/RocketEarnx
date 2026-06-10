@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RocketEarn X | Ultimate Super Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { fontFamily: { sans: ['Outfit', 'sans-serif'] }, colors: { darkBg: '#030508', neonPurple: '#b026ff', neonBlue: '#00f0ff', neonGold: '#ffd700', neonRed: '#ff2a2a', neonGreen: '#00ff88' } } }
+        }
+    </script>
+    <style>
+        body { background-color: #030508; color: #ffffff; font-family: 'Outfit', sans-serif; overflow: hidden; }
+        .bg-cyber { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at center, #050a15 0%, #000000 100%); overflow: hidden; }
+        .grid-bg { position: absolute; width: 200%; height: 200%; background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px); animation: gridMove 20s linear infinite; }
+        @keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } }
+        
+        .glass-panel { background: rgba(10, 15, 25, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 12px; transition: 0.3s; box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+        .stat-card { background: rgba(0, 0, 0, 0.5); border-left: 3px solid #333; padding: 15px; border-radius: 8px; transition: 0.3s; }
+        .stat-card:hover { background: rgba(0, 240, 255, 0.05); border-color: #00f0ff; transform: translateY(-2px); }
+        
+        .sidebar-item { transition: 0.3s; border-radius: 8px; margin-bottom: 2px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; padding: 10px 15px; gap: 12px; }
+        .sidebar-item:hover, .sidebar-item.active { background: linear-gradient(90deg, rgba(0, 240, 255, 0.15), transparent); color: #fff; border-left: 4px solid #00f0ff; box-shadow: inset 4px 0 10px rgba(0,240,255,0.2); }
+        .sidebar-item i { width: 20px; text-align: center; color: #666; transition: 0.3s; }
+        .sidebar-item:hover i, .sidebar-item.active i { color: #00f0ff; text-shadow: 0 0 10px rgba(0,240,255,0.8); }
+        
+        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 10px 15px; border-radius: 6px; outline: none; transition: 0.3s; width: 100%; font-size: 0.85rem; }
+        .input-dark:focus { border-color: #00f0ff; box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); }
+        
+        .btn-cyber { background: linear-gradient(45deg, #00f0ff, #0055ff); color: #000; font-weight: 800; border: none; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-cyber:hover { box-shadow: 0 0 15px rgba(0, 240, 255, 0.6); transform: scale(1.02); color: white; }
+        
+        ::-webkit-scrollbar { width: 5px; height: 5px; } ::-webkit-scrollbar-thumb { background: #00f0ff; border-radius: 10px; }
+        .section-view { display: none; animation: fadeIn 0.4s forwards; height: 100%; overflow-y: auto; padding-bottom: 50px; } .section-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-overlay { background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px); position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        
+        .adv-table th { background: rgba(0, 240, 255, 0.05); text-transform: uppercase; font-size: 0.65rem; color: #00f0ff; padding: 10px; letter-spacing: 1px; white-space: nowrap; }
+        .adv-table td { padding: 10px; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); white-space: nowrap; }
+        .adv-table tr:hover td { background: rgba(0, 240, 255, 0.05); }
+
+        .modal-tab { cursor: pointer; padding: 10px 15px; font-size: 0.8rem; font-weight: bold; border-bottom: 2px solid transparent; color: #888; transition: 0.3s; }
+        .modal-tab.active { color: #00f0ff; border-bottom-color: #00f0ff; background: rgba(0,240,255,0.05); }
+        .modal-tab-content { display: none; } .modal-tab-content.active { display: block; animation: fadeIn 0.3s; }
+        .img-proof { max-width: 100px; max-height: 60px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); cursor: zoom-in; transition: 0.3s; }
+        .img-proof:hover { border-color: #00f0ff; transform: scale(1.05); }
+
+        /* Tickets Chat UI */
+        .chat-bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.8rem; margin-bottom: 10px; }
+        .chat-user { background: rgba(255,255,255,0.1); align-self: flex-start; border-bottom-left-radius: 0; }
+        .chat-admin { background: rgba(0,240,255,0.2); border: 1px solid rgba(0,240,255,0.5); align-self: flex-end; border-bottom-right-radius: 0; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-cyber"><div class="grid-bg"></div></div>
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl">
+        <div class="glass-panel p-10 max-w-sm w-full text-center border-t-4 border-neonBlue shadow-[0_0_50px_rgba(0,240,255,0.2)]">
+            <i class="fas fa-fingerprint text-6xl text-neonBlue mb-4 drop-shadow-[0_0_15px_#00f0ff] animate-pulse"></i>
+            <h1 class="text-3xl font-extrabold tracking-widest text-white uppercase mb-6">System <span class="text-neonBlue">Core</span></h1>
+            <form id="loginForm" class="space-y-4">
+                <input type="email" id="lEmail" class="input-dark text-center" placeholder="Super Admin Protocol" required>
+                <input type="password" id="lPass" class="input-dark text-center" placeholder="Encryption Key" required>
+                <button type="submit" class="btn-cyber w-full py-4 rounded text-sm mt-4">INITIATE LOGIN</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="appWrapper" class="hidden h-screen flex">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-64 glass-panel m-2 flex flex-col hidden md:flex h-[calc(100vh-1rem)] z-40 border-r border-white/5 shrink-0">
+            <div class="p-5 border-b border-white/5 text-center bg-black/30">
+                <h2 class="text-2xl font-black tracking-widest uppercase">R-Earn<span class="text-neonBlue">X</span></h2>
+                <p class="text-[9px] text-neonGreen mt-1 font-mono tracking-widest"><i class="fas fa-circle text-[6px] animate-pulse"></i> LIVE SERVER OK</p>
+            </div>
+            <div class="flex-1 overflow-y-auto py-2 px-2 custom-scrollbar">
+                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest pl-3 mt-2 mb-1">HQ Dashboard</div>
+                <a onclick="switchTab('dash')" class="sidebar-item active"><i class="fas fa-satellite-dish"></i> Command Center</a>
+                
+                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest pl-3 mt-5 mb-1">CRM Management</div>
+                <a onclick="switchTab('users')" class="sidebar-item"><i class="fas fa-users-cog"></i> Users & Actions</a>
+                <a onclick="switchTab('kyc')" class="sidebar-item justify-between"><div><i class="fas fa-id-card"></i> KYC Desk</div> <span id="cKyc" class="text-[10px] bg-blue-500/20 text-blue-400 px-2 rounded font-bold">0</span></a>
+                
+                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest pl-3 mt-5 mb-1">Financial Ops</div>
+                <a onclick="switchTab('deps')" class="sidebar-item justify-between"><div><i class="fas fa-arrow-down text-neonGreen"></i> Deposits</div> <span id="cDep" class="text-[10px] bg-green-500/20 text-neonGreen px-2 rounded font-bold">0</span></a>
+                <a onclick="switchTab('withs')" class="sidebar-item justify-between"><div><i class="fas fa-arrow-up text-neonRed"></i> Withdraws</div> <span id="cWith" class="text-[10px] bg-red-500/20 text-neonRed px-2 rounded font-bold">0</span></a>
+                <a onclick="switchTab('plans')" class="sidebar-item"><i class="fas fa-cubes"></i> VIP Plans</a>
+
+                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest pl-3 mt-5 mb-1">Engagement</div>
+                <a onclick="switchTab('refs')" class="sidebar-item"><i class="fas fa-network-wired"></i> Referral System</a>
+                <a onclick="switchTab('tickets')" class="sidebar-item justify-between"><div><i class="fas fa-headset"></i> Support Desk</div> <span id="cTkt" class="text-[10px] bg-yellow-500/20 text-yellow-400 px-2 rounded font-bold">0</span></a>
+                <a onclick="switchTab('marketing')" class="sidebar-item"><i class="fas fa-bullhorn"></i> Global Notifications</a>
+
+                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest pl-3 mt-5 mb-1">System</div>
+                <a onclick="switchTab('settings')" class="sidebar-item"><i class="fas fa-sliders-h"></i> Configuration</a>
+                <a onclick="switchTab('logs')" class="sidebar-item"><i class="fas fa-user-secret"></i> Audit Logs</a>
+            </div>
+            <button id="logoutBtn" class="m-3 py-3 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition text-xs font-black uppercase tracking-widest border border-red-500/30"><i class="fas fa-power-off mr-2"></i> Terminate Session</button>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 relative flex flex-col p-2 h-screen overflow-hidden">
+            <header class="glass-panel p-4 mb-2 flex justify-between items-center z-30 shrink-0 bg-black/40">
+                <h2 class="text-xl font-bold uppercase tracking-wider text-neonBlue" id="pageTitle">Command Center</h2>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden md:block"><p class="text-[9px] text-gray-500 font-mono uppercase">Authorized Admin</p><p class="text-xs font-bold" id="adminEmailTxt">admin@system.com</p></div>
+                    <div class="w-10 h-10 rounded bg-neonBlue/20 border border-neonBlue flex justify-center items-center font-bold text-neonBlue shadow-[0_0_10px_#00f0ff]"><i class="fas fa-shield-alt"></i></div>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-hidden relative">
+                
+                <!-- 🌐 1. THE ULTIMATE DASHBOARD -->
+                <section id="view-dash" class="section-view active custom-scrollbar pr-2">
+                    <div class="grid grid-cols-1 xl:grid-cols-4 gap-4 mb-6">
+                        <div class="glass-panel p-4 xl:col-span-3 border-t-4 border-neonGold">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"><i class="fas fa-chart-line mr-2"></i> Financial Flow Analytics</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div class="stat-card border-green-500"><p class="text-[10px] text-gray-400 uppercase">Total Deposit</p><h4 class="font-bold text-green-400 text-lg">₹<span id="dTotDep">0</span></h4></div>
+                                <div class="stat-card border-red-500"><p class="text-[10px] text-gray-400 uppercase">Total Withdraw</p><h4 class="font-bold text-red-400 text-lg">₹<span id="dTotWith">0</span></h4></div>
+                                <div class="stat-card border-neonGold"><p class="text-[10px] text-gray-400 uppercase">Net Profit (All Time)</p><h4 class="font-bold text-neonGold text-lg">₹<span id="dNetProf">0</span></h4></div>
+                                <div class="stat-card border-purple-500"><p class="text-[10px] text-gray-400 uppercase">User Wallets Sum</p><h4 class="font-bold text-purple-400 text-lg">₹<span id="dSumWal">0</span></h4></div>
+                                <div class="stat-card border-green-300"><p class="text-[10px] text-gray-400 uppercase">Today's Deposit</p><h4 class="font-bold text-green-300 text-lg">₹<span id="dTodDep">0</span></h4></div>
+                                <div class="stat-card border-red-300"><p class="text-[10px] text-gray-400 uppercase">Today's Withdraw</p><h4 class="font-bold text-red-300 text-lg">₹<span id="dTodWith">0</span></h4></div>
+                                <div class="stat-card border-blue-400"><p class="text-[10px] text-gray-400 uppercase">Profit (This Week)</p><h4 class="font-bold text-blue-400 text-lg">₹<span id="dWekProf">0</span></h4></div>
+                                <div class="stat-card border-pink-400"><p class="text-[10px] text-gray-400 uppercase">Profit (This Month)</p><h4 class="font-bold text-pink-400 text-lg">₹<span id="dMonProf">0</span></h4></div>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-4 xl:col-span-1 border-t-4 border-neonBlue flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"><i class="fas fa-server mr-2"></i> System Status</h3>
+                                <div class="space-y-2 mb-4 bg-black/30 p-3 rounded">
+                                    <div class="flex justify-between text-[10px] border-b border-white/5 pb-1"><span class="text-gray-400 uppercase">Website</span><span class="text-neonGreen font-bold"><i class="fas fa-circle text-[6px] animate-pulse"></i> LIVE</span></div>
+                                    <div class="flex justify-between text-[10px] border-b border-white/5 pb-1"><span class="text-gray-400 uppercase">Maintenance</span><span id="stMaint" class="font-bold text-red-400">OFF</span></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 text-center">Action Queue</h3>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="bg-yellow-500/10 border border-yellow-500/30 p-2 rounded text-center cursor-pointer" onclick="switchTab('deps')"><h4 class="text-yellow-400 font-bold text-lg" id="qDep">0</h4><p class="text-[8px] text-gray-400 uppercase">Dep Req</p></div>
+                                    <div class="bg-orange-500/10 border border-orange-500/30 p-2 rounded text-center cursor-pointer" onclick="switchTab('withs')"><h4 class="text-orange-400 font-bold text-lg" id="qWith">0</h4><p class="text-[8px] text-gray-400 uppercase">With Req</p></div>
+                                    <div class="bg-blue-500/10 border border-blue-500/30 p-2 rounded text-center cursor-pointer" onclick="switchTab('kyc')"><h4 class="text-blue-400 font-bold text-lg" id="qKyc">0</h4><p class="text-[8px] text-gray-400 uppercase">KYC Req</p></div>
+                                    <div class="bg-pink-500/10 border border-pink-500/30 p-2 rounded text-center cursor-pointer" onclick="switchTab('tickets')"><h4 class="text-pink-400 font-bold text-lg" id="qTkt">0</h4><p class="text-[8px] text-gray-400 uppercase">Tickets</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="glass-panel p-4"><h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"><i class="fas fa-chart-bar mr-2"></i> 7-Day Revenue Graph</h3><canvas id="financeChart" height="100"></canvas></div>
+                        <div class="glass-panel p-4"><h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"><i class="fas fa-history mr-2"></i> Live Activity Feed</h3><div class="space-y-2 h-[200px] overflow-y-auto pr-2 custom-scrollbar" id="activityFeed"></div></div>
+                    </div>
+                </section>
+
+                <!-- 👥 2. ADVANCED USERS & ACTIONS (RESTORED TO FULL GLORY) -->
+                <section id="view-users" class="section-view">
+                    <!-- Top Stats Row -->
+                    <div class="grid grid-cols-3 md:grid-cols-6 gap-3 mb-4">
+                        <div class="bg-black/40 border-l-2 border-neonBlue p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Total Users</p><h4 class="font-bold text-lg text-white" id="uTot">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-green-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Active</p><h4 class="font-bold text-lg text-green-400" id="uAct">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-red-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Blocked</p><h4 class="font-bold text-lg text-red-400" id="uBan">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-yellow-400 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">New Today</p><h4 class="font-bold text-lg text-yellow-400" id="uTod">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-neonGold p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">VIP Users</p><h4 class="font-bold text-lg text-neonGold" id="uVip">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-purple-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Online</p><h4 class="font-bold text-lg text-purple-400"><i class="fas fa-circle text-[6px] animate-pulse"></i> Live</h4></div>
+                    </div>
+
+                    <!-- Search & Filters -->
+                    <div class="glass-panel p-4 mb-4 flex flex-wrap gap-3 items-end">
+                        <div class="flex-1 min-w-[200px]"><label class="text-[9px] text-gray-400 uppercase">Search Details</label><input type="text" id="srcUser" class="input-dark" placeholder="Search ID, Name, Email, Mobile..." onkeyup="filterCRM()"></div>
+                        <div><label class="text-[9px] text-gray-400 uppercase">Filter Status</label><select id="fltStatus" class="input-dark" onchange="filterCRM()"><option value="all">All Status</option><option value="active">Active</option><option value="banned">Blocked</option></select></div>
+                        <div><label class="text-[9px] text-gray-400 uppercase">Filter Invested</label><select id="fltInvest" class="input-dark" onchange="filterCRM()"><option value="all">All Users</option><option value="invested">Invested Users</option><option value="free">Free Users</option></select></div>
+                        <button onclick="exportTableToCSV('crmTable', 'Users_Report.csv')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded text-xs font-bold transition"><i class="fas fa-download"></i> Export</button>
+                    </div>
+
+                    <!-- Massive Advanced Table Restored -->
+                    <div class="glass-panel p-2 overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left adv-table" id="crmTable">
+                            <thead>
+                                <tr>
+                                    <th>ID & Profile</th>
+                                    <th>Contact Info</th>
+                                    <th>Wallets (₹)</th>
+                                    <th>Earnings (₹)</th>
+                                    <th>Plan & Ref</th>
+                                    <th>KYC & Status</th>
+                                    <th>Reg. Date</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb-users"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 🆔 3. KYC MANAGEMENT MODULE -->
+                <section id="view-kyc" class="section-view">
+                    <!-- Top Stats -->
+                    <div class="grid grid-cols-3 md:grid-cols-6 gap-3 mb-4">
+                        <div class="bg-black/40 border-l-2 border-neonBlue p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Total KYC</p><h4 class="font-bold text-lg text-white" id="kTot">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-yellow-400 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Pending</p><h4 class="font-bold text-lg text-yellow-400" id="kPen">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-green-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Approved</p><h4 class="font-bold text-lg text-green-400" id="kApp">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-red-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Rejected</p><h4 class="font-bold text-lg text-red-400" id="kRej">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-purple-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Today's Req</p><h4 class="font-bold text-lg text-purple-400" id="kTod">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-gray-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Fraud Flags</p><h4 class="font-bold text-lg text-red-500 animate-pulse" id="kFraud">0</h4></div>
+                    </div>
+
+                    <div class="glass-panel p-4 mb-4 flex flex-wrap gap-3 items-end">
+                        <div class="flex-1 min-w-[200px]"><label class="text-[9px] text-gray-400 uppercase">Search Identity</label><input type="text" id="srcKyc" class="input-dark" placeholder="Search UID, Name, Mobile, Doc No..." onkeyup="filterKYC()"></div>
+                        <div><label class="text-[9px] text-gray-400 uppercase">Status Filter</label><select id="fltKycStatus" class="input-dark" onchange="filterKYC()"><option value="all">All Documents</option><option value="pending" selected>Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
+                        <button onclick="exportTableToCSV('kycTable', 'KYC_Logs.csv')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded text-xs font-bold transition"><i class="fas fa-download"></i> Export</button>
+                    </div>
+
+                    <div class="glass-panel p-2 overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left adv-table" id="kycTable">
+                            <thead><tr><th>User ID & Name</th><th>Contact Data</th><th>Doc Type & Number</th><th>Doc Previews</th><th>Submitted</th><th>Status</th><th class="text-right">Action</th></tr></thead>
+                            <tbody id="tb-kyc"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 💰 4. ADVANCED DEPOSITS -->
+                <section id="view-deps" class="section-view">
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+                        <div class="bg-black/40 border-l-2 border-neonBlue p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Total Deposit</p><h4 class="font-bold text-lg text-white" id="depTot">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-yellow-400 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Pending</p><h4 class="font-bold text-lg text-yellow-400" id="depPen">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-green-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Approved</p><h4 class="font-bold text-lg text-green-400" id="depApp">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-red-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Rejected</p><h4 class="font-bold text-lg text-red-400" id="depRej">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-purple-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Today's</p><h4 class="font-bold text-lg text-purple-400" id="depTod">0</h4></div>
+                    </div>
+                    
+                    <div class="glass-panel p-5">
+                        <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-3">
+                            <div class="flex gap-2 bg-black/40 p-1 rounded w-fit border border-white/10"><button class="tab-btn active" onclick="setFin('deposits','pending')">Pending Requests</button><button class="tab-btn" onclick="setFin('deposits','approved')">Approved History</button><button class="tab-btn" onclick="setFin('deposits','rejected')">Rejected History</button></div>
+                            <button onclick="exportTableToCSV('depsTable', 'Deposit_History.csv')" class="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded text-xs font-bold transition"><i class="fas fa-file-csv"></i> Export Data</button>
+                        </div>
+                        <div class="overflow-x-auto custom-scrollbar"><table class="w-full text-left adv-table" id="depsTable"><thead id="th-deps"></thead><tbody id="tb-deps"></tbody></table></div>
+                    </div>
+                </section>
+
+                <!-- 💸 5. ADVANCED WITHDRAWALS -->
+                <section id="view-withs" class="section-view">
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+                        <div class="bg-black/40 border-l-2 border-neonBlue p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Total Withdraws</p><h4 class="font-bold text-lg text-white" id="withTot">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-yellow-400 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Pending</p><h4 class="font-bold text-lg text-yellow-400" id="withPen">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-green-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Approved</p><h4 class="font-bold text-lg text-green-400" id="withApp">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-red-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Rejected</p><h4 class="font-bold text-lg text-red-400" id="withRej">0</h4></div>
+                        <div class="bg-black/40 border-l-2 border-purple-500 p-3 rounded text-center"><p class="text-[9px] text-gray-400 uppercase">Today's</p><h4 class="font-bold text-lg text-purple-400" id="withTod">0</h4></div>
+                    </div>
+
+                    <div class="glass-panel p-5">
+                        <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-3">
+                            <div class="flex gap-2 bg-black/40 p-1 rounded w-fit border border-white/10"><button class="tab-btn active" onclick="setFin('withdrawals','pending')">Pending Requests</button><button class="tab-btn" onclick="setFin('withdrawals','approved')">Paid History</button><button class="tab-btn" onclick="setFin('withdrawals','rejected')">Rejected History</button></div>
+                            <button onclick="exportTableToCSV('withsTable', 'Withdrawal_History.csv')" class="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded text-xs font-bold transition"><i class="fas fa-file-csv"></i> Export Data</button>
+                        </div>
+                        <div class="overflow-x-auto custom-scrollbar"><table class="w-full text-left adv-table" id="withsTable"><thead id="th-withs"></thead><tbody id="tb-withs"></tbody></table></div>
+                    </div>
+                </section>
+
+                <!-- 🎁 6. REFERRAL SYSTEM -->
+                <section id="view-refs" class="section-view">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                        <div class="glass-panel p-4 text-center border-l-4 border-neonBlue"><p class="text-[10px] text-gray-400 uppercase">Total Referrals</p><h4 class="text-xl font-bold text-white" id="refTot">0</h4></div>
+                        <div class="glass-panel p-4 text-center border-l-4 border-green-500"><p class="text-[10px] text-gray-400 uppercase">Active (Invested)</p><h4 class="text-xl font-bold text-green-400" id="refAct">0</h4></div>
+                        <div class="glass-panel p-4 text-center border-l-4 border-yellow-500"><p class="text-[10px] text-gray-400 uppercase">Pending (Free)</p><h4 class="text-xl font-bold text-yellow-400" id="refPen">0</h4></div>
+                        <div class="glass-panel p-4 text-center border-l-4 border-neonGold"><p class="text-[10px] text-gray-400 uppercase">Total Commission Paid</p><h4 class="text-xl font-bold text-neonGold" id="refComm">₹0</h4></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="col-span-1 space-y-4">
+                            <div class="glass-panel p-5">
+                                <h3 class="text-sm font-bold text-neonBlue mb-4">Commission Settings</h3>
+                                <label class="text-[10px] text-gray-400">Flat Bonus on Invite (₹)</label>
+                                <div class="flex gap-2 mt-1"><input type="number" id="refBonusAmt" class="input-dark"><button onclick="saveSet('referralBonus', 'refBonusAmt')" class="bg-neonBlue text-black px-3 py-1 font-bold rounded">Save</button></div>
+                            </div>
+                            <div class="glass-panel p-5 border-t-2 border-red-500">
+                                <h3 class="text-sm font-bold text-red-500 mb-2"><i class="fas fa-shield-alt"></i> Fraud Detection</h3>
+                                <p class="text-[10px] text-gray-400 mb-2">Monitors Multi-accounts with same IP/Device ID claiming referral bonus.</p>
+                                <div id="refFraudLog" class="text-[10px] font-mono text-red-400 max-h-32 overflow-y-auto">Monitoring active...</div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 glass-panel p-4 overflow-x-auto">
+                            <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-sm">Referral History</h3><button onclick="exportTableToCSV('refsTable', 'Referrals.csv')" class="text-[10px] bg-white/10 px-2 py-1 rounded hover:bg-white/20">Export</button></div>
+                            <table class="w-full text-left adv-table" id="refsTable"><thead><tr><th>Referrer</th><th>New User Joined</th><th>Deposit Status</th><th>Bonus Paid</th></tr></thead><tbody id="tb-refs"></tbody></table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 🎫 7. SUPPORT DESK (TICKETS) -->
+                <section id="view-tickets" class="section-view">
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div class="glass-panel p-4 text-center border-t-2 border-yellow-500"><h4 class="text-xl font-bold text-yellow-400" id="tOpen">0</h4><p class="text-[10px] text-gray-400 uppercase">Open Tickets</p></div>
+                        <div class="glass-panel p-4 text-center border-t-2 border-red-500"><h4 class="text-xl font-bold text-red-400" id="tHigh">0</h4><p class="text-[10px] text-gray-400 uppercase">High Priority</p></div>
+                        <div class="glass-panel p-4 text-center border-t-2 border-gray-500"><h4 class="text-xl font-bold text-gray-400" id="tClosed">0</h4><p class="text-[10px] text-gray-400 uppercase">Closed Tickets</p></div>
+                    </div>
+                    <div class="glass-panel p-2 overflow-x-auto">
+                        <table class="w-full text-left adv-table">
+                            <thead><tr><th>Ticket ID & Date</th><th>User Email</th><th>Subject</th><th>Priority</th><th>Status</th><th class="text-right">Action</th></tr></thead>
+                            <tbody id="tb-tickets"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 📢 8. ADVANCED NOTIFICATIONS -->
+                <section id="view-marketing" class="section-view">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-panel p-6">
+                            <h3 class="font-bold text-xl mb-4 text-neonBlue"><i class="fas fa-broadcast-tower mr-2"></i> Global Broadcast</h3>
+                            <p class="text-[10px] text-gray-400 mb-4">Send a push notification / alert to ALL registered users immediately.</p>
+                            <input type="text" id="nTitle" class="input-dark mb-3" placeholder="Notification Title">
+                            <textarea id="nMsg" class="input-dark h-24 mb-4" placeholder="Announcement body..."></textarea>
+                            <div class="flex gap-4 mb-4 text-[10px]">
+                                <label class="flex items-center gap-1"><input type="checkbox" id="nPopup" checked> Show as App Popup</label>
+                            </div>
+                            <button onclick="globalConfirm('Broadcast Notification to ALL users?', sendGlobalNotif)" class="btn-cyber w-full py-3 rounded">Transmit to All Users</button>
+                        </div>
+                        <div class="glass-panel p-6 border-t-2 border-purple-500">
+                            <h3 class="font-bold text-xl mb-4 text-purple-400"><i class="fas fa-bullseye mr-2"></i> Direct Target Alert</h3>
+                            <p class="text-[10px] text-gray-400 mb-4">Send an alert to a specific User ID.</p>
+                            <input type="text" id="tUid" class="input-dark mb-3 bg-purple-900/20" placeholder="Target UID">
+                            <input type="text" id="tTitle" class="input-dark mb-3 bg-purple-900/20" placeholder="Title">
+                            <textarea id="tMsg" class="input-dark h-20 mb-4 bg-purple-900/20" placeholder="Message..."></textarea>
+                            <button onclick="globalConfirm('Send targeted alert?', sendTargetNotif)" class="w-full bg-purple-600 text-white py-2 rounded font-bold text-sm">Send to User</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 📜 9. ULTIMATE AUDIT LOGS -->
+                <section id="view-logs" class="section-view">
+                    <div class="glass-panel p-4 flex justify-between items-center mb-4">
+                        <div><h3 class="font-bold text-lg">System Audit Logs</h3><p class="text-[10px] text-gray-400">Tracks all admin actions, IP addresses, and critical system events.</p></div>
+                        <button onclick="exportTableToCSV('logsTable', 'Audit_Logs.csv')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded text-xs font-bold transition"><i class="fas fa-download"></i> Export Logs</button>
+                    </div>
+                    <div class="glass-panel p-2 overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left adv-table" id="logsTable">
+                            <thead><tr><th>Time & Date</th><th>Admin / Email</th><th>Category</th><th>Action Taken</th><th>Details & Target ID</th><th>IP / Device</th></tr></thead>
+                            <tbody id="tb-logs"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Settings & VIP Plans (Preserved) -->
+                <section id="view-plans" class="section-view"><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="glass-panel p-5 col-span-1 h-fit"><h3 class="font-bold text-neonBlue mb-4 uppercase text-sm border-b border-white/10 pb-2">Launch VIP Plan</h3><input type="text" id="pName" class="input-dark mb-2" placeholder="Plan Name"><input type="number" id="pPrice" class="input-dark mb-2" placeholder="Price (₹)"><input type="number" id="pDaily" class="input-dark mb-2" placeholder="Daily ROI (₹)"><input type="number" id="pDays" class="input-dark mb-3" placeholder="Validity Days"><button onclick="globalConfirm('Publish new VIP Plan?', addPlan)" class="btn-cyber w-full py-2 rounded text-sm">Publish Plan</button></div><div class="glass-panel p-5 col-span-2 overflow-x-auto"><table class="w-full text-left adv-table"><thead><tr><th>Plan Info</th><th>Price</th><th>Daily ROI</th><th>Validity</th><th>Action</th></tr></thead><tbody id="tb-plans"></tbody></table></div></div></section>
+                <section id="view-settings" class="section-view"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="glass-panel p-5"><h3 class="font-bold text-lg mb-3">System Controls</h3><label class="text-[10px] text-gray-400">Maintenance Mode</label><select id="setMaint" class="input-dark mb-3"><option value="false">OFF</option><option value="true">ON</option></select><label class="text-[10px] text-gray-400">Signup Bonus</label><input type="number" id="setSignup" class="input-dark mb-3"><button onclick="saveSysSet()" class="bg-red-600 text-white w-full py-2 rounded font-bold">Update System</button></div><div class="glass-panel p-5"><h3 class="font-bold text-lg mb-3">Payment Gateway</h3><label class="text-[10px] text-gray-400">UPI ID</label><input type="text" id="setUpi" class="input-dark mb-2"><label class="text-[10px] text-gray-400">QR URL</label><input type="text" id="setQr" class="input-dark mb-2"><div class="flex gap-2 mb-3"><input type="number" id="setMinDep" class="input-dark" placeholder="Min Dep"><input type="number" id="setMinWith" class="input-dark" placeholder="Min With"></div><button onclick="savePaySet()" class="bg-green-600 text-white w-full py-2 rounded font-bold">Save Info</button></div></div></section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODALS SECTION (RESTORED & ENHANCED) -->
+    <!-- ============================================== -->
+
+    <!-- ✅ GLOBAL CONFIRMATION CENTER MODAL -->
+    <div id="secureConfirmModal" class="modal-overlay z-[200]">
+        <div class="glass-panel p-6 w-full max-w-sm border-t-4 border-yellow-500 relative text-center">
+            <i class="fas fa-shield-check text-4xl text-yellow-500 mb-3"></i>
+            <h3 class="font-black text-xl mb-2 tracking-widest uppercase">Action Protocol</h3>
+            <p id="confirmMsgTxt" class="text-sm text-gray-300 mb-5">Are you sure you want to execute this action?</p>
+            <div class="flex gap-3">
+                <button onclick="cMod('secureConfirmModal')" class="flex-1 bg-white/5 py-3 rounded font-bold text-sm hover:bg-white/10 transition">Abort</button>
+                <button id="btnExecuteConfirm" class="flex-1 bg-yellow-600 text-black py-3 rounded font-black text-sm uppercase transition shadow-[0_0_15px_rgba(255,215,0,0.4)]">EXECUTE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🌟 RESTORED ULTIMATE CRM USER MODAL -->
+    <div id="uModal" class="modal-overlay z-[100]">
+        <div class="glass-panel w-full max-w-4xl max-h-[90vh] flex flex-col relative border-t-2 border-neonBlue overflow-hidden">
+            <div class="bg-black/50 p-4 border-b border-white/5 flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-neonBlue/20 rounded-full flex justify-center items-center text-neonBlue border border-neonBlue text-xl"><i class="fas fa-user-astronaut"></i></div>
+                    <div><h3 id="umName" class="font-bold text-xl leading-none text-white">Name</h3><p class="text-[11px] text-gray-400 mt-1 font-mono"><span id="umEmail">email@...</span> | UID: <span id="umUid" class="text-neonBlue">---</span></p></div>
+                </div>
+                <button onclick="cMod('uModal')" class="text-gray-400 hover:text-red-500 text-2xl transition"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="flex border-b border-white/5 bg-black/30 shrink-0 overflow-x-auto">
+                <div class="modal-tab active" onclick="switchModTab('uModal', 'tab-profile')"><i class="fas fa-user-edit mr-1"></i> Overview & Actions</div>
+                <div class="modal-tab" onclick="switchModTab('uModal', 'tab-finance')"><i class="fas fa-wallet mr-1"></i> Wallet Controls</div>
+                <div class="modal-tab" onclick="switchModTab('uModal', 'tab-history')"><i class="fas fa-history mr-1"></i> Logs</div>
+            </div>
+
+            <div class="p-5 overflow-y-auto flex-1 custom-scrollbar bg-black/20">
+                <input type="hidden" id="umId"><input type="hidden" id="umRawBal"><input type="hidden" id="umRawDep">
+
+                <!-- Profile Tab -->
+                <div id="tab-profile" class="modal-tab-content active">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-xs font-bold text-neonBlue uppercase tracking-widest mb-3 border-b border-white/5 pb-1">Profile Info</h4>
+                            <div class="space-y-3">
+                                <div><label class="text-[9px] text-gray-500 uppercase">Mobile Number</label><div class="text-sm font-mono" id="umMob">N/A</div></div>
+                                <div><label class="text-[9px] text-gray-500 uppercase">Registration Date</label><div class="text-sm" id="umReg">N/A</div></div>
+                                <div><label class="text-[9px] text-gray-500 uppercase">Account Status</label><div class="mt-1" id="umStatUI">Active</div></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-red-400 uppercase tracking-widest mb-3 border-b border-white/5 pb-1">Security & Admin Actions</h4>
+                            <div class="space-y-2">
+                                <button id="umBan" class="w-full bg-orange-500/10 text-orange-400 text-xs py-2 rounded border border-orange-500/30 font-bold uppercase hover:bg-orange-500 hover:text-black transition"><i class="fas fa-ban mr-1"></i> Block / Ban User</button>
+                                <button onclick="globalConfirm('Send Password Reset Link?', resetPass)" class="w-full bg-white/5 text-gray-300 hover:text-white text-xs py-2 rounded border border-white/10 font-bold uppercase transition"><i class="fas fa-key mr-1"></i> Send Password Reset Link</button>
+                                <button onclick="globalConfirm('Terminate this account forever?', deleteUser)" class="w-full bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition text-xs py-2 rounded border border-red-500/30 font-bold uppercase tracking-widest mt-2"><i class="fas fa-trash-alt mr-1"></i> Terminate Account</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wallet Tab -->
+                <div id="tab-finance" class="modal-tab-content">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-black/50 p-4 rounded border border-white/5 text-center"><p class="text-[10px] text-gray-500 uppercase">Current Wallet Balance</p><h3 class="font-bold text-2xl text-neonGold" id="umBalTxt">₹0</h3></div>
+                        <div class="bg-black/50 p-4 rounded border border-white/5 text-center"><p class="text-[10px] text-gray-500 uppercase">Total Deposited</p><h3 class="font-bold text-2xl text-green-400" id="umDepTxt">₹0</h3></div>
+                    </div>
+                    <div class="bg-black/40 p-5 rounded border border-white/5">
+                        <h4 class="text-sm font-bold text-neonBlue mb-4"><i class="fas fa-edit mr-2"></i> Modify Wallet Balance Real-Time</h4>
+                        <div class="flex gap-4">
+                            <select id="walAction" class="input-dark w-1/3"><option value="add">➕ Add Funds</option><option value="deduct">➖ Deduct Funds</option><option value="set">✏️ Set Exact Balance</option></select>
+                            <input type="number" id="walAmt" class="input-dark w-1/3" placeholder="Amount (₹)">
+                            <button onclick="globalConfirm('Modify User Wallet?', execWalletChange)" class="btn-cyber w-1/3 rounded">Execute Update</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div id="tab-history" class="modal-tab-content">
+                    <div class="bg-black/30 p-4 rounded border border-white/5 text-center text-sm text-gray-400"><i class="fas fa-database text-2xl mb-2 opacity-50"></i><br>History tracked globally in main dashboard tables. User UID: <span id="histUidTxt" class="text-neonBlue"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🌟 KYC DETAILS MODAL (Preserved & Intact) -->
+    <div id="kycModal" class="modal-overlay z-[100]">
+        <div class="glass-panel w-full max-w-4xl max-h-[95vh] flex flex-col relative border-t-4 border-blue-500 overflow-hidden">
+            <div class="bg-black/60 p-4 border-b border-white/10 flex justify-between items-center shrink-0">
+                <div><h3 class="font-black text-xl text-white uppercase tracking-widest"><i class="fas fa-id-card text-blue-500 mr-2"></i> KYC Review</h3><p class="text-[10px] text-gray-400 mt-1 font-mono">UID: <span id="kmUid" class="text-neonBlue">---</span></p></div>
+                <button onclick="cMod('kycModal')" class="text-gray-400 hover:text-red-500 text-2xl transition"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="flex border-b border-white/5 bg-black/40 shrink-0">
+                <div class="modal-tab active" onclick="switchModTab('kycModal', 'k-tab-docs')"><i class="fas fa-file-alt mr-1"></i> Document View</div>
+                <div class="modal-tab" onclick="switchModTab('kycModal', 'k-tab-logs')"><i class="fas fa-shield-alt mr-1"></i> Security Logs</div>
+            </div>
+            <div class="p-5 overflow-y-auto flex-1 custom-scrollbar bg-black/30">
+                <input type="hidden" id="kmDocId"> <input type="hidden" id="kmUserId">
+                <div id="k-tab-docs" class="modal-tab-content active">
+                    <div id="kFraudAlert" class="hidden mb-4 bg-red-900/40 border border-red-500 p-3 rounded flex items-start gap-3"><i class="fas fa-exclamation-triangle text-red-500 text-2xl mt-1 animate-pulse"></i><div><h4 class="text-red-500 font-bold uppercase tracking-widest text-sm">Fraud Warning</h4><p class="text-xs text-gray-300">Duplicate Document Number Detected!</p></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="space-y-3 bg-black/40 p-4 rounded border border-white/5"><h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-white/10 pb-2 mb-2">Submitted Data</h4><div><label class="text-[9px] text-gray-500 uppercase">Name</label><div class="text-sm font-bold text-white" id="kmName">N/A</div></div><div class="grid grid-cols-2 gap-2"><div><label class="text-[9px] text-gray-500 uppercase">DOB</label><div class="text-xs" id="kmDob">N/A</div></div><div><label class="text-[9px] text-gray-500 uppercase">Mobile</label><div class="text-xs" id="kmMob">N/A</div></div></div></div>
+                        <div class="bg-blue-900/10 p-4 rounded border border-blue-500/20 relative"><h4 class="text-xs font-bold text-blue-400 uppercase tracking-widest border-b border-blue-500/20 pb-2 mb-2">Identity Details</h4><div><label class="text-[9px] text-gray-500 uppercase">Doc Type</label><div class="text-sm font-bold text-neonGold" id="kmDocType">Aadhaar</div></div><div class="mt-3"><label class="text-[9px] text-gray-500 uppercase">Document Number</label><div class="flex items-center gap-2"><div class="text-lg font-mono font-bold tracking-widest text-white bg-black/50 px-2 py-1 rounded" id="kmDocNumMasked">XXXX-XXXX-XXXX</div><button onmousedown="showFullDocNum()" onmouseup="hideFullDocNum()" class="text-[10px] bg-white/10 px-2 py-1 rounded hover:bg-white/20">Hold</button></div><input type="hidden" id="kmDocNumRaw"></div></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 mb-6"><div class="bg-black/50 p-2 rounded text-center border border-white/5"><label class="text-[9px] text-gray-400 block mb-2 uppercase">Front Side</label><img id="kmImgF" src="" class="w-full h-32 object-cover rounded cursor-pointer hover:opacity-80 transition" onclick="opPrf(this.src, 'Front Document')"></div><div class="bg-black/50 p-2 rounded text-center border border-white/5"><label class="text-[9px] text-gray-400 block mb-2 uppercase">Back Side</label><img id="kmImgB" src="" class="w-full h-32 object-cover rounded cursor-pointer hover:opacity-80 transition" onclick="opPrf(this.src, 'Back Document')"></div><div class="bg-black/50 p-2 rounded text-center border border-white/5"><label class="text-[9px] text-gray-400 block mb-2 uppercase">Selfie / Face</label><img id="kmImgS" src="" class="w-full h-32 object-cover rounded cursor-pointer hover:opacity-80 transition" onclick="opPrf(this.src, 'Selfie')"></div></div>
+                    <div class="flex gap-3 pt-4 border-t border-white/10" id="kmActionBtns"><button onclick="globalConfirm('Approve this KYC Identity?', execKycApprove)" class="flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded font-black tracking-widest uppercase text-sm shadow-[0_0_15px_rgba(0,255,0,0.3)] transition"><i class="fas fa-check-circle mr-2"></i> Approve</button><button onclick="openKycReject()" class="flex-1 bg-red-600 hover:bg-red-500 text-white py-3 rounded font-black tracking-widest uppercase text-sm shadow-[0_0_15px_rgba(255,0,0,0.3)] transition"><i class="fas fa-times-circle mr-2"></i> Reject</button></div>
+                </div>
+                <div id="k-tab-logs" class="modal-tab-content">
+                    <div class="bg-black/40 p-4 rounded border border-white/5 mb-4"><textarea id="kmAdminNote" class="input-dark h-20 text-xs mb-2" placeholder="Internal notes..."></textarea><button onclick="saveKycNote()" class="bg-neonBlue/20 text-neonBlue px-4 py-1 rounded text-[10px] font-bold border border-neonBlue/30 hover:bg-neonBlue hover:text-black">Save Note</button></div>
+                    <table class="w-full text-left adv-table"><thead><tr><th>Timestamp</th><th>Action Type</th><th>Admin details</th></tr></thead><tbody id="kmLogsTable"></tbody></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TICKET CHAT MODAL -->
+    <div id="ticketModal" class="modal-overlay z-[100]">
+        <div class="glass-panel w-full max-w-2xl max-h-[90vh] flex flex-col relative border-t-2 border-yellow-500">
+            <div class="bg-black/60 p-4 border-b border-white/10 flex justify-between items-center shrink-0">
+                <div><h3 class="font-black text-lg text-white" id="tmSub">Ticket Subject</h3><p class="text-[10px] text-gray-400 mt-1 font-mono">TID: <span id="tmId">---</span> | UID: <span id="tmUid">---</span></p></div>
+                <button onclick="cMod('ticketModal')" class="text-gray-400 hover:text-white text-2xl transition"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-4 overflow-y-auto flex-1 custom-scrollbar bg-black/40 flex flex-col" id="tmChatArea"></div>
+            <div class="p-4 bg-black/60 border-t border-white/10 flex gap-2 shrink-0">
+                <input type="text" id="tmReply" class="input-dark flex-1" placeholder="Type admin reply here...">
+                <button onclick="execTicketReply()" class="bg-yellow-500 text-black px-4 py-2 font-bold rounded hover:bg-yellow-400 transition"><i class="fas fa-paper-plane"></i></button>
+                <button onclick="globalConfirm('Close this ticket?', closeTicket)" class="bg-red-500/20 border border-red-500 text-red-500 px-4 py-2 font-bold rounded hover:bg-red-500 hover:text-white transition"><i class="fas fa-lock"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPROVAL / REJECT FINANCE MODALS -->
+    <div id="aprvFinModal" class="modal-overlay z-[110]"><div class="glass-panel p-6 w-full max-w-sm border-t-4 border-green-500 relative"><h3 class="font-bold text-green-500 mb-3 text-lg uppercase tracking-widest" id="afTitle">Approve Transaction</h3><input type="hidden" id="aId"><input type="hidden" id="aCol"><input type="hidden" id="aUid"><input type="hidden" id="aAmt"><div id="aTxnDiv" class="hidden mb-3"><label class="text-[9px] text-gray-400">Transaction ID (Optional)</label><input type="text" id="aTxnId" class="input-dark text-sm bg-black/80" placeholder="Enter bank TXN ID"></div><label class="text-[9px] text-gray-400">Admin Note</label><input type="text" id="aNote" class="input-dark mb-4 text-sm bg-black/80" placeholder="Approval note..."><button onclick="globalConfirm('Finalize Approval?', execFinApprove)" class="w-full bg-green-600 text-white py-3 rounded font-bold text-sm uppercase">Confirm Approval</button></div></div>
+    
+    <div id="rjModal" class="modal-overlay z-[110]"><div class="glass-panel p-6 w-full max-w-sm border-t-4 border-red-500 relative"><h3 class="font-bold text-red-500 mb-1 text-lg uppercase tracking-widest">Reject Transaction</h3><input type="hidden" id="rId"><input type="hidden" id="rCol"><input type="hidden" id="rUid"><input type="hidden" id="rAmt"><select id="rReason" class="input-dark mb-3 text-sm bg-black/80"><option value="Invalid Proof / UTR">Invalid Proof / UTR</option><option value="Bank details incorrect">Bank details incorrect</option><option value="custom">Other</option></select><input type="text" id="rCustom" class="input-dark text-sm mb-4 bg-black/80 hidden" placeholder="Custom reason..."><button onclick="globalConfirm('Finalize Rejection?', exeRj)" class="w-full bg-red-600 text-white py-3 rounded font-bold text-sm uppercase">Confirm Reject</button></div></div>
+    
+    <div id="kycRjModal" class="modal-overlay z-[110]"><div class="glass-panel p-6 w-full max-w-sm border-t-4 border-red-500 relative"><h3 class="font-bold text-red-500 mb-2 text-lg uppercase tracking-widest">Reject KYC</h3><select id="krjReason" class="input-dark mb-3 text-sm bg-black/80"><option value="Blurry Document">Blurry Document</option><option value="Fake / Edited Document">Fake / Edited Document</option><option value="custom">Other</option></select><input type="text" id="krjCustom" class="input-dark text-sm mb-4 bg-black/80 hidden" placeholder="Custom..."><button onclick="globalConfirm('Reject KYC Document?', execKycReject)" class="w-full bg-red-600 text-white py-3 rounded font-bold text-sm uppercase">Submit Reject</button></div></div>
+    
+    <div id="pModal" class="modal-overlay z-[120]" onclick="cMod('pModal')"><div class="glass-panel p-2 text-center" onclick="event.stopPropagation()"><img id="pImg" class="max-h-[85vh] max-w-full rounded border border-white/10"><p id="pUtr" class="mt-3 text-neonBlue font-mono tracking-widest font-bold bg-black/80 p-3 rounded text-sm uppercase"></p><button onclick="cMod('pModal')" class="mt-2 text-[10px] text-gray-500 hover:text-white">Close [X]</button></div></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, addDoc, getDoc, setDoc, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const app = initializeApp({
+            apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA", authDomain: "rocketearnx-bf10e.firebaseapp.com", databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "rocketearnx-bf10e", storageBucket: "rocketearnx-bf10e.firebasestorage.app", messagingSenderId: "282888117913", appId: "1:282888117913:web:86f236892842abcf9e6208"
+        });
+        const auth = getAuth(app); const db = getFirestore(app);
+        const ADMINS = ["rocketearnx@gmail.com", "imsazzidul@gmail.com"];
+
+        let cDepTab = 'pending', cWithTab = 'pending';
+        let finChart; window.kycDataMap = {}; window.ticketMap = {};
+
+        // CONFIRMATION CENTER PROTOCOL
+        let confirmActionCb = null;
+        window.globalConfirm = (msg, callback) => {
+            document.getElementById('confirmMsgTxt').innerText = msg;
+            confirmActionCb = callback;
+            document.getElementById('secureConfirmModal').classList.add('active');
+        };
+        document.getElementById('btnExecuteConfirm').onclick = () => {
+            document.getElementById('secureConfirmModal').classList.remove('active');
+            if(typeof confirmActionCb === 'function') confirmActionCb();
+        };
+
+        // EXPORT FUNCTIONALITY
+        window.exportTableToCSV = (tableId, filename) => {
+            let csv = [];
+            let rows = document.querySelectorAll(`#${tableId} tr`);
+            for (let i = 0; i < rows.length; i++) {
+                if(rows[i].style.display === 'none') continue;
+                let row = [], cols = rows[i].querySelectorAll("td, th");
+                for (let j = 0; j < cols.length; j++) row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+                csv.push(row.join(","));
+            }
+            let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+            let dl = document.createElement("a"); dl.download = filename; dl.href = window.URL.createObjectURL(csvFile);
+            dl.style.display = "none"; document.body.appendChild(dl); dl.click(); document.body.removeChild(dl);
+            adminLog("SYSTEM_EXPORT", `Exported CSV: ${filename}`, "System", "N/A");
+        };
+
+        function initChart() {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            finChart = new Chart(ctx, { type: 'bar', data: { labels: ['6D Ago','5D Ago','4D Ago','3D Ago','2D Ago','Yest','Today'], datasets: [{ label: 'Deposits (₹)', backgroundColor: 'rgba(0, 255, 136, 0.5)', borderColor: '#00ff88', borderWidth: 1, data: [0,0,0,0,0,0,0] }, { label: 'Withdrawals (₹)', backgroundColor: 'rgba(255, 42, 42, 0.5)', borderColor: '#ff2a2a', borderWidth: 1, data: [0,0,0,0,0,0,0] }] }, options: { responsive: true, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks:{color:'#888'} }, x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks:{color:'#888'} } } } });
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && ADMINS.includes(user.email)) {
+                document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('appWrapper').classList.remove('hidden');
+                document.getElementById('adminEmailTxt').innerText = user.email;
+                if(!finChart) initChart(); initSys();
+            } else {
+                document.getElementById('loginScreen').classList.remove('hidden'); document.getElementById('appWrapper').classList.add('hidden');
+                if(user) signOut(auth);
+            }
+        });
+        document.getElementById('loginForm').onsubmit = async (e) => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, document.getElementById('lEmail').value, document.getElementById('lPass').value); adminLog("ADMIN_LOGIN", "Login Successful", "Security", "IP Tracking Active"); } catch(err) { alert("Access Denied."); } };
+        document.getElementById('logoutBtn').onclick = () => { globalConfirm('Terminate Secure Session?', () => signOut(auth)); };
+
+        // UTILS
+        window.switchTab = (id) => { document.querySelectorAll('.sidebar-item').forEach(e => e.classList.remove('active')); event.currentTarget.classList.add('active'); document.querySelectorAll('.section-view').forEach(e => e.classList.remove('active')); document.getElementById('view-'+id).classList.add('active'); document.getElementById('pageTitle').innerText = event.currentTarget.innerText; };
+        window.cMod = (id) => document.getElementById(id).classList.remove('active');
+        const fDate = (ts) => ts ? new Date(ts.toDate()).toLocaleString() : '-';
+        const isToday = (ts) => { if(!ts) return false; const d = ts.toDate(), t = new Date(); return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth()&&d.getFullYear()===t.getFullYear(); };
+        const isThisWeek = (ts) => { if(!ts) return false; const d = ts.toDate(), t = new Date(); const diff = t.getTime() - d.getTime(); return diff <= (7 * 24 * 60 * 60 * 1000); };
+        const isThisMonth = (ts) => { if(!ts) return false; const d = ts.toDate(), t = new Date(); return d.getMonth()===t.getMonth()&&d.getFullYear()===t.getFullYear(); };
+        
+        // AUDIT LOG SYSTEM
+        async function adminLog(action, det, category = "General", targetId = "N/A") { 
+            await addDoc(collection(db, "audit_logs"), { action, details: det, email: auth.currentUser.email, category, targetId, time: serverTimestamp() }); 
+        }
+
+        window.filterCRM = () => { const txt = document.getElementById('srcUser').value.toLowerCase(), stat = document.getElementById('fltStatus').value, inv = document.getElementById('fltInvest').value, rows = document.getElementById('tb-users').getElementsByTagName('tr'); for(let i=0; i<rows.length; i++) { let textMatch = rows[i].innerText.toLowerCase().includes(txt), statMatch = stat === 'all' || rows[i].getAttribute('data-status') === stat, invMatch = inv === 'all' || rows[i].getAttribute('data-invest') === inv; rows[i].style.display = (textMatch && statMatch && invMatch) ? '' : 'none'; } };
+        window.filterKYC = () => { const txt = document.getElementById('srcKyc').value.toLowerCase(), stat = document.getElementById('fltKycStatus').value, rows = document.getElementById('tb-kyc').getElementsByTagName('tr'); for(let i=0; i<rows.length; i++) { let match = rows[i].innerText.toLowerCase().includes(txt) && (stat === 'all' || rows[i].getAttribute('data-kstatus') === stat); rows[i].style.display = match ? '' : 'none'; } };
+
+        window.setFin = (col, stat) => {
+            col === 'deposits' ? cDepTab = stat : cWithTab = stat;
+            document.querySelectorAll(`#view-${col==='deposits'?'deps':'withs'} .tab-btn`).forEach(b => b.classList.remove('active')); event.target.classList.add('active');
+            const tr = stat === 'rejected' ? `<tr><th>Date</th><th>User</th><th>Amount</th><th class="text-red-400">Reject Reason</th></tr>` : `<tr><th>Date</th><th>User</th><th>Amount</th><th>Details</th><th class="text-right">Action</th></tr>`;
+            document.getElementById(`th-${col==='deposits'?'deps':'withs'}`).innerHTML = tr; initSys();
+        };
+
+        // ================== MASTER SYSTEM SYNC ==================
+        function initSys() {
+            let activityFeedHtml = ''; const addAct = (msg, time, type) => { activityFeedHtml = `<div class="bg-black/30 p-2 rounded border-l-2 ${type} mb-1 flex justify-between items-center"><span class="text-[11px]">${msg}</span><span class="text-[9px] text-gray-500">${time}</span></div>` + activityFeedHtml; document.getElementById('activityFeed').innerHTML = activityFeedHtml; };
+
+            // 1. CRM / USERS & REFERRALS RESTORED
+            onSnapshot(collection(db, "users"), snap => {
+                document.getElementById('uTot').innerText = snap.size;
+                let tb='', refTb='', act=0, ban=0, newT=0, sumW=0, refT=0, refA=0, refP=0, refC=0;
+                
+                snap.forEach(d => {
+                    const u = d.data(); sumW+=Number(u.walletBalance||0); 
+                    if(u.totalDeposit>0) act++; if(u.status==='banned') ban++; if(isToday(u.createdAt)) newT++;
+                    const invStr = u.totalDeposit>0 ? 'invested' : 'free';
+                    const kBadge = u.kycStatus === 'approved' ? '<span class="text-green-500"><i class="fas fa-shield-alt"></i> Verified</span>' : (u.kycStatus === 'pending' ? '<span class="text-yellow-500"><i class="fas fa-clock"></i> Pending</span>' : '<span class="text-gray-500"><i class="fas fa-times"></i> No KYC</span>');
+                    
+                    tb += `<tr class="hover:bg-white/5 transition" data-status="${u.status||'active'}" data-invest="${invStr}">
+                        <td><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-neonBlue/20 text-neonBlue flex justify-center items-center font-bold text-xs"><i class="fas fa-user"></i></div><div><b class="text-xs text-white">${u.name||'Unknown'}</b><br><span class="text-[9px] text-gray-500 font-mono">UID: ${d.id.substring(0,6)}..</span></div></div></td>
+                        <td><span class="text-[10px]">${u.email}</span><br><span class="text-[10px] text-gray-400"><i class="fas fa-phone text-[8px]"></i> ${u.mobile||'N/A'}</span></td>
+                        <td><div class="text-neonGold font-bold text-xs">Bal: ₹${u.walletBalance||0}</div><div class="text-green-400 text-[10px]">Dep: ₹${u.totalDeposit||0}</div></td>
+                        <td><div class="text-pink-400 font-bold text-xs">Earn: ₹${u.referralEarnings||0}</div></td>
+                        <td><span class="text-[10px] text-gray-400">Plan: N/A</span><br><span class="text-[10px] text-neonBlue">Ref: ${u.referralCode||'N/A'}</span></td>
+                        <td><span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase ${u.status==='banned'?'bg-red-500/20 text-red-500':'bg-green-500/20 text-green-500'}">${u.status||'Active'}</span><br><span class="text-[9px] font-bold">${kBadge}</span></td>
+                        <td><span class="text-[10px] text-gray-500">${fDate(u.createdAt).split(',')[0]}</span></td>
+                        <td class="text-right"><button onclick="opAdvUser('${d.id}','${u.name}','${u.email}','${u.mobile||''}',${u.walletBalance||0},${u.totalDeposit||0},'${u.status}','${u.createdAt?u.createdAt.toMillis():0}')" class="bg-neonBlue text-black px-3 py-1.5 rounded text-[10px] font-bold hover:scale-105 transition shadow-[0_0_10px_rgba(0,240,255,0.3)]"><i class="fas fa-cog mr-1"></i> Manage</button></td>
+                    </tr>`;
+                    
+                    if(u.referredBy){ refT++; refC+=Number(u.referralEarnings||0); if(u.totalDeposit>0) refA++; else refP++; refTb += `<tr><td class="text-neonBlue text-xs font-bold">${u.referredBy}</td><td class="text-xs">${u.name} <br><span class="text-[9px] text-gray-500">${u.email}</span></td><td class="text-[10px] font-bold ${u.totalDeposit>0?'text-green-400':'text-yellow-400'}">${u.totalDeposit>0?'INVESTED':'PENDING'}</td><td class="text-neonGold text-xs font-bold">₹${u.referralEarnings||0}</td></tr>`; }
+                });
+                
+                document.getElementById('tb-users').innerHTML = tb; document.getElementById('tb-refs').innerHTML = refTb;
+                document.getElementById('uAct').innerText = act; document.getElementById('uBan').innerText = ban; document.getElementById('uTod').innerText = newT; document.getElementById('dSumWal').innerText = sumW.toFixed(2);
+                document.getElementById('refTot').innerText = refT; document.getElementById('refAct').innerText = refA; document.getElementById('refPen').innerText = refP; document.getElementById('refComm').innerText = "₹"+refC;
+            });
+
+            // 2. KYC LOGIC
+            onSnapshot(query(collection(db, "kyc_requests"), orderBy("submittedAt", "desc")), snap => {
+                let tb='', tTot=0, tPen=0, tApp=0, tRej=0, tTod=0, fC=0; let dm = {}; window.kycDataMap = {};
+                snap.forEach(d => { const k=d.data(); if(k.status!=='rejected'&&k.docNumber) dm[k.docNumber]=(dm[k.docNumber]||0)+1; });
+                snap.forEach(d => {
+                    const k = d.data(); window.kycDataMap[d.id] = k; tTot++;
+                    if(k.status==='pending') tPen++; else if(k.status==='approved') tApp++; else if(k.status==='rejected') tRej++;
+                    if(isToday(k.submittedAt)) tTod++;
+                    let isF = dm[k.docNumber] > 1; if(isF && k.status==='pending') fC++;
+                    let mDoc = k.docNumber ? k.docNumber.slice(0, -4).replace(/./g, 'X') + k.docNumber.slice(-4) : 'N/A';
+                    let statUi = k.status==='pending'?'<span class="text-yellow-500 text-[10px] font-bold bg-yellow-500/20 px-2 rounded">PENDING</span>':(k.status==='approved'?'<span class="text-green-500 text-[10px] font-bold bg-green-500/20 px-2 rounded">APPROVED</span>':'<span class="text-red-500 text-[10px] font-bold bg-red-500/20 px-2 rounded">REJECTED</span>');
+                    
+                    tb += `<tr data-kstatus="${k.status}"><td><b class="text-xs text-white">${k.name||'Unknown'}</b><br><span class="text-[9px] text-gray-500">UID: ${k.uid.substring(0,8)}</span></td><td><span class="text-[10px] text-neonBlue">${k.email||'N/A'}</span></td><td><span class="text-[10px] font-bold text-neonGold">${k.docType||'ID'}</span><br><span class="text-[10px] font-mono">${mDoc}</span> ${isF?'<span class="text-[8px] text-red-500">⚠️ FRAUD</span>':''}</td><td><div class="flex gap-1"><img src="${k.docFront||'#'}" class="img-proof w-10 h-6" onclick="opPrf(this.src,'Front')"></div></td><td><span class="text-[10px] text-gray-400">${fDate(k.submittedAt)}</span></td><td>${statUi}</td><td class="text-right"><button onclick="opKycModal('${d.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-[10px] font-bold">Review</button></td></tr>`;
+                    if(tPen>0 && k.status==='pending') addAct(`KYC: ${k.docType} (${k.name})`, fDate(k.submittedAt), 'border-blue-500 text-blue-400');
+                });
+                document.getElementById('tb-kyc').innerHTML = tb; document.getElementById('kTot').innerText=tTot; document.getElementById('kPen').innerText=tPen; document.getElementById('kApp').innerText=tApp; document.getElementById('kRej').innerText=tRej; document.getElementById('kTod').innerText=tTod; document.getElementById('kFraud').innerText=fC; document.getElementById('cKyc').innerText=tPen; document.getElementById('qKyc').innerText=tPen; filterKYC();
+            });
+
+            // 3. ADVANCED DEPOSITS
+            onSnapshot(query(collection(db, "deposits"), orderBy("createdAt", "desc")), snap => {
+                let tb='', p=0, s=0, t=0, totA=0, rejA=0, wP=0, mP=0;
+                snap.forEach(d => {
+                    const u = d.data(); totA++; if(u.status==='pending') p++; if(u.status==='rejected') rejA++;
+                    if(u.status==='approved') { s+=Number(u.amount); if(isToday(u.createdAt)) t+=Number(u.amount); if(isThisWeek(u.createdAt)) wP+=Number(u.amount); if(isThisMonth(u.createdAt)) mP+=Number(u.amount); }
+                    if(u.status === cDepTab) {
+                        if(cDepTab==='rejected') tb+=`<tr class="bg-red-900/20"><td class="text-[10px]">${fDate(u.createdAt)}</td><td class="text-xs">${u.email}</td><td class="font-bold">₹${u.amount}</td><td class="text-[10px] text-red-400">${u.rejectReason}</td></tr>`;
+                        else tb+=`<tr><td class="text-[10px]">${fDate(u.createdAt)}</td><td class="text-xs">${u.email}</td><td class="text-green-400 font-bold">₹${u.amount}</td><td class="text-[10px]">UTR: ${u.utr}<br><a onclick="opPrf('${u.proofUrl}','UTR: ${u.utr}')" class="text-neonBlue underline cursor-pointer">Proof</a></td><td class="text-right">${u.status==='pending'?`<button onclick="opAprv('deposits','${d.id}','${u.uid}',${u.amount})" class="bg-green-500 text-black px-2 py-1 rounded text-xs font-bold mr-2"><i class="fas fa-check"></i></button><button onclick="opRj('deposits','${d.id}','${u.uid}',${u.amount})" class="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold"><i class="fas fa-times"></i></button>`:`<span class="text-green-500 text-[10px] font-bold bg-green-500/10 px-2 py-1 rounded">APPROVED</span>`}</td></tr>`;
+                    }
+                    if(p>0 && u.status==='pending') addAct(`Dep Req: ₹${u.amount} (${u.email})`, fDate(u.createdAt), 'border-green-500 text-green-400');
+                });
+                document.getElementById('tb-deps').innerHTML = tb; document.getElementById('cDep').innerText=p; document.getElementById('qDep').innerText=p; document.getElementById('dTotDep').innerText=s; document.getElementById('dTodDep').innerText=t;
+                document.getElementById('depTot').innerText=totA; document.getElementById('depPen').innerText=p; document.getElementById('depApp').innerText=(totA-p-rejA); document.getElementById('depRej').innerText=rejA; document.getElementById('depTod').innerText=t;
+                if(finChart){finChart.data.datasets[0].data[6]=t; finChart.update();} window.weekDep=wP; window.monthDep=mP; updProf();
+            });
+
+            // 4. ADVANCED WITHDRAWALS
+            onSnapshot(query(collection(db, "withdrawals"), orderBy("requestTime", "desc")), snap => {
+                let tb='', p=0, s=0, t=0, totA=0, rejA=0, wP=0, mP=0;
+                snap.forEach(d => {
+                    const u = d.data(); totA++; if(u.status==='pending') p++; if(u.status==='rejected') rejA++;
+                    if(u.status==='approved') { s+=Number(u.amount); if(isToday(u.requestTime)) t+=Number(u.amount); if(isThisWeek(u.requestTime)) wP+=Number(u.amount); if(isThisMonth(u.requestTime)) mP+=Number(u.amount); }
+                    if(u.status === cWithTab) {
+                        if(cWithTab==='rejected') tb+=`<tr class="bg-red-900/20"><td class="text-[10px]">${fDate(u.requestTime)}</td><td class="text-xs">${u.email}</td><td class="font-bold">₹${u.amount}</td><td class="text-[10px] text-red-400">${u.rejectReason}</td></tr>`;
+                        else tb+=`<tr><td class="text-[10px]">${fDate(u.requestTime)}</td><td class="text-xs">${u.email}</td><td class="text-red-400 font-bold">₹${u.amount}</td><td class="text-[10px] font-mono bg-black/40 p-1 rounded max-w-[200px] whitespace-pre-wrap">${u.details} ${u.adminTxnId?'<br><span class="text-neonBlue">TXN: '+u.adminTxnId+'</span>':''}</td><td class="text-right">${u.status==='pending'?`<button onclick="opAprv('withdrawals','${d.id}','${u.uid}',${u.amount})" class="bg-green-500 text-black px-2 py-1 rounded text-xs font-bold mr-2"><i class="fas fa-check"></i></button><button onclick="opRj('withdrawals','${d.id}','${u.uid}',${u.amount})" class="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold"><i class="fas fa-times"></i></button>`:`<span class="text-green-500 text-[10px] font-bold bg-green-500/10 px-2 py-1 rounded">PAID</span>`}</td></tr>`;
+                    }
+                    if(p>0 && u.status==='pending') addAct(`With Req: ₹${u.amount} (${u.email})`, fDate(u.requestTime), 'border-red-500 text-red-400');
+                });
+                document.getElementById('tb-withs').innerHTML = tb; document.getElementById('cWith').innerText=p; document.getElementById('qWith').innerText=p; document.getElementById('dTotWith').innerText=s; document.getElementById('dTodWith').innerText=t;
+                document.getElementById('withTot').innerText=totA; document.getElementById('withPen').innerText=p; document.getElementById('withApp').innerText=(totA-p-rejA); document.getElementById('withRej').innerText=rejA; document.getElementById('withTod').innerText=t;
+                if(finChart){finChart.data.datasets[1].data[6]=t; finChart.update();} window.weekWith=wP; window.monthWith=mP; updProf();
+            });
+
+            // 5. TICKETS (SUPPORT DESK)
+            onSnapshot(query(collection(db, "tickets"), orderBy("updatedAt", "desc")), snap => {
+                let tb='', tO=0, tC=0, tH=0; window.ticketMap = {};
+                snap.forEach(d => {
+                    const t = d.data(); window.ticketMap[d.id] = t;
+                    if(t.status==='open') tO++; else tC++; if(t.priority==='high') tH++;
+                    let sBadge = t.status==='open'?'<span class="bg-yellow-500/20 text-yellow-500 px-2 py-1 text-[10px] rounded">OPEN</span>':'<span class="bg-gray-500/20 text-gray-500 px-2 py-1 text-[10px] rounded">CLOSED</span>';
+                    tb+=`<tr><td><span class="text-[10px] text-gray-400">${fDate(t.createdAt)}</span><br><span class="text-[9px] font-mono text-neonBlue">#${d.id.substring(0,6)}</span></td><td class="text-xs">${t.email}</td><td class="text-xs font-bold text-white">${t.subject}</td><td><span class="text-[10px] ${t.priority==='high'?'text-red-500':'text-gray-400'} uppercase">${t.priority}</span></td><td>${sBadge}</td><td class="text-right"><button onclick="opTicket('${d.id}')" class="bg-neonBlue text-black px-3 py-1 rounded text-xs font-bold"><i class="fas fa-reply"></i></button></td></tr>`;
+                });
+                document.getElementById('tb-tickets').innerHTML = tb; document.getElementById('tOpen').innerText=tO; document.getElementById('tClosed').innerText=tC; document.getElementById('tHigh').innerText=tH; document.getElementById('cTkt').innerText=tO; document.getElementById('qTkt').innerText=tO;
+            });
+
+            // 6. LOGS & EXTRAS
+            onSnapshot(query(collection(db, "audit_logs"), orderBy("time", "desc")), s => { let tb=''; s.forEach(d=> { const l=d.data(); tb+=`<tr><td class="text-[10px] text-gray-500">${fDate(l.time)}</td><td class="text-xs font-bold text-neonBlue">${l.email}</td><td class="text-[10px] text-yellow-400 uppercase tracking-widest">${l.category||'General'}</td><td class="text-[10px] text-white">${l.action}</td><td class="text-[10px] text-gray-400">${l.details}<br><span class="text-neonBlue">UID: ${l.targetId||'N/A'}</span></td><td class="text-[10px] text-gray-600">IP Tracked</td></tr>`; }); document.getElementById('tb-logs').innerHTML = tb; });
+            onSnapshot(collection(db, "plans"), s => { let tb=''; s.forEach(d=> { const p=d.data(); tb+=`<tr><td class="font-bold text-xs">${p.name}</td><td class="text-neonGold text-xs">₹${p.price}</td><td class="text-green-400 text-xs">₹${p.dailyROI}</td><td class="text-xs text-gray-400">${p.validity} Days</td><td><button onclick="globalConfirm('Delete Plan?',()=>deleteDoc(doc(db,'plans','${d.id}')))" class="text-red-500 text-xs"><i class="fas fa-trash"></i></button></td></tr>`; }); document.getElementById('tb-plans').innerHTML = tb; });
+            
+            getDoc(doc(db, "settings", "general")).then(d => { if(d.exists()){ const s=d.data(); document.getElementById('setMaint').value = s.maintenance?'true':'false'; document.getElementById('stMaint').innerText = s.maintenance?'ON (BLOCKED)':'OFF'; document.getElementById('setSignup').value = s.signupBonus||0; document.getElementById('setUpi').value = s.upiId||''; document.getElementById('setQr').value = s.qrUrl||''; document.getElementById('setMinDep').value = s.minDep||0; document.getElementById('setMinWith').value = s.minWith||0; document.getElementById('refBonusAmt').value = s.referralBonus||0; }});
+        }
+        function updProf() { document.getElementById('dNetProf').innerText = (Number(document.getElementById('dTotDep').innerText) - Number(document.getElementById('dTotWith').innerText)).toFixed(2); document.getElementById('dWekProf').innerText = (window.weekDep - window.weekWith).toFixed(2); document.getElementById('dMonProf').innerText = (window.monthDep - window.monthWith).toFixed(2); }
+
+        // ================== FINANCE ACTIONS ==================
+        window.opAprv = (col, id, uid, amt) => {
+            document.getElementById('aId').value = id; document.getElementById('aCol').value = col; document.getElementById('aUid').value = uid; document.getElementById('aAmt').value = amt;
+            document.getElementById('afTitle').innerText = `Approve ${col==='deposits'?'Deposit':'Withdrawal'} - ₹${amt}`;
+            document.getElementById('aTxnDiv').style.display = col === 'withdrawals' ? 'block' : 'none'; document.getElementById('aprvFinModal').classList.add('active');
+        };
+
+        window.execFinApprove = async () => {
+            const id=document.getElementById('aId').value, col=document.getElementById('aCol').value, uid=document.getElementById('aUid').value, amt=Number(document.getElementById('aAmt').value), note=document.getElementById('aNote').value, txn=document.getElementById('aTxnId').value;
+            try {
+                let upData = { status: 'approved', updatedAt: serverTimestamp(), adminNote: note }; if(col==='withdrawals' && txn) upData.adminTxnId = txn;
+                await updateDoc(doc(db, col, id), upData);
+                if(col === 'deposits') { const uSnap = await getDoc(doc(db, "users", uid)); const uData = uSnap.data(); await updateDoc(doc(db, "users", uid), { walletBalance: (uData.walletBalance||0)+amt, totalDeposit: (uData.totalDeposit||0)+amt }); }
+                await addDoc(collection(db,"notifications"), {uid:uid, title:`${col==='deposits'?'Deposit':'Withdrawal'} Processed ✅`, message:`₹${amt} Approved. ${note?note:''}`, createdAt:serverTimestamp()});
+                adminLog("APPROVED_FINANCE", `${col.toUpperCase()} ₹${amt}. Note: ${note}`, "Finance", uid); cMod('aprvFinModal');
+            } catch(e) { alert("Error: " + e.message); }
+        };
+
+        window.opRj = (col, id, uid, amt) => { document.getElementById('rId').value=id; document.getElementById('rCol').value=col; document.getElementById('rUid').value=uid; document.getElementById('rAmt').value=amt; document.getElementById('rReason').onchange = (e) => document.getElementById('rCustom').style.display = e.target.value==='custom'?'block':'none'; document.getElementById('rjModal').classList.add('active'); };
+        window.exeRj = async () => { const id=document.getElementById('rId').value, col=document.getElementById('rCol').value, uid=document.getElementById('rUid').value, amt=Number(document.getElementById('rAmt').value); let rsn=document.getElementById('rReason').value; if(rsn==='custom') rsn=document.getElementById('rCustom').value; await updateDoc(doc(db, col, id), { status: 'rejected', rejectReason: rsn, updatedAt: serverTimestamp() }); if(col==='withdrawals'){ const u = await getDoc(doc(db,"users",uid)); await updateDoc(doc(db,"users",uid), {walletBalance: (u.data().walletBalance||0)+amt}); } await addDoc(collection(db,"notifications"), {uid:uid, title:`Transaction Failed ❌`, message:`₹${amt} Rejected. Reason: ${rsn}`, createdAt:serverTimestamp()}); adminLog("REJECTED_FINANCE", `${col.toUpperCase()} ₹${amt}. Reason: ${rsn}`, "Finance", uid); cMod('rjModal'); };
+
+        // ================== SUPPORT TICKETS ==================
+        window.opTicket = (id) => {
+            const t = window.ticketMap[id]; document.getElementById('tmId').innerText = id; document.getElementById('tmUid').innerText = t.uid; document.getElementById('tmSub').innerText = t.subject;
+            let mHtml = ''; if(t.messages) t.messages.forEach(m => { mHtml += `<div class="chat-bubble ${m.sender==='admin'?'chat-admin':'chat-user'}"><b>${m.sender==='admin'?'Admin':'User'}:</b> ${m.text} <br><span class="text-[8px] opacity-50">${new Date(m.time).toLocaleString()}</span></div>`; });
+            document.getElementById('tmChatArea').innerHTML = mHtml; document.getElementById('ticketModal').classList.add('active');
+            document.getElementById('tmChatArea').scrollTop = document.getElementById('tmChatArea').scrollHeight;
+        };
+        window.execTicketReply = async () => {
+            const id = document.getElementById('tmId').innerText, r = document.getElementById('tmReply').value; if(!r) return;
+            const t = window.ticketMap[id]; let msgs = t.messages || []; msgs.push({sender:'admin', text:r, time:Date.now()});
+            await updateDoc(doc(db, "tickets", id), { messages: msgs, updatedAt: serverTimestamp() });
+            await addDoc(collection(db, "notifications"), { uid: t.uid, title: "Support Reply", message: "An admin replied to your ticket.", createdAt: serverTimestamp() });
+            document.getElementById('tmReply').value = ''; adminLog("TICKET_REPLY", `Replied to Ticket ID: ${id}`, "Support", t.uid); opTicket(id);
+        };
+        window.closeTicket = async () => { const id = document.getElementById('tmId').innerText; await updateDoc(doc(db, "tickets", id), { status: 'closed', updatedAt: serverTimestamp() }); adminLog("TICKET_CLOSED", `Closed Ticket ID: ${id}`, "Support", window.ticketMap[id].uid); cMod('ticketModal'); };
+
+        // ================== NOTIFICATIONS ==================
+        window.sendGlobalNotif = async () => { const t=document.getElementById('nTitle').value, m=document.getElementById('nMsg').value, p=document.getElementById('nPopup').checked; if(!t||!m)return; await addDoc(collection(db, "global_notifications"), { title: t, message: m, isPopup: p, createdAt: serverTimestamp() }); adminLog("GLOBAL_BROADCAST", `Title: ${t}`, "Marketing", "ALL"); document.getElementById('nTitle').value=''; document.getElementById('nMsg').value=''; alert("Transmitted."); };
+        window.sendTargetNotif = async () => { const u=document.getElementById('tUid').value, t=document.getElementById('tTitle').value, m=document.getElementById('tMsg').value; if(!u||!t||!m)return; await addDoc(collection(db, "notifications"), { uid: u, title: t, message: m, createdAt: serverTimestamp() }); adminLog("TARGET_ALERT", `Title: ${t}`, "Marketing", u); document.getElementById('tUid').value=''; document.getElementById('tTitle').value=''; document.getElementById('tMsg').value=''; alert("Sent."); };
+
+        // ================== KYC & CRM & EXTRAS ==================
+        window.switchModTab = (modId, tabId) => { document.querySelectorAll(`#${modId} .modal-tab`).forEach(e => e.classList.remove('active')); event.currentTarget.classList.add('active'); document.querySelectorAll(`#${modId} .modal-tab-content`).forEach(e => e.classList.remove('active')); document.getElementById(tabId).classList.add('active'); };
+        
+        window.opAdvUser = (id, n, e, m, b, d, s, ts) => { document.getElementById('umId').value=id; document.getElementById('umName').innerText=n; document.getElementById('umEmail').innerText=e; document.getElementById('umUid').innerText=id; document.getElementById('umMob').innerText=m; document.getElementById('umReg').innerText=ts?new Date(Number(ts)).toLocaleString():'N/A'; document.getElementById('umBalTxt').innerText="₹"+b; document.getElementById('umDepTxt').innerText="₹"+d; document.getElementById('umRawBal').value=b; document.getElementById('umRawDep').value=d; document.getElementById('histUidTxt').innerText=id; const stUi = document.getElementById('umStatUI'); if(s==='banned') { stUi.innerHTML = '<span class="bg-red-500/20 text-red-500 px-2 py-1 rounded text-xs font-bold border border-red-500/30"><i class="fas fa-ban"></i> BLOCKED</span>'; } else { stUi.innerHTML = '<span class="bg-green-500/20 text-green-500 px-2 py-1 rounded text-xs font-bold border border-green-500/30"><i class="fas fa-check-circle"></i> ACTIVE</span>'; } const bn = document.getElementById('umBan'); bn.innerHTML=s==='banned'?'<i class="fas fa-check mr-1"></i> Unblock User':'<i class="fas fa-ban mr-1"></i> Block / Ban User'; bn.onclick=()=>globalConfirm(s==='banned'?'Unblock this user?':'Ban this user?', async()=>{await updateDoc(doc(db,"users",id),{status:s==='banned'?'active':'banned'}); adminLog("USER_STATUS_CHANGE", `Set to ${s==='banned'?'active':'banned'}`, "CRM", id); cMod('uModal');}); document.getElementById('uModal').classList.add('active'); };
+        
+        window.execWalletChange = async () => { const id=document.getElementById('umId').value, act=document.getElementById('walAction').value, amt=Number(document.getElementById('walAmt').value); if(amt<=0 && act!=='set')return; let cb=Number(document.getElementById('umRawBal').value); let nb=cb; if(act==='add') nb+=amt; else if(act==='deduct') nb=(cb-amt<0?0:cb-amt); else if(act==='set') nb=amt; await updateDoc(doc(db, "users", id), { walletBalance: nb }); adminLog("WALLET_UPDATE", `${act.toUpperCase()} ₹${amt}. New: ₹${nb}`, "CRM", id); await addDoc(collection(db,"notifications"), {uid:id, title:`💳 Wallet Updated`, message:`Admin modified balance. Action: ${act.toUpperCase()}`, createdAt:serverTimestamp()}); cMod('uModal'); };
+        window.resetPass = async () => { await sendPasswordResetEmail(auth, document.getElementById('umEmail').innerText); adminLog("PASSWORD_RESET", "Sent recovery email", "Security", document.getElementById('umId').value); cMod('uModal'); };
+        window.deleteUser = async () => { await deleteDoc(doc(db,"users",document.getElementById('umId').value)); adminLog("USER_DELETED", "Deleted user document entirely", "Security", document.getElementById('umId').value); cMod('uModal'); };
+
+        window.opKycModal = (docId) => { const k=window.kycDataMap[docId]; document.getElementById('kmDocId').value=docId; document.getElementById('kmUserId').value=k.uid; document.getElementById('kmUid').innerText=k.uid; document.getElementById('kmName').innerText=k.name||'N/A'; document.getElementById('kmDob').innerText=k.dob||'N/A'; document.getElementById('kmMob').innerText=k.mobile||'N/A'; document.getElementById('kmDocType').innerText=k.docType||'ID'; document.getElementById('kmDocNumRaw').value=k.docNumber||''; document.getElementById('kmDocNumMasked').innerText=k.docNumber?k.docNumber.slice(0,-4).replace(/./g,'X')+k.docNumber.slice(-4):'N/A'; document.getElementById('kmImgF').src=k.docFront||'#'; document.getElementById('kmImgB').src=k.docBack||'#'; document.getElementById('kmImgS').src=k.selfie||'#'; const btns = document.getElementById('kmActionBtns'); btns.style.display=k.status==='pending'?'flex':'none'; let lHtml=''; if(k.logs){k.logs.forEach(log=>{lHtml+=`<tr><td class="text-[10px]">${new Date(log.time).toLocaleString()}</td><td class="text-xs text-neonBlue">${log.action}</td><td class="text-[10px]">${log.admin} <br><span class="text-gray-500">${log.note||''}</span></td></tr>`;});} document.getElementById('kmLogsTable').innerHTML=lHtml; document.getElementById('kmAdminNote').value=k.adminNote||''; switchModTab('kycModal','k-tab-docs'); document.getElementById('kycModal').classList.add('active'); };
+        window.showFullDocNum = () => { document.getElementById('kmDocNumMasked').innerText = document.getElementById('kmDocNumRaw').value; }; window.hideFullDocNum = () => { const r = document.getElementById('kmDocNumRaw').value; document.getElementById('kmDocNumMasked').innerText = r.slice(0, -4).replace(/./g, 'X') + r.slice(-4); };
+        window.execKycApprove = async () => { const docId=document.getElementById('kmDocId').value, uid=document.getElementById('kmUserId').value; const newLog={action:'Approved',admin:auth.currentUser.email,time:Date.now(),note:'Verified'}; const kRef=doc(db,"kyc_requests",docId); const kS=await getDoc(kRef); let cL=kS.data().logs||[]; cL.push(newLog); await updateDoc(kRef,{status:'approved',updatedAt:serverTimestamp(),verifiedBy:auth.currentUser.email,logs:cL}); await updateDoc(doc(db,"users",uid),{kycStatus:'approved'}); await addDoc(collection(db,"notifications"),{uid:uid,title:"✅ KYC Approved",message:"Identity verified.",createdAt:serverTimestamp()}); adminLog("KYC_APPROVED", "Approved KYC Doc", "KYC", uid); cMod('kycModal'); };
+        window.openKycReject = () => { document.getElementById('krjReason').onchange = (e) => document.getElementById('krjCustom').style.display = e.target.value==='custom'?'block':'none'; document.getElementById('kycRjModal').classList.add('active'); };
+        window.execKycReject = async () => { const docId=document.getElementById('kmDocId').value, uid=document.getElementById('kmUserId').value; let rsn=document.getElementById('krjReason').value; if(rsn==='custom')rsn=document.getElementById('krjCustom').value; const newLog={action:'Rejected',admin:auth.currentUser.email,time:Date.now(),note:rsn}; const kRef=doc(db,"kyc_requests",docId); const kS=await getDoc(kRef); let cL=kS.data().logs||[]; cL.push(newLog); await updateDoc(kRef,{status:'rejected',rejectReason:rsn,updatedAt:serverTimestamp(),verifiedBy:auth.currentUser.email,logs:cL}); await updateDoc(doc(db,"users",uid),{kycStatus:'rejected'}); await addDoc(collection(db,"notifications"),{uid:uid,title:"❌ KYC Rejected",message:`Failed. Reason: ${rsn}`,createdAt:serverTimestamp()}); adminLog("KYC_REJECTED", `Rejected. Reason: ${rsn}`, "KYC", uid); cMod('kycRjModal'); cMod('kycModal'); };
+        window.saveKycNote = async () => { await updateDoc(doc(db, "kyc_requests", document.getElementById('kmDocId').value), { adminNote: document.getElementById('kmAdminNote').value }); alert("Saved."); };
+        
+        window.opPrf = (img, u) => { document.getElementById('pImg').src=img; document.getElementById('pUtr').innerText=u||"Document Proof"; document.getElementById('pModal').classList.add('active'); }
+        window.addPlan = async () => { const n=document.getElementById('pName').value, p=Number(document.getElementById('pPrice').value), r=Number(document.getElementById('pDaily').value), d=Number(document.getElementById('pDays').value); if(!n||!p)return; await addDoc(collection(db, "plans"), { name:n, price:p, dailyROI:r, validity:d, totalReturn: r*d, createdAt: serverTimestamp() }); adminLog("PLAN_CREATED", `Plan: ${n}`, "System", "N/A"); document.getElementById('pName').value=''; document.getElementById('pPrice').value=''; document.getElementById('pDaily').value=''; document.getElementById('pDays').value=''; };
+        window.saveSysSet = async () => { await setDoc(doc(db, "settings", "general"), { maintenance: document.getElementById('setMaint').value === 'true', signupBonus: Number(document.getElementById('setSignup').value) }, { merge: true }); adminLog("SETTINGS_UPDATED", "Updated System Controls", "System", "N/A"); };
+        window.savePaySet = async () => { await setDoc(doc(db, "settings", "general"), { upiId:document.getElementById('setUpi').value, qrUrl:document.getElementById('setQr').value, minDep:Number(document.getElementById('setMinDep').value), minWith:Number(document.getElementById('setMinWith').value) }, { merge: true }); adminLog("SETTINGS_UPDATED", "Updated Gateway Info", "System", "N/A"); };
+        window.saveSet = async (k, vId) => { await setDoc(doc(db, "settings", "general"), { [k]: Number(document.getElementById(vId).value) }, { merge: true }); adminLog("SETTINGS_UPDATED", `Updated ${k}`, "System", "N/A"); }
+    </script>
+</body>
+</html>
