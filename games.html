@@ -1,122 +1,192 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Game Zone | RocketEarn X</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#05030a', gold: { 400: '#fcd34d' }, cyan: { 400: '#22d3ee' } }, fontFamily: { sans: ['Outfit', 'sans-serif'], space: ['Space Grotesk', 'sans-serif'] } } } }
+    </script>
+
     <style>
-        body { background-color: #05030a; color: #fff; font-family: 'Outfit', sans-serif; }
-        .glass-card { background: rgba(20, 10, 30, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(0, 240, 255, 0.2); }
-        .modal-overlay { display: none; background: rgba(0,0,0,0.9); position: fixed; inset: 0; z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .modal-overlay.active { display: flex; }
+        body { background-color: #05030a; color: #ffffff; overflow-x: hidden; }
+        .glass-nav { background: rgba(5, 3, 10, 0.7); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-card { background: linear-gradient(160deg, rgba(30, 20, 50, 0.5), rgba(10, 5, 20, 0.9)); backdrop-filter: blur(12px); border: 1px solid rgba(0, 240, 255, 0.2); transition: 0.3s; }
+        .glass-card:hover { border-color: rgba(0, 240, 255, 0.6); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2); }
+        .modal-overlay { opacity: 0; visibility: hidden; transition: all 0.3s ease; backdrop-filter: blur(15px); background: rgba(0,0,0,0.9); position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; }
+        .modal-overlay.open { opacity: 1; visibility: visible; }
     </style>
 </head>
-<body class="bg-[radial-gradient(circle_at_center,_rgba(0,240,255,0.1)_0%,_#05030a_100%)] h-screen flex flex-col">
+<body class="bg-[radial-gradient(circle_at_top,_rgba(0,240,255,0.15),_transparent_50%)] h-screen flex flex-col">
 
-    <!-- Navbar -->
-    <nav class="glass-card p-4 flex justify-between items-center sticky top-0 z-50">
-        <a href="index.html" class="text-xl font-bold text-white"><i class="fa-solid fa-arrow-left mr-2"></i> Back Home</a>
-        <div class="font-bold text-gold-400">Wallet: ₹<span id="g-wallet">0</span></div>
+    <!-- NAVBAR -->
+    <nav class="w-full z-40 glass-nav sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="dashboard.html" class="flex items-center gap-2 hover:text-cyan-400 transition">
+                    <i class="fa-solid fa-arrow-left text-xl"></i> <span class="font-bold text-lg hidden sm:block">Back to Dashboard</span>
+                </a>
+                <h1 class="font-space font-bold text-xl sm:text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"><i class="fa-solid fa-gamepad mr-2"></i> GAME ZONE</h1>
+                <div class="flex items-center gap-2 text-white bg-white/5 px-4 py-2 rounded-full border border-white/10 shadow-inner">
+                    <i class="fa-solid fa-wallet text-gold-400"></i> <span class="font-bold font-space tracking-wider">₹<span id="user-wallet">0.00</span></span>
+                </div>
+            </div>
+        </div>
     </nav>
 
-    <!-- Main Game Area -->
-    <div class="flex-1 p-6 overflow-y-auto">
-        <div class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">Rocket Game Zone</h1>
-            <p class="text-gray-400">Play games uploaded by Admin and win real cash!</p>
+    <!-- GAMES GRID SECTION -->
+    <div class="flex-1 p-4 sm:p-8 overflow-y-auto max-w-7xl mx-auto w-full">
+        <div class="text-center mb-10 mt-6">
+            <h2 class="text-3xl sm:text-5xl font-extrabold mb-4">Play & <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">Multiply Cash</span></h2>
+            <p class="text-gray-400">Select a game below. Entry fee will be deducted from your wallet balance.</p>
         </div>
 
-        <div id="games-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            <div class="col-span-full text-center py-20 text-gray-500"><i class="fa-solid fa-spinner fa-spin text-4xl mb-4"></i><p>Loading Games from Admin Server...</p></div>
+        <div id="games-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Loading State -->
+            <div class="col-span-full text-center py-20">
+                <i class="fa-solid fa-spinner fa-spin text-5xl text-cyan-400 mb-4"></i>
+                <p class="text-gray-400 text-lg">Syncing games from Admin Server...</p>
+            </div>
         </div>
     </div>
 
-    <!-- Play Modal -->
-    <div id="playModal" class="modal-overlay px-4">
-        <div class="glass-card w-full max-w-4xl h-[85vh] rounded-3xl flex flex-col relative overflow-hidden">
+    <!-- GAME PLAY MODAL -->
+    <div id="play-modal" class="modal-overlay px-4">
+        <div class="w-full max-w-5xl h-[85vh] glass-card rounded-3xl flex flex-col relative overflow-hidden bg-[#05030a]">
+            <!-- Header -->
             <div class="p-4 border-b border-white/10 flex justify-between items-center bg-black/50 shrink-0">
-                <h3 class="font-bold text-xl text-cyan-400" id="m-game-title">Game Title</h3>
-                <button onclick="closePlayModal()" class="text-gray-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-dice text-cyan-400 text-2xl animate-pulse"></i>
+                    <h3 class="font-bold text-white text-xl" id="m-game-name">Game Loading...</h3>
+                </div>
+                <button onclick="closeGame()" class="w-10 h-10 rounded-full bg-white/5 hover:bg-red-500/20 hover:text-red-500 transition border border-white/10 flex items-center justify-center text-gray-400"><i class="fa-solid fa-power-off"></i></button>
             </div>
             
-            <div id="m-setup" class="flex-1 flex flex-col items-center justify-center text-center p-6">
-                <i class="fa-solid fa-gamepad text-6xl text-cyan-400 mb-4"></i>
-                <h2 class="text-2xl font-bold mb-2">Ready to Play?</h2>
-                <p class="text-gray-400 mb-6">Entry Fee is <span class="text-gold-400 font-bold" id="m-fee">₹0</span></p>
-                <button onclick="deductAndPlay()" id="btn-play" class="bg-gradient-to-r from-cyan-500 to-blue-500 text-dark font-extrabold px-10 py-4 rounded-full text-lg shadow-[0_0_20px_#00f0ff] hover:scale-105 transition">Pay & Start</button>
+            <!-- Setup / Pay Screen -->
+            <div id="m-setup-view" class="flex-1 flex flex-col items-center justify-center p-6 text-center relative">
+                <div class="absolute inset-0 bg-gradient-to-b from-cyan-900/20 to-black pointer-events-none"></div>
+                <i class="fa-solid fa-coins text-6xl text-gold-400 mb-4 drop-shadow-[0_0_20px_rgba(255,215,0,0.6)] animate-bounce"></i>
+                <h2 class="text-3xl font-bold text-white mb-2">Ready to win?</h2>
+                <p class="text-gray-400 mb-8 text-lg">Entry Fee: <span class="text-gold-400 font-bold text-2xl" id="m-game-fee">₹0</span></p>
+                <button id="btn-pay-play" onclick="payAndPlay()" class="relative z-10 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-extrabold px-12 py-4 rounded-full text-xl hover:scale-105 transition shadow-[0_0_30px_rgba(0,240,255,0.4)]">Pay Entry Fee & Start</button>
             </div>
 
-            <div id="m-play" class="flex-1 hidden bg-white">
-                <iframe id="game-iframe" class="w-full h-full border-0"></iframe>
+            <!-- Actual Iframe Game Screen -->
+            <div id="m-play-view" class="flex-1 hidden bg-white">
+                <iframe id="game-iframe" class="w-full h-full border-0" sandbox="allow-scripts allow-same-origin"></iframe>
             </div>
         </div>
     </div>
 
+    <!-- FIREBASE LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, collection, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, collection, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Admin DB Connection
         const app = initializeApp({
             apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA", authDomain: "rocketearnx-bf10e.firebaseapp.com", databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "rocketearnx-bf10e", storageBucket: "rocketearnx-bf10e.firebasestorage.app", messagingSenderId: "282888117913", appId: "1:282888117913:web:86f236892842abcf9e6208"
         });
         const auth = getAuth(app); const db = getFirestore(app);
         
-        let userWallet = 0; let cGameFee = 0; let cGameHtml = ""; let uid = null;
+        let currentUser = null; let currentBalance = 0;
+        let selectedGameFee = 0; let selectedGameHtml = "";
+        window.adminGamesMap = {}; // Stores real HTML codes uploaded by Admin
 
+        // STRICT SECURITY: Redirect if not logged in
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                uid = user.uid;
-                onSnapshot(doc(db, "users", uid), d => { if(d.exists()) { userWallet = d.data().walletBalance || 0; document.getElementById('g-wallet').innerText = userWallet; } });
-            } else { alert("Login required to play games!"); window.location.href = "index.html"; }
+                currentUser = user;
+                // Live Wallet Sync
+                onSnapshot(doc(db, "users", user.uid), (d) => {
+                    if(d.exists()) {
+                        currentBalance = d.data().walletBalance || 0;
+                        document.getElementById('user-wallet').innerText = currentBalance.toFixed(2);
+                    }
+                });
+            } else {
+                window.location.href = "index.html";
+            }
         });
 
-        // Load Games from Admin Collection
-        onSnapshot(collection(db, "games"), snap => {
-            const cont = document.getElementById('games-container');
+        // FETCH LIVE GAMES FROM ADMIN PANEL
+        onSnapshot(collection(db, "games"), (snap) => {
+            const container = document.getElementById('games-container');
+            
             if(snap.empty) {
-                cont.innerHTML = `<div class="col-span-full text-center py-20"><i class="fa-solid fa-ghost text-6xl text-gray-600 mb-4"></i><h2 class="text-2xl font-bold text-gray-400">No Games Found</h2><p class="text-gray-500">Admin hasn't uploaded any games yet.</p></div>`;
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-20 bg-white/5 border border-white/10 rounded-3xl">
+                        <i class="fa-solid fa-ghost text-6xl text-gray-600 mb-4"></i>
+                        <h2 class="text-3xl font-bold text-gray-400 mb-2">No Games Found!</h2>
+                        <p class="text-gray-500">Admin hasn't uploaded any HTML games yet. Please check back later.</p>
+                    </div>`;
                 return;
             }
+
             let html = "";
-            snap.forEach(d => {
-                const g = d.data();
-                // Store HTML in a global window object to use when clicked
-                window[`game_html_${d.id}`] = g.gameHtml;
+            snap.forEach(doc => {
+                const game = doc.data();
+                window.adminGamesMap[doc.id] = game.gameHtml; // Save code in memory
+
                 html += `
-                <div class="glass-card rounded-2xl p-6 text-center hover:-translate-y-2 transition cursor-pointer border-cyan-500/30">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-cyan-500/20 flex items-center justify-center text-3xl mb-4 border border-cyan-500"><i class="fa-solid fa-play text-cyan-400"></i></div>
-                    <h3 class="font-bold text-xl mb-1">${g.name || 'Admin Game'}</h3>
-                    <div class="bg-black/50 p-2 rounded-lg mt-3"><span class="text-[10px] text-gray-400 block uppercase">Entry Fee</span><span class="font-bold text-gold-400">₹${g.fee || 10}</span></div>
-                    <button onclick="initGame('${g.name}', ${g.fee || 10}, '${d.id}')" class="mt-4 w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 rounded-lg">Play</button>
+                <div class="glass-card rounded-3xl p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 rounded-full bg-cyan-500/20 flex items-center justify-center text-4xl mb-4 border border-cyan-500/50 shadow-[0_0_15px_rgba(0,240,255,0.4)]"><i class="fa-solid fa-gamepad text-cyan-400"></i></div>
+                    <h3 class="text-xl font-space font-bold text-white mb-2">${game.name}</h3>
+                    <div class="bg-black/50 w-full rounded-xl p-3 mb-6 border border-white/5">
+                        <p class="text-[10px] text-gray-400 uppercase">Entry Fee</p>
+                        <h4 class="font-bold text-gold-400 text-xl">₹${game.fee}</h4>
+                    </div>
+                    <button onclick="openGameSetup('${game.name}', ${game.fee}, '${doc.id}')" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-dark font-extrabold shadow-[0_0_15px_rgba(0,240,255,0.4)] hover:scale-105 transition">Play Now</button>
                 </div>`;
             });
-            cont.innerHTML = html;
+            container.innerHTML = html;
         });
 
-        window.initGame = (name, fee, id) => {
-            cGameFee = fee; cGameHtml = window[`game_html_${id}`] || "<h2>Game Code Missing</h2>";
-            document.getElementById('m-game-title').innerText = name; document.getElementById('m-fee').innerText = "₹" + fee;
-            document.getElementById('m-setup').classList.remove('hidden'); document.getElementById('m-play').classList.add('hidden');
-            document.getElementById('playModal').classList.add('active');
+        // Setup & Play Logic
+        window.openGameSetup = (name, fee, id) => {
+            selectedGameFee = fee;
+            selectedGameHtml = window.adminGamesMap[id] || "<h2>Game Code Error</h2>";
+            
+            document.getElementById('m-game-name').innerText = name;
+            document.getElementById('m-game-fee').innerText = "₹" + fee;
+            
+            document.getElementById('m-setup-view').classList.remove('hidden');
+            document.getElementById('m-play-view').classList.add('hidden');
+            document.getElementById('play-modal').classList.add('open');
         };
 
-        window.closePlayModal = () => { document.getElementById('playModal').classList.remove('active'); document.getElementById('game-iframe').removeAttribute('srcdoc'); };
+        window.payAndPlay = async () => {
+            if(currentBalance < selectedGameFee) {
+                alert(`Insufficient Balance! You need ₹${selectedGameFee} to play.`); return;
+            }
+            if(confirm(`Are you sure you want to pay ₹${selectedGameFee} from your wallet?`)) {
+                const btn = document.getElementById('btn-pay-play');
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`; btn.disabled = true;
+                
+                try {
+                    // Deduct Real-Time Wallet Balance
+                    await updateDoc(doc(db, "users", currentUser.uid), {
+                        walletBalance: currentBalance - selectedGameFee
+                    });
+                    
+                    // Launch Game iframe
+                    document.getElementById('m-setup-view').classList.add('hidden');
+                    document.getElementById('m-play-view').classList.remove('hidden');
+                    document.getElementById('game-iframe').srcdoc = selectedGameHtml;
 
-        window.deductAndPlay = async () => {
-            const btn = document.getElementById('btn-play');
-            if(userWallet < cGameFee) return alert("Insufficient Wallet Balance!");
-            btn.innerText = "Processing..."; btn.disabled = true;
-            try {
-                await updateDoc(doc(db, "users", uid), { walletBalance: userWallet - cGameFee });
-                document.getElementById('m-setup').classList.add('hidden');
-                document.getElementById('m-play').classList.remove('hidden');
-                document.getElementById('game-iframe').srcdoc = cGameHtml;
-            } catch(e) { alert("Error: " + e.message); }
-            btn.innerText = "Pay & Start"; btn.disabled = false;
+                } catch(e) { alert("Error starting game: " + e.message); }
+                btn.innerHTML = `Pay Entry Fee & Start`; btn.disabled = false;
+            }
+        };
+
+        window.closeGame = () => {
+            document.getElementById('play-modal').classList.remove('open');
+            document.getElementById('game-iframe').removeAttribute('srcdoc'); // Stops the game music/code
         };
     </script>
 </body>
