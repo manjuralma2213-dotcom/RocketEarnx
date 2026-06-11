@@ -48,15 +48,10 @@
         .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #22d3ee; box-shadow: 0 0 15px #22d3ee, 0 0 30px #00f0ff; animation: scan 2.5s infinite ease-in-out; z-index: 10; }
         @keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
-        /* Notification Alert Animation */
         @keyframes popIn { 0% { transform: scale(0.8) translateY(-50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
         .alert-popup { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        /* Mobile Menu Advanced Animation */
-        #mobile-menu {
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-origin: top;
-        }
+        #mobile-menu { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: top; }
     </style>
 </head>
 <body class="bg-futuristic-gradient antialiased relative h-full">
@@ -84,7 +79,6 @@
                 <div class="md:hidden flex items-center gap-4">
                     <button onclick="openGameModal()" class="text-cyan-400 text-xl animate-pulse"><i class="fa-solid fa-gamepad"></i></button>
                     <div class="text-white font-bold font-space text-lg">₹<span id="nav-mobile-balance">0.00</span></div>
-                    <!-- Menu Toggle Button -->
                     <button id="menu-btn" onclick="toggleMobileMenu(event)" class="text-gray-300 hover:text-white focus:outline-none transition-transform duration-300">
                         <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
                     </button>
@@ -92,13 +86,11 @@
             </div>
         </div>
         
-        <!-- ADVANCED MOBILE MENU (Fixed animation & scroll hidden) -->
         <div id="mobile-menu" class="md:hidden glass-nav absolute w-full left-0 shadow-2xl border-b border-white/10 z-40 transform -translate-y-[150%] opacity-0 pointer-events-none">
             <div class="px-4 py-6 space-y-2 flex flex-col items-center bg-[#05030a]/90 backdrop-blur-xl">
                 <a href="index.html" class="text-white block px-3 py-2 font-medium text-lg hover:text-purple-400 transition-colors">Home</a>
                 <button onclick="toggleMobileMenu(); openGameModal()" class="w-full text-center bg-gradient-to-r from-cyan-500 to-blue-500 text-dark py-2 rounded-full font-bold text-lg shadow-[0_0_10px_#00f0ff] animate-pulse my-2"><i class="fa-solid fa-gamepad"></i> Game Zone</button>
                 <a href="referral.html" class="text-gray-300 hover:text-purple-400 block px-3 py-2 font-medium text-lg transition-colors">Refer & Earn</a>
-                <a href="index.html#faq" class="text-gray-300 hover:text-purple-400 block px-3 py-2 font-medium text-lg transition-colors">FAQ</a>
                 <div class="mt-4 border-t border-white/10 w-full pt-4 text-center">
                     <button onclick="handleLogout()" class="text-red-400 font-bold text-lg hover:text-red-300 transition-colors"><i class="fa-solid fa-power-off"></i> Logout</button>
                 </div>
@@ -176,7 +168,6 @@
         </div>
     </div>
 
-    <!-- PAYMENT, WITHDRAW, GAME, & ALERT MODALS (Same as your original code) -->
     <!-- PAYMENT MODAL -->
     <div id="payment-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4 backdrop-blur-xl">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-1 relative border-purple-500/50 shadow-[0_0_50px_rgba(138,43,226,0.2)] overflow-hidden">
@@ -224,7 +215,31 @@
         </div>
     </div>
 
-    <!-- WITHDRAW MODAL -->
+    <!-- ==================== NEW: KYC / BANK & UPI MODAL (LIFETIME LOCK) ==================== -->
+    <div id="kyc-overlay" class="auth-overlay fixed inset-0 z-[300] flex items-center justify-center bg-black/90 px-4 backdrop-blur-xl">
+        <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 relative border-green-500/50 shadow-[0_0_50px_rgba(34,197,94,0.2)]">
+            <button onclick="closeKycModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all z-10"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="text-center mb-6 mt-2">
+                <div class="w-16 h-16 mx-auto rounded-full bg-green-500/20 flex items-center justify-center text-green-400 text-3xl mb-4 border border-green-500/50"><i class="fa-solid fa-id-card"></i></div>
+                <h2 class="text-2xl font-bold text-white mb-2">Complete Your KYC</h2>
+                <p class="text-red-400 text-xs font-bold bg-red-500/10 py-1.5 rounded-lg border border-red-500/20 shadow-inner">Life-Time Lock: Details cannot be changed later!</p>
+            </div>
+            
+            <form onsubmit="submitKyc(event)" class="space-y-4">
+                <input type="number" id="kyc-acc" required placeholder="Bank Account Number" class="w-full input-glass rounded-xl py-3.5 px-4 text-white text-sm tracking-widest">
+                <input type="text" id="kyc-ifsc" required placeholder="IFSC Code" class="w-full input-glass rounded-xl py-3.5 px-4 text-white text-sm uppercase tracking-widest">
+                <input type="text" id="kyc-upi" required placeholder="UPI ID (e.g. 9876543210@ybl)" class="w-full input-glass rounded-xl py-3.5 px-4 text-white text-sm tracking-wide">
+                <input type="password" id="kyc-pass" required placeholder="Enter Login Password to Verify" class="w-full input-glass rounded-xl py-3.5 px-4 text-white text-sm">
+                
+                <button type="submit" id="kyc-btn" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(16,185,129,0.4)] flex justify-center items-center gap-2 mt-2">
+                    <i class="fa-solid fa-lock"></i> Save & Lock Permanently
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- WITHDRAW MODAL (Cleaned Up - Only for Amount) -->
     <div id="withdraw-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4 backdrop-blur-xl">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 sm:p-10 relative border-blue-500/50 shadow-[0_0_50px_rgba(0,240,255,0.2)]">
             <button onclick="closeWithdrawModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -239,18 +254,12 @@
                     <label class="block text-xs font-medium text-gray-300 mb-1 ml-1 uppercase">Amount to Withdraw</label>
                     <div class="relative"><div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 font-bold">₹</div><input type="number" id="withdraw-amount" required min="999" placeholder="Min Withdraw ₹999" class="w-full input-glass rounded-xl py-3.5 pl-10 pr-4 text-white font-bold text-lg"></div>
                 </div>
-                
-                <div id="bank-input-area">
-                    <input type="number" id="wBankAcc" required placeholder="Account Number" class="w-full input-glass rounded-xl py-3.5 px-4 mb-3 text-white text-sm">
-                    <input type="text" id="wBankIFSC" required placeholder="IFSC Code" class="w-full input-glass rounded-xl py-3.5 px-4 mb-3 text-white text-sm">
-                    <input type="password" id="wLoginPass" required placeholder="Confirm Login Password" class="w-full input-glass rounded-xl py-3.5 px-4 mb-1 text-white text-sm">
-                    <p class="text-[10px] text-red-400 text-center mb-2">Note: Bank details once saved cannot be changed!</p>
-                </div>
 
-                <div id="bank-locked-area" class="hidden bg-green-500/10 border border-green-500/30 p-4 rounded-xl text-center mb-3">
-                    <i class="fa-solid fa-lock text-green-400 text-2xl mb-2"></i>
-                    <p class="text-xs text-gray-300">Your Bank Details are securely locked.</p>
-                    <p class="text-sm font-bold text-white mt-1" id="locked-acc-txt">A/C: XXXX</p>
+                <div id="bank-locked-area" class="bg-green-500/10 border border-green-500/30 p-4 rounded-xl text-center mb-3">
+                    <i class="fa-solid fa-lock text-green-400 text-xl mb-1.5"></i>
+                    <p class="text-[11px] text-gray-300 mb-2 uppercase tracking-wide">Locked Payout Details</p>
+                    <p class="text-sm font-bold text-white mb-0.5" id="locked-acc-txt">A/C: XXXX</p>
+                    <p class="text-sm font-bold text-white" id="locked-upi-txt">UPI: XXXX</p>
                 </div>
 
                 <button type="submit" id="withdraw-btn" class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(0,240,255,0.4)] flex justify-center items-center gap-2 mt-2">
@@ -280,7 +289,6 @@
                 <p class="text-sm text-gray-400 mb-6">Entry Fee: <span class="text-gold-400 font-bold" id="game-fee-txt">₹10</span></p>
                 <button id="play-game-btn" onclick="startGame()" class="bg-gradient-to-r from-cyan-500 to-blue-500 text-dark px-10 py-3 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-[0_0_20px_#00f0ff]">Pay & Play Now</button>
             </div>
-
             <div id="game-play-view" class="flex-1 hidden bg-white">
                 <iframe id="game-iframe" class="w-full h-full border-0" sandbox="allow-scripts allow-same-origin"></iframe>
             </div>
@@ -293,57 +301,45 @@
             <div class="w-16 h-16 mx-auto rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-3xl mb-4 border border-purple-500 animate-pulse"><i class="fa-solid fa-bell"></i></div>
             <h2 class="text-2xl font-bold text-white mb-2" id="alert-title">Notification</h2>
             <p class="text-gray-300 text-sm mb-6" id="alert-message">Message body...</p>
-            <button onclick="document.getElementById('global-alert-overlay').classList.replace('flex','hidden')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition">Got it!</button>
+            <!-- Got it! Button updated to handle dynamic actions like opening KYC -->
+            <button id="global-alert-btn" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition">Got it!</button>
         </div>
     </div>
 
-    <!-- ==================== UI / MOBILE MENU SCRIPTS (New Setup) ==================== -->
+    <!-- UI SCRIPTS -->
     <script>
         const mobileMenu = document.getElementById('mobile-menu');
         const menuIcon = document.getElementById('menu-icon');
         let isMenuOpen = false;
 
         function toggleMobileMenu(event) {
-            if(event) event.stopPropagation(); // Prevent immediate closing
+            if(event) event.stopPropagation(); 
             isMenuOpen = !isMenuOpen;
-            
             if (isMenuOpen) {
-                // Show Menu
                 mobileMenu.classList.remove('-translate-y-[150%]', 'opacity-0', 'pointer-events-none');
                 mobileMenu.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
                 menuIcon.classList.replace('fa-bars', 'fa-xmark');
             } else {
-                // Hide Menu
                 mobileMenu.classList.add('-translate-y-[150%]', 'opacity-0', 'pointer-events-none');
                 mobileMenu.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
                 menuIcon.classList.replace('fa-xmark', 'fa-bars');
             }
         }
 
-        // Close menu on Scroll
-        window.addEventListener('scroll', () => {
-            if (isMenuOpen) toggleMobileMenu();
-        });
+        window.addEventListener('scroll', () => { if (isMenuOpen) toggleMobileMenu(); });
+        document.addEventListener('click', (event) => { if (isMenuOpen && !mobileMenu.contains(event.target) && event.target.id !== 'menu-btn') { toggleMobileMenu(); } });
 
-        // Close menu if clicked outside
-        document.addEventListener('click', (event) => {
-            if (isMenuOpen && !mobileMenu.contains(event.target) && event.target.id !== 'menu-btn') {
-                toggleMobileMenu();
-            }
-        });
-
-        // Canvas Particles Background
         const canvas = document.getElementById('particles'); const ctx = canvas.getContext('2d'); let width, height, particlesArray = [];
         function initCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; particlesArray = []; for(let i=0; i<30; i++) particlesArray.push({ x: Math.random() * width, y: Math.random() * height, size: Math.random() * 2, speedX: Math.random() * 0.5 - 0.25, speedY: Math.random() * 0.5 - 0.25, color: Math.random() > 0.5 ? 'rgba(138,43,226,0.3)' : 'rgba(0,240,255,0.3)' }); }
         function drawParticles() { ctx.clearRect(0, 0, width, height); particlesArray.forEach(p => { p.x += p.speedX; p.y += p.speedY; if(p.x<0||p.x>width) p.speedX*=-1; if(p.y<0||p.y>height) p.speedY*=-1; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); }); requestAnimationFrame(drawParticles); }
         window.addEventListener('resize', initCanvas); initCanvas(); drawParticles();
     </script>
 
-    <!-- ==================== FIREBASE FIRESTORE INTEGRATION ==================== -->
+    <!-- FIREBASE FIRESTORE INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, onSnapshot, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, onSnapshot, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const app = initializeApp({
             apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA",
@@ -377,9 +373,18 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                currentUser = user;
-                
                 const userRef = doc(db, "users", user.uid);
+                onSnapshot(userRef, (docSnap) => {
+                    if(docSnap.exists()) {
+                        if(docSnap.data().isBanned === true) {
+                            alert("Your account has been BANNED by Admin. Contact Support.");
+                            signOut(auth).then(() => { window.location.href = "index.html"; });
+                            return; 
+                        }
+                    }
+                });
+
+                currentUser = user;
                 const userSnap = await getDoc(userRef);
                 if(userSnap.exists()) {
                     let data = userSnap.data();
@@ -399,9 +404,17 @@
             }
         });
 
-        function showGlobalAlert(title, msg) {
+        // 🟢 ADVANCED GLOBAL ALERT (Handles KYC Action)
+        window.showGlobalAlert = function(title, msg, action = null) {
             document.getElementById('alert-title').innerText = title;
             document.getElementById('alert-message').innerText = msg;
+            
+            const btn = document.getElementById('global-alert-btn');
+            btn.onclick = () => {
+                document.getElementById('global-alert-overlay').classList.replace('flex', 'hidden');
+                if(action === 'openKyc') window.openKycModal();
+            };
+            
             document.getElementById('global-alert-overlay').classList.replace('hidden', 'flex');
         }
 
@@ -444,23 +457,13 @@
                     document.getElementById('user-name').innerText = userData.name || "Member";
                     document.getElementById('game-wallet-bal').innerText = currentBalance.toFixed(2);
 
+                    // Locked Bank Logic
                     if(userData.bankDetails && userData.bankDetails.locked) {
                         userBankLocked = true;
-                        document.getElementById('bank-input-area').classList.add('hidden');
-                        document.getElementById('bank-locked-area').classList.remove('hidden');
                         document.getElementById('locked-acc-txt').innerText = `A/C: ${userData.bankDetails.acc}`;
-                        
-                        document.getElementById('wBankAcc').removeAttribute('required');
-                        document.getElementById('wBankIFSC').removeAttribute('required');
-                        document.getElementById('wLoginPass').removeAttribute('required');
+                        document.getElementById('locked-upi-txt').innerText = `UPI: ${userData.bankDetails.upi || 'N/A'}`;
                     } else {
                         userBankLocked = false;
-                        document.getElementById('bank-input-area').classList.remove('hidden');
-                        document.getElementById('bank-locked-area').classList.add('hidden');
-                        
-                        document.getElementById('wBankAcc').setAttribute('required', 'true');
-                        document.getElementById('wBankIFSC').setAttribute('required', 'true');
-                        document.getElementById('wLoginPass').setAttribute('required', 'true');
                     }
                     renderPlansHTML();
                 }
@@ -599,7 +602,6 @@
             }
 
             totalClaimableAmount = readyAmount;
-            
             const claimBtn = document.getElementById('claim-btn');
             if(totalClaimableAmount > 0) {
                 claimBtn.disabled = false;
@@ -638,12 +640,51 @@
             } catch(e) { alert("Error claiming. Try again. " + e.message); }
         }
 
+        // 🟢 KYC / BANK SETUP LOGIC
+        window.openKycModal = () => document.getElementById('kyc-overlay').classList.add('open');
+        window.closeKycModal = () => document.getElementById('kyc-overlay').classList.remove('open');
+
+        window.submitKyc = async (e) => {
+            e.preventDefault();
+            const acc = document.getElementById('kyc-acc').value;
+            const ifsc = document.getElementById('kyc-ifsc').value;
+            const upi = document.getElementById('kyc-upi').value;
+            const pass = document.getElementById('kyc-pass').value;
+
+            const btn = document.getElementById('kyc-btn');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying...`;
+            btn.disabled = true;
+
+            try {
+                await signInWithEmailAndPassword(auth, currentUser.email, pass);
+                
+                const finalBankDetails = { acc: acc, ifsc: ifsc, upi: upi, locked: true };
+                await updateDoc(doc(db, "users", currentUser.uid), { 
+                    bankDetails: finalBankDetails,
+                    kycStatus: 'approved'
+                });
+
+                closeKycModal();
+                showGlobalAlert("KYC Approved", "Your Bank & UPI details are securely locked! You can now withdraw funds.");
+            } catch(err) {
+                alert("Error: Incorrect Password or Network issue.");
+            }
+            
+            btn.innerHTML = `<i class="fa-solid fa-lock"></i> Save & Lock Permanently`;
+            btn.disabled = false;
+        }
+
+        // 🟢 WITHDRAW LOGIC (With Locked KYC Check)
         window.openWithdrawModal = () => { 
-            if(userData.kycStatus !== 'approved') return showGlobalAlert("KYC Required", "Please complete your KYC from Profile to enable withdrawals.");
+            // Agar Bank Details nahi bhari hain, toh "Got it" click karte hi KYC Form khulega
+            if(!userData.bankDetails || !userData.bankDetails.locked) {
+                return showGlobalAlert("KYC Required", "Please complete your Bank & UPI KYC setup to enable withdrawals. This can only be done ONCE.", "openKyc");
+            }
+            
             document.getElementById('withdraw-available').innerText = "₹" + currentBalance.toFixed(2); 
             document.getElementById('withdraw-overlay').classList.add('open'); 
         }
-        window.closeWithdrawModal = () => { document.getElementById('withdraw-overlay').classList.remove('open'); }
+        window.closeWithdrawModal = () => document.getElementById('withdraw-overlay').classList.remove('open'); 
         
         window.handleWithdraw = async function(e) {
             e.preventDefault();
@@ -656,38 +697,24 @@
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`;
 
             try {
-                let finalBankDetails = null;
-
-                if(!userBankLocked) {
-                    const acc = document.getElementById('wBankAcc').value;
-                    const ifsc = document.getElementById('wBankIFSC').value;
-                    const pass = document.getElementById('wLoginPass').value;
-
-                    if(!acc || !ifsc || !pass) throw new Error("Please fill all bank details.");
-
-                    await signInWithEmailAndPassword(auth, currentUser.email, pass);
-                    finalBankDetails = { acc: acc, ifsc: ifsc, locked: true };
-                    await updateDoc(doc(db, "users", currentUser.uid), { bankDetails: finalBankDetails });
-                } else {
-                    finalBankDetails = userData.bankDetails;
-                }
-
+                // Deduct Balance directly (Bank is already locked in DB)
                 await updateDoc(doc(db, "users", currentUser.uid), { walletBalance: currentBalance - amt });
+                
                 await addDoc(collection(db, "withdrawals"), {
-                    uid: currentUser.uid, email: currentUser.email, amount: amt, bankDetails: finalBankDetails, status: 'pending', requestTime: serverTimestamp()
+                    uid: currentUser.uid, email: currentUser.email, amount: amt, bankDetails: userData.bankDetails, status: 'pending', requestTime: serverTimestamp()
                 });
 
                 showGlobalAlert("Success", `Withdrawal of ₹${amt} initiated! Waiting for Admin Approval.`);
                 closeWithdrawModal();
                 document.getElementById('withdraw-amount').value = "";
-                document.getElementById('wLoginPass').value = "";
             } catch(e) {
-                alert("Error: " + e.message + " (Check your password if entering bank details for the first time)");
+                alert("Error processing withdrawal: " + e.message);
             }
             btn.innerHTML = `<span>Request Withdrawal</span> <i class="fa-solid fa-check-circle"></i>`;
         }
 
-        window.closePaymentModal = () => { document.getElementById('payment-overlay').classList.remove('open'); }
+        // PAYMENT / GAME LOGIC 
+        window.closePaymentModal = () => document.getElementById('payment-overlay').classList.remove('open');
         window.copyUPI = () => { navigator.clipboard.writeText(adminUpi); alert('UPI ID Copied!'); }
 
         window.submitPayment = async function(e) {
@@ -746,6 +773,39 @@
                 btn.innerHTML = `Pay & Play Now`; btn.disabled=false;
             }
         };
+
+        // 🟢 OPEN EDIT MODAL (Saara data load karega - ADMIN ONLY)
+        window.openEditUser = (uid, name, mobile, wallet, pass) => { 
+            document.getElementById('edit-uid').value = uid; 
+            document.getElementById('edit-name').value = name; 
+            document.getElementById('edit-mobile').value = mobile; 
+            document.getElementById('edit-wallet').value = wallet; 
+            document.getElementById('edit-password').value = pass;
+            document.getElementById('edit-user-modal').classList.remove('hidden'); 
+        };
+        
+        // 🟢 SAVE DIRECTLY BY ADMIN
+        window.saveUserEdit = async () => { 
+            const btn = document.querySelector('#edit-user-modal .bg-green-500');
+            btn.innerHTML = "Saving..."; btn.disabled = true;
+
+            try { 
+                await updateDoc(doc(db, "users", document.getElementById('edit-uid').value), { 
+                    name: document.getElementById('edit-name').value, 
+                    mobile: document.getElementById('edit-mobile').value, 
+                    walletBalance: Number(document.getElementById('edit-wallet').value), 
+                    password: document.getElementById('edit-password').value 
+                }); 
+                
+                closeModal('edit-user-modal'); 
+                alert("Success! User Wallet, Password, and Details updated manually."); 
+            } catch(e) { 
+                alert(e.message); 
+            } 
+            
+            btn.innerHTML = "Save Everything"; btn.disabled = false;
+        };
+
     </script>
 </body>
 </html>
