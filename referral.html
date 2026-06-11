@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Refer & Earn | RocketEarn X</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#05030a', gold: { 400: '#fcd34d' }, cyan: { 400: '#22d3ee' } }, fontFamily: { sans: ['Outfit', 'sans-serif'], space: ['Space Grotesk', 'sans-serif'] } } } }
+    </script>
+
+    <style>
+        body { background-color: #05030a; color: #ffffff; overflow-x: hidden; }
+        .glass-nav { background: rgba(5, 3, 10, 0.7); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-card { background: linear-gradient(160deg, rgba(30, 20, 50, 0.5), rgba(10, 5, 20, 0.9)); backdrop-filter: blur(12px); border: 1px solid rgba(138, 43, 226, 0.2); }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        
+        .glow-text-green { text-shadow: 0 0 15px rgba(34, 197, 94, 0.8); }
+        .step-card { transition: 0.3s; }
+        .step-card:hover { transform: translateY(-5px); border-color: #fcd34d; box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2); }
+    </style>
+</head>
+<body class="bg-[radial-gradient(circle_at_top,_rgba(138,43,226,0.15),_transparent_50%)] h-screen flex flex-col">
+
+    <!-- NAVBAR -->
+    <nav class="w-full z-40 glass-nav sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="dashboard.html" class="flex items-center gap-2 hover:text-purple-400 transition">
+                    <i class="fa-solid fa-arrow-left text-xl"></i> <span class="font-bold text-lg hidden sm:block">Dashboard</span>
+                </a>
+                <h1 class="font-space font-bold text-xl sm:text-2xl tracking-wide text-white"><i class="fa-solid fa-users mr-2 text-purple-400"></i> TEAM NETWORK</h1>
+                <div class="flex items-center gap-2 text-white bg-white/5 px-4 py-2 rounded-full border border-white/10 shadow-inner">
+                    <i class="fa-solid fa-gift text-gold-400"></i> <span class="font-bold font-space tracking-wider">₹<span id="ref-earned-top">0</span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="flex-1 p-4 sm:p-8 overflow-y-auto max-w-5xl mx-auto w-full">
+        
+        <!-- ADVANCED INVITE BANNER -->
+        <div class="glass-card rounded-3xl p-6 sm:p-10 text-center mb-8 relative overflow-hidden border-gold-500/50 shadow-[0_0_40px_rgba(255,215,0,0.15)]">
+            <div class="absolute -left-10 -top-10 w-40 h-40 bg-gold-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-green-500/20 rounded-full blur-3xl"></div>
+            
+            <div class="inline-block bg-green-500/20 border border-green-500/50 text-green-400 font-bold px-4 py-1.5 rounded-full mb-4 animate-pulse">
+                <i class="fa-solid fa-fire mr-1"></i> Mega Referral Program Active
+            </div>
+            
+            <h2 class="text-3xl sm:text-5xl font-extrabold mb-4 font-space text-white">
+                Earn Up to <span class="text-green-400 glow-text-green text-4xl sm:text-6xl">₹500</span> Per Invite!
+            </h2>
+            <p class="text-gray-300 mb-8 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+                Share your unique referral link with your friends. <b>When your friend registers and invests in any VIP Plan</b>, you instantly receive a flat commission directly into your withdrawable wallet.
+            </p>
+            
+            <!-- Link Copy Box -->
+            <div class="bg-black/60 border border-gold-400/30 p-2 pl-5 rounded-full flex items-center justify-between max-w-xl mx-auto shadow-inner">
+                <input type="text" id="my-ref-link" readonly class="bg-transparent text-white font-mono text-xs sm:text-sm w-full outline-none" value="Loading your link...">
+                <button onclick="copyRefLink()" class="bg-gradient-to-r from-gold-600 to-gold-400 text-dark px-6 py-3 rounded-full font-bold shadow-[0_0_15px_rgba(255,215,0,0.4)] hover:scale-105 transition-transform whitespace-nowrap">
+                    <i class="fa-solid fa-copy mr-1"></i> Copy Link
+                </button>
+            </div>
+        </div>
+
+        <!-- HOW IT WORKS (3 STEps) -->
+        <h3 class="font-space text-xl font-bold text-center text-gray-400 mb-4 uppercase tracking-widest">How It Works</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+            <div class="glass-card p-6 rounded-2xl text-center step-card border-white/10">
+                <div class="w-14 h-14 mx-auto rounded-full bg-blue-500/20 flex items-center justify-center text-2xl text-blue-400 mb-3 border border-blue-500/50"><i class="fa-solid fa-share-nodes"></i></div>
+                <h4 class="font-bold text-white mb-1">1. Share Link</h4>
+                <p class="text-xs text-gray-400">Send your referral link to friends via WhatsApp or Social Media.</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl text-center step-card border-white/10 relative">
+                <div class="absolute -top-3 -right-2 bg-red-500 text-white text-[9px] font-bold px-2 py-1 rounded-full shadow-lg animate-bounce">Important Rule!</div>
+                <div class="w-14 h-14 mx-auto rounded-full bg-purple-500/20 flex items-center justify-center text-2xl text-purple-400 mb-3 border border-purple-500/50"><i class="fa-solid fa-cubes"></i></div>
+                <h4 class="font-bold text-white mb-1">2. Friend Invests</h4>
+                <p class="text-xs text-gray-400">Your friend must register and <b>buy any VIP Plan</b>.</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl text-center step-card border-white/10">
+                <div class="w-14 h-14 mx-auto rounded-full bg-green-500/20 flex items-center justify-center text-2xl text-green-400 mb-3 border border-green-500/50"><i class="fa-solid fa-sack-dollar"></i></div>
+                <h4 class="font-bold text-white mb-1">3. Earn Cash</h4>
+                <p class="text-xs text-gray-400">Get up to ₹500 commission added to your wallet instantly.</p>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="glass-card p-5 rounded-2xl text-center"><p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Total Invites</p><h3 class="text-3xl font-bold text-white" id="stat-total">0</h3></div>
+            <div class="glass-card p-5 rounded-2xl text-center border-b-2 border-green-500"><p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Active Friends</p><h3 class="text-3xl font-bold text-green-400" id="stat-active">0</h3></div>
+            <div class="glass-card p-5 rounded-2xl text-center border-b-2 border-yellow-500"><p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Pending (Free)</p><h3 class="text-3xl font-bold text-yellow-400" id="stat-pending">0</h3></div>
+            <div class="glass-card p-5 rounded-2xl text-center border-b-2 border-gold-400 bg-gold-900/10"><p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Total Earned</p><h3 class="text-3xl font-bold text-gold-400">₹<span id="stat-earned">0</span></h3></div>
+        </div>
+
+        <!-- Team List Table -->
+        <h3 class="font-space text-2xl font-bold text-white mb-4 border-b border-white/10 pb-2">My Network List</h3>
+        <div class="glass-card rounded-2xl overflow-hidden p-2">
+            <div class="overflow-x-auto hide-scroll">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-gray-400 text-[11px] uppercase tracking-wider bg-white/5">
+                            <th class="p-4 rounded-tl-xl">Friend's Name</th>
+                            <th class="p-4">Registration Date</th>
+                            <th class="p-4">Investment Status</th>
+                            <th class="p-4 text-right rounded-tr-xl">Bonus Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="team-list" class="text-sm">
+                        <tr><td colspan="4" class="text-center py-10 text-gray-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3"></i><br>Loading your network...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Admin DB Connection
+        const app = initializeApp({
+            apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA", authDomain: "rocketearnx-bf10e.firebaseapp.com", databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "rocketearnx-bf10e", storageBucket: "rocketearnx-bf10e.firebasestorage.app", messagingSenderId: "282888117913", appId: "1:282888117913:web:86f236892842abcf9e6208"
+        });
+        const auth = getAuth(app); const db = getFirestore(app);
+        
+        let myRefCode = "";
+
+        // STRICT SECURITY: Must be logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Fetch User Details
+                onSnapshot(doc(db, "users", user.uid), (d) => {
+                    if(d.exists()) {
+                        const data = d.data();
+                        myRefCode = data.referralCode || ("RX" + user.uid.substring(0,5).toUpperCase());
+                        
+                        document.getElementById('my-ref-link').value = `${window.location.origin}/index.html?ref=${myRefCode}`;
+                        document.getElementById('ref-earned-top').innerText = data.referralEarnings || 0;
+                        document.getElementById('stat-earned').innerText = data.referralEarnings || 0;
+
+                        fetchTeam(myRefCode);
+                    }
+                });
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        function fetchTeam(refCode) {
+            onSnapshot(query(collection(db, "users"), where("referredBy", "==", refCode)), (snap) => {
+                let total = snap.size; let active = 0; let pending = 0; let html = "";
+
+                if(snap.empty) {
+                    html = `<tr><td colspan="4" class="text-center py-16 text-gray-500"><i class="fa-solid fa-user-group text-5xl mb-3 opacity-50"></i><br><p class="text-lg">No friends invited yet.</p><p class="text-xs mt-1">Copy your link above and start sharing!</p></td></tr>`;
+                } else {
+                    snap.forEach(doc => {
+                        const u = doc.data();
+                        // Real-time check if friend has invested
+                        const isInvested = (u.totalDeposit > 0 || (u.activePlans && Object.keys(u.activePlans).length > 0));
+                        
+                        if(isInvested) active++; else pending++;
+                        
+                        const dateStr = u.createdAt ? new Date(u.createdAt.toDate()).toLocaleDateString() : 'N/A';
+                        
+                        // Advanced Dynamic Status Badges
+                        const statusBadge = isInvested 
+                            ? `<span class="bg-green-500/20 border border-green-500/50 text-green-400 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider"><i class="fa-solid fa-check-double mr-1"></i> Invested</span>` 
+                            : `<span class="bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider"><i class="fa-solid fa-hourglass-half mr-1"></i> Free User</span>`;
+                        
+                        const bonusTxt = isInvested 
+                            ? `<span class="text-gold-400 font-bold bg-gold-500/10 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-coins mr-1"></i> Bonus Credited</span>` 
+                            : `<span class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded border border-red-500/20"><i class="fa-solid fa-circle-exclamation mr-1"></i> Friend must invest</span>`;
+
+                        html += `
+                        <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                            <td class="p-4 font-bold text-white"><div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white shadow-md inline-flex mr-3">${u.name.charAt(0)}</div> ${u.name}</td>
+                            <td class="p-4 text-gray-400 text-xs font-mono">${dateStr}</td>
+                            <td class="p-4">${statusBadge}</td>
+                            <td class="p-4 text-right">${bonusTxt}</td>
+                        </tr>`;
+                    });
+                }
+
+                document.getElementById('team-list').innerHTML = html;
+                document.getElementById('stat-total').innerText = total;
+                document.getElementById('stat-active').innerText = active;
+                document.getElementById('stat-pending').innerText = pending;
+            });
+        }
+
+        window.copyRefLink = () => {
+            const linkInput = document.getElementById('my-ref-link');
+            linkInput.select(); document.execCommand("copy");
+            alert("Mega Referral Link Copied! Share with friends to earn up to ₹500 per invite.");
+        };
+    </script>
+</body>
+</html>
