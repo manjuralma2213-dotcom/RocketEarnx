@@ -71,7 +71,7 @@
         .hide-scroll::-webkit-scrollbar { display: none; } .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: #05030a; } ::-webkit-scrollbar-thumb { background: rgba(138, 43, 226, 0.5); border-radius: 4px; }
 
-        .toast-enter { animation: slideInLeft 0.4s ease-out forwards; } .toast-leave { animation: slideOutDown 0.3s ease-in forwards; }
+        .toast-enter { animation: slideInLeft 0.3s ease-out forwards; } .toast-leave { animation: slideOutDown 0.3s ease-in forwards; }
         @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px) scale(0.95); } to { opacity: 1; transform: translateX(0) scale(1); } }
         @keyframes slideOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
         .payout-item-enter { animation: fadeInBottom 0.4s ease-out forwards; }
@@ -83,9 +83,9 @@
         .avatar-bg-4 { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); color: #8F00B3; }
         .avatar-bg-5 { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); color: #1E468A; }
 
-        .auth-overlay { opacity: 0; visibility: hidden; transition: all 0.3s ease; backdrop-filter: blur(15px); z-index: 9999; }
+        .auth-overlay { opacity: 0; visibility: hidden; transition: all 0.2s ease; backdrop-filter: blur(15px); z-index: 9999; }
         .auth-overlay.open { opacity: 1; visibility: visible; }
-        .auth-box { transform: scale(0.95); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .auth-box { transform: scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .auth-overlay.open .auth-box { transform: scale(1); opacity: 1; }
         
         .input-glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
@@ -106,10 +106,10 @@
 </head>
 <body class="bg-futuristic-gradient antialiased relative h-full">
 
-    <!-- 🟢 GLOBAL FULL-SCREEN LOADER (Jab tak check karega ki user logged in hai ya nahi) 🟢 -->
-    <div id="global-loader" class="fixed inset-0 z-[10000] bg-[#05030a] flex flex-col items-center justify-center transition-opacity duration-500">
+    <!-- 🟢 OPTIMIZED SUPER FAST LOADER 🟢 -->
+    <div id="global-loader" class="fixed inset-0 z-[10000] bg-[#05030a] flex flex-col items-center justify-center transition-opacity duration-200">
         <div class="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/50 glow-gold text-4xl pulse-neon mb-6">🚀</div>
-        <div class="text-white font-space font-bold text-xl flex items-center gap-2">Verifying Secure Access <i class="fa-solid fa-circle-notch fa-spin text-purple-400"></i></div>
+        <div class="text-white font-space font-bold text-xl flex items-center gap-2">Connecting <i class="fa-solid fa-circle-notch fa-spin text-purple-400"></i></div>
     </div>
 
     <canvas id="particles" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1]"></canvas>
@@ -274,49 +274,20 @@
             </div>
         </section>
 
-        <!-- 🟢 GAME ZONE PREVIEW SECTION 🟢 -->
+        <!-- 🟢 DYNAMIC GAME ZONE SECTION 🟢 -->
         <section id="game-zone" class="py-20 relative z-10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto mb-16 reveal">
                     <h2 class="font-space text-4xl md:text-5xl font-bold mb-4">Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 glow-text-cyan">Game Zone</span> 🎮</h2>
-                    <p class="text-gray-400 text-lg">Play exciting mini-games and multiply your wallet balance instantly.</p>
+                    <p class="text-gray-400 text-lg">Play real-time mini-games added by Admin and multiply your balance instantly.</p>
                 </div>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Game 1 -->
-                    <div class="reveal glass-card rounded-3xl p-6 text-center border-cyan-500/30 hover:border-cyan-400 transition-all group">
-                        <div class="w-24 h-24 mx-auto bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-full flex items-center justify-center text-5xl mb-6 shadow-[0_0_30px_rgba(0,240,255,0.2)] group-hover:scale-110 transition-transform">🎲</div>
-                        <h3 class="text-2xl font-space font-bold text-white mb-2">Lucky Dice</h3>
-                        <p class="text-gray-400 text-sm mb-4">Roll the dice and guess the outcome to win up to 3x rewards.</p>
-                        <div class="flex justify-between items-center bg-black/40 rounded-xl p-3 mb-6">
-                            <span class="text-xs text-gray-400">Entry Fee</span>
-                            <span class="text-sm font-bold text-cyan-400"><i class="fa-solid fa-gear fa-spin text-xs mr-1"></i> Admin Set</span>
-                        </div>
-                        <button onclick="goToPage('/games')" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold hover:scale-105 transition-transform shadow-[0_0_15px_rgba(0,240,255,0.4)]">Play Now</button>
-                    </div>
-
-                    <!-- Game 2 -->
-                    <div class="reveal glass-card rounded-3xl p-6 text-center border-gold-500/30 hover:border-gold-400 transition-all group">
-                        <div class="w-24 h-24 mx-auto bg-gradient-to-br from-gold-500/20 to-orange-500/20 rounded-full flex items-center justify-center text-5xl mb-6 shadow-[0_0_30px_rgba(255,215,0,0.2)] group-hover:scale-110 transition-transform">🎰</div>
-                        <h3 class="text-2xl font-space font-bold text-white mb-2">Spin & Win</h3>
-                        <p class="text-gray-400 text-sm mb-4">Spin the lucky wheel and grab massive jackpot multipliers.</p>
-                        <div class="flex justify-between items-center bg-black/40 rounded-xl p-3 mb-6">
-                            <span class="text-xs text-gray-400">Entry Fee</span>
-                            <span class="text-sm font-bold text-gold-400"><i class="fa-solid fa-gear fa-spin text-xs mr-1"></i> Admin Set</span>
-                        </div>
-                        <button onclick="goToPage('/games')" class="w-full py-3 rounded-xl bg-gradient-to-r from-gold-500 to-orange-600 text-white font-bold hover:scale-105 transition-transform shadow-[0_0_15px_rgba(255,215,0,0.4)]">Play Now</button>
-                    </div>
-
-                    <!-- Game 3 -->
-                    <div class="reveal glass-card rounded-3xl p-6 text-center border-purple-500/30 hover:border-purple-400 transition-all group">
-                        <div class="w-24 h-24 mx-auto bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center text-5xl mb-6 shadow-[0_0_30px_rgba(168,85,247,0.2)] group-hover:scale-110 transition-transform">🎯</div>
-                        <h3 class="text-2xl font-space font-bold text-white mb-2">Color Predictor</h3>
-                        <p class="text-gray-400 text-sm mb-4">Guess the right color pattern and double your wallet balance.</p>
-                        <div class="flex justify-between items-center bg-black/40 rounded-xl p-3 mb-6">
-                            <span class="text-xs text-gray-400">Entry Fee</span>
-                            <span class="text-sm font-bold text-purple-400"><i class="fa-solid fa-gear fa-spin text-xs mr-1"></i> Admin Set</span>
-                        </div>
-                        <button onclick="goToPage('/games')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold hover:scale-105 transition-transform shadow-[0_0_15px_rgba(168,85,247,0.4)]">Play Now</button>
+                <!-- Games container where Firebase will inject data -->
+                <div id="dynamic-games-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Loading Spinner -->
+                    <div class="col-span-full text-center py-10">
+                        <i class="fa-solid fa-gamepad fa-bounce text-4xl text-cyan-400 mb-4"></i>
+                        <p class="text-gray-400">Loading live games from server...</p>
                     </div>
                 </div>
                 
@@ -433,7 +404,6 @@
     <!-- 🟢 LOGIN OVERLAY 🟢 -->
     <div id="login-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/60 px-4">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 sm:p-10 relative">
-            <!-- 🟢 SKIP BUTTON INSTEAD OF X 🟢 -->
             <button onclick="skipWelcomeAuth()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-sm font-medium border border-gray-600 px-4 py-1.5 rounded-full hover:bg-white/10 transition-all z-10">Skip for now</button>
             
             <div class="flex justify-center mb-6 mt-2"><div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/50 glow-gold text-3xl pulse-neon">🚀</div></div>
@@ -466,7 +436,6 @@
     <!-- 🟢 REGISTER OVERLAY 🟢 -->
     <div id="register-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/60 px-4 py-10 overflow-y-auto hide-scroll">
         <div class="auth-box w-full max-w-lg glass-card rounded-3xl p-8 sm:p-10 relative my-auto border-cyan-500/30 shadow-[0_0_40px_rgba(0,240,255,0.15)]">
-            <!-- 🟢 SKIP BUTTON INSTEAD OF X 🟢 -->
             <button onclick="skipWelcomeAuth()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-sm font-medium border border-gray-600 px-4 py-1.5 rounded-full hover:bg-white/10 transition-all z-10">Skip for now</button>
             
             <div class="text-center mb-8 mt-2">
@@ -567,6 +536,7 @@
         window.goToPage = (url) => { if(window.currentUser) { window.location.href = url; } else { window.openAuth('login'); } };
         window.openOrRedirect = (authType) => { if(window.currentUser) { window.location.href = "/dashboard"; } else { window.openAuth(authType); } };
 
+        // Realtime General Settings
         onSnapshot(doc(db, "settings", "general"), d => { 
             if(d.exists()) {
                 const s = d.data(); 
@@ -577,23 +547,62 @@
             }
         });
 
-        // 🟢 AUTH STATE HANDLER (NO INDEX ACCESS IF LOGGED IN) 🟢
+        // 🟢 DYNAMIC GAME FETCH LOGIC 🟢
+        const gamesContainer = document.getElementById('dynamic-games-container');
+        // Preset styling themes to make dynamic games look awesome
+        const themes = [
+            { border: 'border-cyan-500/30', hover: 'hover:border-cyan-400', iconBg: 'from-cyan-500/20 to-blue-500/20', iconShadow: 'shadow-[0_0_30px_rgba(0,240,255,0.2)]', feeText: 'text-cyan-400', btn: 'from-cyan-500 to-blue-600', btnShadow: 'shadow-[0_0_15px_rgba(0,240,255,0.4)]' },
+            { border: 'border-gold-500/30', hover: 'hover:border-gold-400', iconBg: 'from-gold-500/20 to-orange-500/20', iconShadow: 'shadow-[0_0_30px_rgba(255,215,0,0.2)]', feeText: 'text-gold-400', btn: 'from-gold-500 to-orange-600', btnShadow: 'shadow-[0_0_15px_rgba(255,215,0,0.4)]' },
+            { border: 'border-purple-500/30', hover: 'hover:border-purple-400', iconBg: 'from-purple-500/20 to-pink-500/20', iconShadow: 'shadow-[0_0_30px_rgba(168,85,247,0.2)]', feeText: 'text-purple-400', btn: 'from-purple-500 to-pink-600', btnShadow: 'shadow-[0_0_15px_rgba(168,85,247,0.4)]' }
+        ];
+
+        onSnapshot(collection(db, "games"), (snapshot) => {
+            if(snapshot.empty) {
+                gamesContainer.innerHTML = `<div class="col-span-full text-center py-10"><div class="w-16 h-16 mx-auto rounded-full bg-white/5 flex items-center justify-center text-2xl mb-4 border border-white/10">🕹️</div><p class="text-gray-400 font-medium">Admin is currently adding games.<br>Stay tuned! 🚀</p></div>`;
+                return;
+            }
+
+            let html = ''; let i = 0;
+            snapshot.forEach(doc => {
+                const game = doc.data();
+                const t = themes[i % themes.length];
+                const feeText = (!game.entryFee || game.entryFee == 0) ? "Free to Play" : `₹${game.entryFee}`;
+                const icon = game.icon || '🎲';
+
+                html += `
+                <div class="reveal glass-card rounded-3xl p-6 text-center ${t.border} ${t.hover} transition-all group active">
+                    <div class="w-24 h-24 mx-auto bg-gradient-to-br ${t.iconBg} rounded-full flex items-center justify-center text-5xl mb-6 ${t.iconShadow} group-hover:scale-110 transition-transform">${icon}</div>
+                    <h3 class="text-2xl font-space font-bold text-white mb-2">${game.name || 'Arcade Game'}</h3>
+                    <p class="text-gray-400 text-sm mb-4">${game.description || 'Play & Multiply your wallet balance!'}</p>
+                    <div class="flex justify-between items-center bg-black/40 rounded-xl p-3 mb-6">
+                        <span class="text-xs text-gray-400">Entry Fee</span>
+                        <span class="text-sm font-bold ${t.feeText}">${feeText}</span>
+                    </div>
+                    <button onclick="goToPage('/games')" class="w-full py-3 rounded-xl bg-gradient-to-r ${t.btn} text-white font-bold hover:scale-105 transition-transform ${t.btnShadow}">Play Now</button>
+                </div>`;
+                i++;
+            });
+            gamesContainer.innerHTML = html;
+        });
+
+        // 🟢 AUTH STATE HANDLER & FAST LOADER LOGIC 🟢
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Agar user logged in hai, toh instantly dashboard pe redirect!
+                // Agar user logged in hai, toh instantly dashboard pe redirect without showing index
                 window.location.replace("/dashboard");
             } else {
-                // Not logged in -> Loader hatao aur index page dikhao
-                document.getElementById('global-loader').style.opacity = '0';
-                setTimeout(() => document.getElementById('global-loader').style.display = 'none', 500);
+                // Not logged in -> Loader instantly hatao, no annoying delays
+                const loader = document.getElementById('global-loader');
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 200);
 
                 window.currentUser = null; window.userData = null;
                 document.getElementById('nav-auth-buttons').classList.remove('hidden'); document.getElementById('nav-user-info').classList.add('hidden');
                 document.getElementById('mobile-auth-buttons').classList.remove('hidden'); document.getElementById('mobile-user-info').classList.add('hidden');
                 
-                // 🟢 AUTO POPUP LOGIC 🟢
+                // Show Popup instantly if not skipped
                 if(!sessionStorage.getItem('skipAuth')) {
-                    setTimeout(() => window.openAuth('register'), 500); // Popup comes 0.5s after loader hides
+                    window.openAuth('register');
                 }
             }
         });
