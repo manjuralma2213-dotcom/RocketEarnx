@@ -93,7 +93,7 @@
             
             <!-- ADVANCED LINK COPY BOX -->
             <div class="bg-black/60 border border-gold-400/30 p-2 pl-5 rounded-full flex items-center justify-between max-w-xl mx-auto shadow-inner group transition-all hover:border-gold-400/60">
-                <input type="text" id="my-ref-link" readonly class="bg-transparent text-gray-300 font-mono text-xs sm:text-sm w-full outline-none select-all" value="Loading your link...">
+                <input type="text" id="my-ref-link" readonly class="bg-transparent text-gray-300 font-mono text-xs sm:text-sm w-full outline-none select-all" value="Fetching Link...">
                 <button onclick="copyRefLink()" id="copy-btn" class="bg-gradient-to-r from-gold-600 to-gold-400 text-dark px-6 py-3 rounded-full font-bold shadow-[0_0_15px_rgba(255,215,0,0.4)] hover:scale-105 transition-all whitespace-nowrap flex items-center gap-2">
                     <i id="copy-icon" class="fa-solid fa-copy"></i> <span id="copy-text">Copy Link</span>
                 </button>
@@ -152,7 +152,7 @@
 
     <!-- UI SCRIPTS -->
     <script>
-        // Advanced Copy Link Logic with Toast Notification
+        // FIXED & SECURE COPY LINK LOGIC
         function copyRefLink() {
             const linkInput = document.getElementById('my-ref-link');
             const copyIcon = document.getElementById('copy-icon');
@@ -160,23 +160,20 @@
             const copyBtn = document.getElementById('copy-btn');
             const toast = document.getElementById('toast');
 
-            // Select and Copy Text
+            // Text Select Karna Mobile/Desktop dono me
             linkInput.select();
-            linkInput.setSelectionRange(0, 99999); // For mobile devices
-            navigator.clipboard.writeText(linkInput.value).then(() => {
-                
-                // Button UI Update
+            linkInput.setSelectionRange(0, 99999);
+
+            const showSuccess = () => {
                 copyIcon.classList.replace('fa-copy', 'fa-check');
                 copyText.innerText = 'Copied!';
                 copyBtn.classList.replace('from-gold-600', 'from-green-500');
                 copyBtn.classList.replace('to-gold-400', 'to-green-400');
                 copyBtn.classList.replace('text-dark', 'text-white');
 
-                // Show Toast Notification
                 toast.classList.remove('translate-x-[150%]', 'opacity-0');
                 toast.classList.add('translate-x-0', 'opacity-100');
 
-                // Revert Back after 3 Seconds
                 setTimeout(() => {
                     copyIcon.classList.replace('fa-check', 'fa-copy');
                     copyText.innerText = 'Copy Link';
@@ -187,11 +184,24 @@
                     toast.classList.remove('translate-x-0', 'opacity-100');
                     toast.classList.add('translate-x-[150%]', 'opacity-0');
                 }, 3000);
-            }).catch(err => {
-                // Fallback for older browsers
-                document.execCommand("copy");
-                alert("Mega Referral Link Copied!");
-            });
+            };
+
+            // Cross Browser Support & HTTP Fallback (Ab Copy zaroor kaam karega)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(linkInput.value)
+                    .then(showSuccess)
+                    .catch(() => {
+                        document.execCommand('copy');
+                        showSuccess();
+                    });
+            } else {
+                try {
+                    document.execCommand('copy');
+                    showSuccess();
+                } catch(err) {
+                    alert("Unable to copy! Please select link and copy manually.");
+                }
+            }
         }
     </script>
 
@@ -201,7 +211,6 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc, increment, serverTimestamp, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Admin DB Connection
         const app = initializeApp({
             apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA", authDomain: "rocketearnx-bf10e.firebaseapp.com", databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "rocketearnx-bf10e", storageBucket: "rocketearnx-bf10e.firebasestorage.app", messagingSenderId: "282888117913", appId: "1:282888117913:web:86f236892842abcf9e6208"
         });
@@ -210,22 +219,13 @@
         let myRefCode = "";
         let onlineInterval = null;
         let notifUnsubscribe = null;
-        let isUserLoggedIn = false; // 🟢 ADDED TO TRACK LOGIN STATE 🟢
+        let isUserLoggedIn = false; 
 
-        // ==========================================
-        // 🟢 GLOBAL BACK BUTTON LOGIC 🟢
-        // ==========================================
         window.goBack = function() {
-            if (isUserLoggedIn) {
-                window.location.href = '/dashboard'; // Ya dashboard.html
-            } else {
-                window.location.href = '/'; // Index page
-            }
+            if (isUserLoggedIn) window.location.href = '/dashboard'; 
+            else window.location.href = '/'; 
         };
 
-        // ==========================================
-        // 🟢 FEATURE 1: USER ONLINE STATUS 🟢
-        // ==========================================
         function keepUserOnline(userId) {
             updateDoc(doc(db, "users", userId), { lastActive: serverTimestamp() }).catch(e => console.log(e));
             onlineInterval = setInterval(() => {
@@ -233,9 +233,6 @@
             }, 120000); 
         }
 
-        // ==========================================
-        // 🟢 FEATURE 2: ADMIN NOTIFICATIONS 🟢
-        // ==========================================
         function listenForAdminNotifications(currentUserEmail) {
             const notifRef = collection(db, "notifications");
             notifUnsubscribe = onSnapshot(notifRef, (snapshot) => {
@@ -265,42 +262,23 @@
             setTimeout(() => modal.firstElementChild.classList.replace('scale-0', 'scale-100'), 10);
         };
 
-        // ==========================================
-        // 🟢 FEATURE 3: BUY INVESTMENT PLAN LOGIC 🟢
-        // ==========================================
-        window.buyInvestmentPlan = async (userEmail, userId, planName, planPrice, dailyIncome) => {
-            try {
-                await updateDoc(doc(db, "users", userId), {
-                    walletBalance: increment(-planPrice) 
-                });
-
-                await addDoc(collection(db, "user_investments"), {
-                    userId: userId,
-                    userEmail: userEmail,
-                    planName: planName,
-                    investAmount: planPrice,
-                    dailyIncome: dailyIncome,
-                    status: "active", 
-                    buyDate: serverTimestamp() 
-                });
-
-                alert("Plan Purchased Successfully!");
-            } catch (error) {
-                console.error("Error buying plan:", error);
-                alert("Transaction Failed.");
-            }
-        };
-
-        // STRICT SECURITY: Must be logged in
+        // 🟢 FIXED: USER LOGIN & LOADING LINK INSTANTLY 🟢
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                isUserLoggedIn = true; // 🟢 LOGIN FLAG TRUE 🟢
+                isUserLoggedIn = true; 
 
-                // Background Trackers Setup
+                // Temporary origin fix for Localhost or File Protocol
+                let tempBaseUrl = window.location.origin;
+                if (tempBaseUrl === "null" || tempBaseUrl.includes("file://")) tempBaseUrl = "https://rocketearnx.com";
+                
+                // Show link instantly using Fallback Code to avoid "Loading..." permanently
+                myRefCode = `USER${user.uid.substring(0, 5).toUpperCase()}`;
+                document.getElementById('my-ref-link').value = `${tempBaseUrl}/?ref=${myRefCode}`;
+
                 keepUserOnline(user.uid);
-                listenForAdminNotifications(user.email);
+                listenForAdminNotifications(user.email || "ALL");
 
-                // Fetch User Details
+                // Fetch Real DB Values Without Crashing
                 onSnapshot(doc(db, "users", user.uid), async (d) => {
                     if(d.exists()) {
                         const data = d.data();
@@ -313,23 +291,31 @@
                         myRefCode = data.referralCode || `${safeName}${user.uid.substring(0,4).toUpperCase()}`;
                         
                         if(!data.referralCode) {
-                            await updateDoc(doc(db, "users", user.uid), { referralCode: myRefCode });
+                            try {
+                                await updateDoc(doc(db, "users", user.uid), { referralCode: myRefCode });
+                            } catch(e) { console.log(e); }
                         }
                         
-                        document.getElementById('my-ref-link').value = `${window.location.origin}/?ref=${myRefCode}`;
-                        
+                        // Override with accurate Database Link
+                        document.getElementById('my-ref-link').value = `${tempBaseUrl}/?ref=${myRefCode}`;
                         document.getElementById('ref-earned-top').innerText = data.referralEarnings || 0;
                         document.getElementById('stat-earned').innerText = data.referralEarnings || 0;
 
                         fetchTeam(myRefCode);
+                    } else {
+                        fetchTeam(myRefCode);
                     }
+                }, (error) => {
+                    console.error("Firestore Error:", error);
+                    fetchTeam(myRefCode); // Fetch with fallback
                 });
             } else {
-                isUserLoggedIn = false; // 🟢 LOGIN FLAG FALSE 🟢
+                isUserLoggedIn = false; 
                 window.location.href = "/";
             }
         });
 
+        // Crash-proof Fetch Team Logic
         function fetchTeam(refCode) {
             onSnapshot(query(collection(db, "users"), where("referredBy", "==", refCode)), (snap) => {
                 let total = snap.size; let active = 0; let pending = 0; let html = "";
@@ -339,23 +325,26 @@
                 } else {
                     snap.forEach(doc => {
                         const u = doc.data();
+                        
+                        // Safe property checks
+                        const userName = u.name || "Unknown User";
                         const isInvested = (u.totalDeposit > 0 || (u.activePlans && Object.keys(u.activePlans).length > 0));
                         
                         if(isInvested) active++; else pending++;
                         
-                        const dateStr = u.createdAt ? new Date(u.createdAt.toDate()).toLocaleDateString() : 'N/A';
+                        const dateStr = (u.createdAt && u.createdAt.toDate) ? new Date(u.createdAt.toDate()).toLocaleDateString() : 'N/A';
                         
                         const statusBadge = isInvested 
                             ? `<span class="bg-green-500/20 border border-green-500/50 text-green-400 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider"><i class="fa-solid fa-check-double mr-1"></i> Invested</span>` 
-                            : `<span class="bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider"><i class="fa-solid fa-hourglass-half mr-1"></i> Free User</span>`;
+                            : `<span class="bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider"><i class="fa-solid fa-hourglass-half mr-1"></i> Free</span>`;
                         
                         const bonusTxt = isInvested 
-                            ? `<span class="text-gold-400 font-bold bg-gold-500/10 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-coins mr-1"></i> Bonus Credited</span>` 
-                            : `<span class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded border border-red-500/20"><i class="fa-solid fa-circle-exclamation mr-1"></i> Friend must invest</span>`;
+                            ? `<span class="text-gold-400 font-bold bg-gold-500/10 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-coins mr-1"></i> Credited</span>` 
+                            : `<span class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded border border-red-500/20"><i class="fa-solid fa-circle-exclamation mr-1"></i> Not invested</span>`;
 
                         html += `
                         <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
-                            <td class="p-4 font-bold text-white"><div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white shadow-md inline-flex mr-3">${u.name.charAt(0)}</div> ${u.name}</td>
+                            <td class="p-4 font-bold text-white"><div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white shadow-md inline-flex mr-3">${userName.charAt(0).toUpperCase()}</div> ${userName}</td>
                             <td class="p-4 text-gray-400 text-xs font-mono">${dateStr}</td>
                             <td class="p-4">${statusBadge}</td>
                             <td class="p-4 text-right">${bonusTxt}</td>
@@ -367,41 +356,11 @@
                 document.getElementById('stat-total').innerText = total;
                 document.getElementById('stat-active').innerText = active;
                 document.getElementById('stat-pending').innerText = pending;
+            }, (error) => {
+                console.error("Team List Error:", error);
+                document.getElementById('team-list').innerHTML = `<tr><td colspan="4" class="text-center py-10 text-red-400">Failed to load team list!</td></tr>`;
             });
         }
-
-        // 🟢 ADMIN EDIT LOGIC AS IT WAS 🟢
-        window.openEditUser = (uid, name, mobile, wallet, pass) => { 
-            document.getElementById('edit-uid').value = uid; 
-            document.getElementById('edit-name').value = name; 
-            document.getElementById('edit-mobile').value = mobile; 
-            document.getElementById('edit-wallet').value = wallet; 
-            document.getElementById('edit-password').value = pass; 
-            document.getElementById('edit-user-modal').classList.remove('hidden'); 
-        };
-        
-        window.saveUserEdit = async () => { 
-            const btn = document.querySelector('#edit-user-modal .bg-green-500');
-            btn.innerHTML = "Saving..."; btn.disabled = true;
-
-            try { 
-                await updateDoc(doc(db, "users", document.getElementById('edit-uid').value), { 
-                    name: document.getElementById('edit-name').value, 
-                    mobile: document.getElementById('edit-mobile').value, 
-                    walletBalance: Number(document.getElementById('edit-wallet').value), 
-                    password: document.getElementById('edit-password').value
-                }); 
-                
-                if(typeof closeModal !== 'undefined') closeModal('edit-user-modal'); 
-                else if(document.getElementById('edit-user-modal')) document.getElementById('edit-user-modal').classList.add('hidden');
-                
-                alert("Success! User Wallet, Password, and Details updated manually."); 
-            } catch(e) { 
-                alert(e.message); 
-            } 
-            
-            btn.innerHTML = "Save Everything"; btn.disabled = false;
-        };
     </script>
 </body>
 </html>
