@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RocketEarn X | God Mode Admin</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#05030a', purple: { 400: '#a855f7', 500: '#8a2be2' }, gold: { 400: '#fcd34d', 500: '#ffd700' }, cyan: { 400: '#22d3ee', 500: '#00f0ff' } }, fontFamily: { sans: ['Outfit', 'sans-serif'], space: ['Space Grotesk', 'sans-serif'] } } } }
+    </script>
+    
+    <style>
+        body { background-color: #05030a; color: #ffffff; overflow-x: hidden; font-family: 'Outfit', sans-serif; }
+        .glass-panel { background: rgba(15, 10, 25, 0.95); backdrop-filter: blur(20px); border-right: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.3s ease; }
+        .glass-card { background: linear-gradient(160deg, rgba(30, 20, 50, 0.6), rgba(10, 5, 20, 0.95)); border: 1px solid rgba(138, 43, 226, 0.2); }
+        .stat-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; } ::-webkit-scrollbar-track { background: #05030a; } ::-webkit-scrollbar-thumb { background: rgba(138, 43, 226, 0.5); border-radius: 10px; }
+        th { background: rgba(138, 43, 226, 0.15); padding: 12px; text-align: left; font-size: 11px; color: #a855f7; text-transform: uppercase; white-space: nowrap; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 13px; white-space: nowrap; }
+        tr:hover td { background: rgba(255, 255, 255, 0.05); }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; } .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .input-glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; padding: 10px 14px; border-radius: 8px; color: white; outline: none; transition: 0.3s; }
+        .input-glass:focus { border-color: #a855f7; }
+        .admin-login-overlay { position: fixed; inset: 0; background: #05030a; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- ADMIN LOGIN SCREEN -->
+    <div id="admin-login-screen" class="admin-login-overlay">
+        <div class="glass-card p-8 rounded-3xl w-full max-w-md shadow-[0_0_50px_rgba(138,43,226,0.3)] text-center">
+            <div class="w-16 h-16 mx-auto rounded-full bg-red-500/20 flex items-center justify-center text-red-500 text-3xl mb-4 border border-red-500/50"><i class="fa-solid fa-shield-halved"></i></div>
+            <h2 class="text-2xl font-space font-bold text-white mb-2">Admin Authorized Access</h2>
+            <p class="text-sm text-gray-400 mb-6">Strictly restricted to God Mode Admins</p>
+            <form onsubmit="adminLogin(event)" class="space-y-4 text-left">
+                <div><label class="text-[10px] text-gray-400 uppercase">Admin Email</label><input type="email" id="admin-email" required class="input-glass mt-1"></div>
+                <div><label class="text-[10px] text-gray-400 uppercase">Master Password</label><input type="password" id="admin-pass" required class="input-glass mt-1"></div>
+                <button type="submit" id="admin-login-btn" class="w-full bg-gradient-to-r from-red-600 to-purple-600 text-white font-bold py-3 rounded-xl hover:scale-105 transition">Access God Mode</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-64 glass-panel h-full fixed lg:relative z-[70] flex flex-col transform -translate-x-full lg:translate-x-0 shadow-[5px_0_30px_rgba(0,0,0,0.5)]">
+        <div class="h-20 flex items-center justify-center border-b border-white/10 gap-2">
+            <div class="w-8 h-8 rounded-full bg-red-500/20 border border-red-500/50 text-red-500 flex items-center justify-center text-sm shadow-[0_0_15px_rgba(239,68,68,0.4)]"><i class="fa-solid fa-bolt"></i></div>
+            <span class="font-space font-bold text-xl text-white">God <span class="text-red-500">Mode</span></span>
+        </div>
+        <div class="flex-1 py-6 px-4 flex flex-col gap-2 overflow-y-auto">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn active-nav w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium bg-purple-500/20 text-white border border-purple-500/30"><i class="fa-solid fa-chart-pie w-5"></i> Dashboard Stats</button>
+            <button onclick="switchTab('users')" id="btn-users" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-users w-5"></i> Users Control</button>
+            <button onclick="switchTab('plans')" id="btn-plans" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-layer-group w-5"></i> Active Plans</button>
+            <button onclick="switchTab('kyc')" id="btn-kyc" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-building-columns w-5"></i> Bank & KYC</button>
+            <button onclick="switchTab('deposits')" id="btn-deposits" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-wallet w-5"></i> Deposits (UTR)</button>
+            <button onclick="switchTab('withdrawals')" id="btn-withdrawals" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-money-bill-transfer w-5"></i> Withdrawals</button>
+            <button onclick="switchTab('games')" id="btn-games" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-gamepad w-5"></i> Game Center</button>
+            <button onclick="switchTab('notifications')" id="btn-notifications" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-bell w-5"></i> Notifications</button>
+            <button onclick="switchTab('settings')" id="btn-settings" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-gear w-5"></i> Settings</button>
+        </div>
+        <div class="p-4 border-t border-white/10 shrink-0"><button onclick="logoutAdmin()" class="w-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition"><i class="fa-solid fa-power-off"></i> Logout</button></div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 h-full overflow-y-auto relative p-6 lg:p-8">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10 z-0 pointer-events-none"></div>
+        <div class="relative z-10 max-w-[1600px] mx-auto">
+            
+            <header class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+                <h2 class="text-3xl font-space font-bold text-white">System Overview</h2>
+                <div class="bg-white/5 px-4 py-2 rounded-xl border border-white/10 flex items-center gap-3">
+                    <span class="text-green-500 animate-pulse"><i class="fa-solid fa-wifi"></i> Online</span>
+                </div>
+            </header>
+
+            <!-- DASHBOARD STATS -->
+            <div id="dashboard" class="tab-content active">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="stat-card p-5 rounded-xl border-t-2 border-t-green-500"><p class="text-[11px] text-gray-400">Total Deposits</p><h3 class="text-2xl font-bold text-white mt-1">₹<span id="st-dep">0</span></h3></div>
+                    <div class="stat-card p-5 rounded-xl border-t-2 border-t-red-500"><p class="text-[11px] text-gray-400">Total Withdrawals</p><h3 class="text-2xl font-bold text-white mt-1">₹<span id="st-wit">0</span></h3></div>
+                    <div class="stat-card p-5 rounded-xl border-t-2 border-t-gold-400"><p class="text-[11px] text-gray-400">Net Profit</p><h3 class="text-2xl font-bold text-gold-400 mt-1">₹<span id="st-prof">0</span></h3></div>
+                    <div class="stat-card p-5 rounded-xl border-t-2 border-t-cyan-500"><p class="text-[11px] text-gray-400">Gaming Volume</p><h3 class="text-2xl font-bold text-cyan-400 mt-1">₹<span id="st-vol">0</span></h3></div>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="stat-card p-5 rounded-xl"><p class="text-[11px] text-gray-400">Total Members</p><h3 class="text-xl font-bold text-white" id="st-mem">0</h3></div>
+                    <div class="stat-card p-5 rounded-xl"><p class="text-[11px] text-gray-400">Joined Today</p><h3 class="text-xl font-bold text-green-400" id="st-tod">0</h3></div>
+                    <div class="stat-card p-5 rounded-xl"><p class="text-[11px] text-gray-400">Total Games Added</p><h3 class="text-xl font-bold text-purple-400" id="st-gam">0</h3></div>
+                    <div class="stat-card p-5 rounded-xl"><p class="text-[11px] text-gray-400">Pending Support</p><h3 class="text-xl font-bold text-white" id="st-sup">0</h3></div>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="stat-card p-5 rounded-xl bg-yellow-500/10 border-yellow-500/30"><p class="text-[11px] text-yellow-300">Pending Deposits</p><h3 class="text-2xl font-bold text-yellow-400" id="st-p-dep">0</h3></div>
+                    <div class="stat-card p-5 rounded-xl bg-orange-500/10 border-orange-500/30"><p class="text-[11px] text-orange-300">Pending Withdraws</p><h3 class="text-2xl font-bold text-orange-400" id="st-p-wit">0</h3></div>
+                    <div class="stat-card p-5 rounded-xl bg-blue-500/10 border-blue-500/30"><p class="text-[11px] text-blue-300">Pending KYC</p><h3 class="text-2xl font-bold text-blue-400" id="st-p-kyc">0</h3></div>
+                </div>
+            </div>
+
+            <!-- USERS CONTROL -->
+            <div id="users" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden">
+                    <div class="p-4 bg-white/5 border-b border-white/10 flex justify-between items-center"><h3 class="font-bold">Users Database</h3><input type="text" id="s-user" placeholder="Search Email/Name..." class="input-glass w-64 text-xs" onkeyup="filterTable('s-user', 'tb-users')"></div>
+                    <div class="overflow-x-auto max-h-[600px]"><table class="w-full"><thead class="bg-dark sticky top-0"><tr><th>User</th><th>Password</th><th>Wallet (₹)</th><th>Status</th><th class="text-right">Action</th></tr></thead><tbody id="tb-users"></tbody></table></div>
+                </div>
+            </div>
+
+            <!-- ACTIVE PLANS -->
+            <div id="plans" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden"><div class="p-4 bg-white/5 border-b border-white/10"><h3 class="font-bold">User Active Plans</h3></div>
+                <div class="overflow-x-auto max-h-[600px]"><table class="w-full"><thead class="bg-dark sticky top-0"><tr><th>User Email</th><th>Plan Name</th><th>Invested</th><th>Daily ROI</th><th>Days Left</th><th>Status</th></tr></thead><tbody id="tb-plans"></tbody></table></div></div>
+            </div>
+
+            <!-- BANK & KYC -->
+            <div id="kyc" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden"><div class="p-4 bg-white/5 border-b border-white/10"><h3 class="font-bold">Bank & KYC Records</h3></div>
+                <div class="overflow-x-auto max-h-[600px]"><table class="w-full"><thead class="bg-dark sticky top-0"><tr><th>User</th><th>A/C No</th><th>IFSC</th><th>UPI</th><th>Status</th><th class="text-right">Action</th></tr></thead><tbody id="tb-kyc"></tbody></table></div></div>
+            </div>
+
+            <!-- DEPOSITS (Includes Admin Add Money History) -->
+            <div id="deposits" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden"><div class="p-4 bg-white/5 border-b border-white/10"><h3 class="font-bold">Deposits & Top-Ups</h3></div>
+                <div class="overflow-x-auto max-h-[600px]"><table class="w-full"><thead class="bg-dark sticky top-0"><tr><th>User Email</th><th>Amount (₹)</th><th>Type / UTR</th><th>Date</th><th>Status</th><th class="text-right">Action</th></tr></thead><tbody id="tb-deps"></tbody></table></div></div>
+            </div>
+
+            <!-- WITHDRAWALS -->
+            <div id="withdrawals" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden"><div class="p-4 bg-white/5 border-b border-white/10"><h3 class="font-bold">Withdrawal Requests</h3></div>
+                <div class="overflow-x-auto max-h-[600px]"><table class="w-full"><thead class="bg-dark sticky top-0"><tr><th>User Email</th><th>Amount (₹)</th><th>Bank Info</th><th>Status</th><th class="text-right">Action</th></tr></thead><tbody id="tb-wits"></tbody></table></div></div>
+            </div>
+
+            <!-- GAMES CENTER -->
+            <div id="games" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="glass-card p-6 rounded-2xl h-max">
+                        <h3 class="font-bold mb-4 text-purple-400">Add New Game</h3>
+                        <form onsubmit="deployGame(event)" class="space-y-3">
+                            <input type="text" id="g-name" required class="input-glass text-sm" placeholder="Game Name">
+                            <input type="url" id="g-img" required class="input-glass text-sm" placeholder="Image URL">
+                            <input type="text" id="g-url" class="input-glass text-sm" placeholder="Game Play URL (Optional)">
+                            <textarea id="g-code" class="input-glass text-sm font-mono h-24" placeholder="OR Paste HTML/Iframe Code"></textarea>
+                            <button type="submit" class="w-full bg-cyan-500 text-dark font-bold py-3 rounded-xl hover:scale-[1.02] transition">Deploy to Dashboard</button>
+                        </form>
+                    </div>
+                    <div class="lg:col-span-2 glass-card rounded-2xl overflow-hidden"><div class="p-4 bg-white/5 border-b border-white/10"><h3 class="font-bold">Live Games</h3></div>
+                    <div class="overflow-x-auto max-h-[500px]"><table class="w-full"><thead class="bg-dark sticky top-0"><tr><th>Image</th><th>Name</th><th class="text-right">Action</th></tr></thead><tbody id="tb-games"></tbody></table></div></div>
+                </div>
+            </div>
+
+            <!-- NOTIFICATIONS -->
+            <div id="notifications" class="tab-content">
+                <div class="glass-card p-6 rounded-2xl max-w-xl mx-auto">
+                    <h3 class="font-bold mb-4">Send Push Notification</h3>
+                    <form onsubmit="sendNotif(event)" class="space-y-3">
+                        <input type="text" id="n-title" required class="input-glass" placeholder="Title">
+                        <textarea id="n-msg" required class="input-glass h-24" placeholder="Message Body"></textarea>
+                        <input type="text" id="n-uid" class="input-glass bg-dark" placeholder="Target Email (Leave empty for ALL users)">
+                        <button type="submit" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl">Send Notification</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SETTINGS -->
+            <div id="settings" class="tab-content">
+                <div class="glass-card p-6 rounded-2xl max-w-2xl mx-auto">
+                    <h3 class="font-bold mb-6 text-xl">Platform Settings</h3>
+                    <div class="space-y-4">
+                        <div><label class="text-xs text-gray-400">Referral Reward Amount (₹)</label><input type="number" id="set-ref" class="input-glass font-bold text-gold-400 text-lg mt-1"></div>
+                        <div><label class="text-xs text-gray-400">OpenAI API Key (Support Bot)</label><input type="password" id="set-api" class="input-glass mt-1"></div>
+                        <div class="flex items-center justify-between bg-red-500/10 p-4 rounded-xl border border-red-500/30">
+                            <div><h4 class="font-bold text-white">Maintenance Mode</h4><p class="text-[10px] text-gray-400">Show "Under Construction" on website.</p></div>
+                            <input type="checkbox" id="set-maint" class="w-6 h-6 rounded accent-red-500">
+                        </div>
+                        <button onclick="saveSettings()" class="w-full bg-green-500 text-white font-bold py-3 rounded-xl mt-4">Save & Apply Live</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- EDIT USER MODAL (With Admin Topup Logic) -->
+    <div id="modal-edit" class="fixed inset-0 bg-black/80 z-[999] hidden flex justify-center items-center backdrop-blur-sm p-4">
+        <div class="glass-card p-6 rounded-2xl w-full max-w-sm">
+            <h3 class="font-bold mb-4">Edit User Account</h3>
+            <input type="hidden" id="e-uid"><input type="hidden" id="e-old-wallet"><input type="hidden" id="e-email">
+            <div class="space-y-3">
+                <input type="text" id="e-name" class="input-glass text-sm" placeholder="Name">
+                <input type="text" id="e-mobile" class="input-glass text-sm" placeholder="Mobile">
+                <div class="bg-white/5 p-2 rounded"><label class="text-[10px] text-cyan-400 font-bold">Wallet Balance (₹)</label><input type="number" id="e-wallet" class="input-glass text-gold-400 font-bold mt-1"></div>
+                <input type="text" id="e-pass" class="input-glass text-sm font-mono text-red-400" placeholder="Password">
+            </div>
+            <div class="flex gap-2 mt-6"><button onclick="document.getElementById('modal-edit').classList.add('hidden')" class="flex-1 bg-white/10 py-2 rounded-lg text-sm">Cancel</button><button onclick="saveUser()" class="flex-1 bg-green-500 text-white py-2 rounded-lg font-bold text-sm">Save & Top-Up</button></div>
+        </div>
+    </div>
+
+    <!-- FIREBASE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteField, getDoc, setDoc, addDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA", authDomain: "rocketearnx-bf10e.firebaseapp.com", databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "rocketearnx-bf10e", storageBucket: "rocketearnx-bf10e.firebasestorage.app", messagingSenderId: "282888117913", appId: "1:282888117913:web:86f236892842abcf9e6208" };
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
+
+        // 🟢 PUT YOUR ADMIN EMAIL HERE 🟢
+        const ADMIN_EMAIL = "admin@rocketearnx.com"; 
+
+        window.switchTab = (id) => { document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        window.filterTable = (inp, tb) => { let v = document.getElementById(inp).value.toLowerCase(); let trs = document.getElementById(tb).getElementsByTagName('tr'); for(let r of trs) r.style.display = r.innerText.toLowerCase().includes(v)?"":"none"; }
+
+        // AUTH SECURITY
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+                // Remove this email check if you want any logged-in user to access admin (Not recommended)
+                // if(user.email !== ADMIN_EMAIL) { alert("Unauthorized!"); signOut(auth); return; }
+                document.getElementById('admin-login-screen').style.display = 'none';
+                initAdminSync();
+            } else {
+                document.getElementById('admin-login-screen').style.display = 'flex';
+            }
+        });
+
+        window.adminLogin = async (e) => {
+            e.preventDefault(); const em = document.getElementById('admin-email').value; const pa = document.getElementById('admin-pass').value;
+            const btn = document.getElementById('admin-login-btn'); btn.innerHTML = "Checking...";
+            try { await signInWithEmailAndPassword(auth, em, pa); } catch(err) { alert(err.message); btn.innerHTML = "Access God Mode"; }
+        };
+        window.logoutAdmin = () => signOut(auth);
+
+        function initAdminSync() {
+            // USERS, PLANS, KYC STATS
+            onSnapshot(collection(db, "users"), (snap) => {
+                let uHtml="", pHtml="", kHtml=""; let totU=0, todU=0, pKyc=0; const now = new Date();
+                snap.forEach(d => {
+                    const u = d.data(); const id = d.id; totU++; 
+                    if(u.createdAt && u.createdAt.toDate().toDateString() === now.toDateString()) todU++;
+                    if(u.kycStatus === 'pending') pKyc++;
+
+                    uHtml += `<tr class="hover:bg-white/5"><td><b>${u.name||'User'}</b><br><span class="text-[10px] text-gray-400">${u.email} | ${u.mobile}</span></td><td class="text-xs font-mono text-gray-500">${u.password}</td><td class="text-gold-400 font-bold">₹${u.walletBalance}</td><td>${u.isBanned?'<span class="text-red-500 text-[10px]">BANNED</span>':'<span class="text-green-500 text-[10px]">ACTIVE</span>'}</td><td class="text-right"><button onclick="openEdit('${id}','${u.email}','${u.name}','${u.mobile}',${u.walletBalance},'${u.password}')" class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs mr-1">Edit</button>${u.isBanned?`<button onclick="setBan('${id}',false)" class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs mr-1">Unban</button>`:`<button onclick="setBan('${id}',true)" class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs mr-1">Ban</button>`}<button onclick="delDoc('users','${id}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+
+                    if(u.activePlans) {
+                        for(let pid in u.activePlans) {
+                            const p = u.activePlans[pid];
+                            pHtml += `<tr class="border-b border-white/10"><td>${u.email}</td><td class="font-bold text-purple-400">${p.name}</td><td>₹${p.price}</td><td class="text-green-400">₹${p.dailyReturn}</td><td>${p.daysRemaining} / ${p.validity}</td><td>${p.daysRemaining>0?'<span class="text-green-500 text-[10px]">Active</span>':'<span class="text-red-500 text-[10px]">Expired</span>'}</td></tr>`;
+                        }
+                    }
+
+                    if(u.bankDetails) {
+                        kHtml += `<tr><td>${u.email}</td><td><b class="text-gold-400">${u.bankDetails.acc}</b></td><td>IFSC: ${u.bankDetails.ifsc}</td><td>${u.bankDetails.upi||'-'}</td><td><span class="text-green-500 text-[10px]">Locked</span></td><td class="text-right"><button onclick="resetKyc('${id}')" class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">Unlock</button></td></tr>`;
+                    }
+                });
+                document.getElementById('tb-users').innerHTML = uHtml; document.getElementById('tb-plans').innerHTML = pHtml; document.getElementById('tb-kyc').innerHTML = kHtml;
+                document.getElementById('st-mem').innerText = totU; document.getElementById('st-tod').innerText = todU; document.getElementById('st-p-kyc').innerText = pKyc;
+            });
+
+            // DEPOSITS (Includes Admin Topup History)
+            onSnapshot(query(collection(db, "deposits"), orderBy("createdAt", "desc")), (snap) => {
+                let html=""; let tDep=0, pDep=0;
+                snap.forEach(d => {
+                    const dt = d.data(); const id = d.id;
+                    if(dt.status === 'pending') pDep++; if(dt.status === 'approved') tDep += Number(dt.amount);
+                    const isAd = dt.planName === "Admin Top-up";
+                    html += `<tr><td>${dt.email}</td><td class="font-bold text-green-400">₹${dt.amount}</td><td><span class="text-[10px] text-gray-400">${dt.planName}</span><br><b class="text-[11px] ${isAd?'text-cyan-400':'text-gold-400'}">${dt.utr}</b></td><td>${dt.createdAt?dt.createdAt.toDate().toLocaleDateString():'-'}</td><td>${dt.status==='pending'?'<span class="text-yellow-500 text-[10px]">Pending</span>':'<span class="text-green-500 text-[10px]">Approved</span>'}</td><td class="text-right">${dt.status==='pending'?`<button onclick="appDep('${id}','${dt.email}',${dt.amount})" class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs mr-1">Approve</button><button onclick="upd('deposits','${id}',{status:'rejected'})" class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs mr-1">Reject</button>`:''}<button onclick="delDoc('deposits','${id}')" class="text-gray-500"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                });
+                document.getElementById('tb-deps').innerHTML = html; document.getElementById('st-dep').innerText = tDep; document.getElementById('st-p-dep').innerText = pDep; calcProf();
+            });
+
+            // WITHDRAWALS
+            onSnapshot(query(collection(db, "withdrawals"), orderBy("requestTime", "desc")), (snap) => {
+                let html=""; let tWit=0, pWit=0;
+                snap.forEach(d => {
+                    const w = d.data(); const id = d.id;
+                    if(w.status === 'pending') pWit++; if(w.status === 'approved') tWit += Number(w.amount);
+                    html += `<tr><td>${w.email}</td><td class="font-bold text-red-400">₹${w.amount}</td><td class="text-[10px] text-gray-400">A/C: ${w.bankDetails?.acc||'-'}<br>IFSC: ${w.bankDetails?.ifsc||'-'}<br>UPI: ${w.bankDetails?.upi||'-'}</td><td>${w.status==='pending'?'<span class="text-yellow-500 text-[10px]">Pending</span>':(w.status==='approved'?'<span class="text-green-500 text-[10px]">Paid</span>':'<span class="text-red-500 text-[10px]">Refunded</span>')}</td><td class="text-right">${w.status==='pending'?`<button onclick="upd('withdrawals','${id}',{status:'approved'})" class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs mr-1">Pay</button><button onclick="refWit('${id}','${w.email}',${w.amount})" class="bg-orange-500/20 text-orange-400 px-2 py-1 rounded text-xs mr-1">Refund</button>`:''}<button onclick="delDoc('withdrawals','${id}')" class="text-gray-500"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                });
+                document.getElementById('tb-wits').innerHTML = html; document.getElementById('st-wit').innerText = tWit; document.getElementById('st-p-wit').innerText = pWit; calcProf();
+            });
+
+            // GAMES
+            onSnapshot(collection(db, "games"), (snap) => {
+                let html=""; let c=0;
+                snap.forEach(d => { c++; const g = d.data(); html += `<tr><td><img src="${g.image}" class="w-8 h-8 rounded"></td><td class="font-bold">${g.name}</td><td class="text-right"><button onclick="delDoc('games','${d.id}')" class="bg-red-500/20 text-red-500 px-3 py-1 rounded text-xs">Delete</button></td></tr>`; });
+                document.getElementById('tb-games').innerHTML = html; document.getElementById('st-gam').innerText = c;
+            });
+
+            // LOAD SETTINGS
+            getDoc(doc(db, "settings", "general")).then(s => {
+                if(s.exists()){ const d = s.data(); document.getElementById('set-ref').value = d.referralBonus||0; document.getElementById('set-api').value = d.openAiKey||""; document.getElementById('set-maint').checked = d.maintenance||false; }
+            });
+        }
+
+        // GLOBALS
+        function calcProf() { const d=Number(document.getElementById('st-dep').innerText); const w=Number(document.getElementById('st-wit').innerText); document.getElementById('st-prof').innerText = d-w; }
+        window.upd = async(col,id,val) => { await updateDoc(doc(db,col,id), val); };
+        window.delDoc = async(col,id) => { if(confirm("Delete permanently?")) await deleteDoc(doc(db,col,id)); };
+        window.setBan = async(uid, val) => { await updateDoc(doc(db,"users",uid), {isBanned: val}); };
+        window.resetKyc = async(uid) => { if(confirm("Unlock user bank?")) await updateDoc(doc(db,"users",uid), {bankDetails: deleteField(), kycStatus: "pending"}); };
+        
+        window.appDep = async(id, email, amt) => { 
+            if(confirm(`Approve ₹${amt}?`)) {
+                await updateDoc(doc(db,"deposits",id), {status:"approved"}); 
+                const q = query(collection(db, "users"), where("email", "==", email));
+                onSnapshot(q, (snap) => { snap.forEach(u => { updateDoc(doc(db,"users",u.id), {walletBalance: (u.data().walletBalance||0) + amt}); }); }, err=>{}, () => unsubscribe());
+            }
+        };
+
+        window.refWit = async(id, email, amt) => { 
+            if(confirm(`Refund ₹${amt}?`)) {
+                await updateDoc(doc(db,"withdrawals",id), {status:"rejected"}); 
+                const q = query(collection(db, "users"), where("email", "==", email));
+                onSnapshot(q, (snap) => { snap.forEach(u => { updateDoc(doc(db,"users",u.id), {walletBalance: (u.data().walletBalance||0) + amt}); }); }, err=>{}, () => unsubscribe());
+            }
+        };
+
+        // EDIT & ADMIN TOPUP LOGIC
+        window.openEdit = (id,em,n,m,w,p) => { document.getElementById('e-uid').value=id; document.getElementById('e-email').value=em; document.getElementById('e-name').value=n; document.getElementById('e-mobile').value=m; document.getElementById('e-wallet').value=w; document.getElementById('e-old-wallet').value=w; document.getElementById('e-pass').value=p; document.getElementById('modal-edit').classList.remove('hidden'); };
+        
+        window.saveUser = async() => {
+            const uid = document.getElementById('e-uid').value; const em = document.getElementById('e-email').value;
+            const nw = Number(document.getElementById('e-wallet').value); const ow = Number(document.getElementById('e-old-wallet').value);
+            
+            await updateDoc(doc(db, "users", uid), { name: document.getElementById('e-name').value, mobile: document.getElementById('e-mobile').value, walletBalance: nw, password: document.getElementById('e-pass').value });
+            
+            if(nw > ow) { // ADMIN ADDED MONEY -> Save in History
+                await addDoc(collection(db, "deposits"), { email: em, amount: (nw-ow), planName: "Admin Top-up", utr: "ADMIN-"+Date.now(), status: "approved", createdAt: new Date() });
+            }
+            document.getElementById('modal-edit').classList.add('hidden'); alert("User Saved!");
+        };
+
+        // GAME DEPLOY
+        window.deployGame = async(e) => {
+            e.preventDefault(); const n = document.getElementById('g-name').value; const i = document.getElementById('g-img').value; const u = document.getElementById('g-url').value; const c = document.getElementById('g-code').value;
+            if(!u && !c) return alert("Provide URL or HTML Code!");
+            await addDoc(collection(db, "games"), { name: n, image: i, url: u, gameHtml: c, createdAt: new Date() });
+            alert("Game Added!"); e.target.reset();
+        };
+
+        // NOTIF
+        window.sendNotif = async(e) => {
+            e.preventDefault(); const eId = document.getElementById('n-uid').value.trim();
+            await addDoc(collection(db, "notifications"), { title: document.getElementById('n-title').value, message: document.getElementById('n-msg').value, targetEmail: eId===""?"ALL":eId, isRead: false, createdAt: new Date() });
+            alert("Sent!"); e.target.reset();
+        };
+
+        // SETTINGS (MAINTENANCE)
+        window.saveSettings = async() => {
+            await setDoc(doc(db, "settings", "general"), { referralBonus: Number(document.getElementById('set-ref').value), openAiKey: document.getElementById('set-api').value, maintenance: document.getElementById('set-maint').checked }, {merge:true});
+            alert("Settings Applied to Main Website!");
+        };
+    </script>
+</body>
+</html>
