@@ -25,6 +25,53 @@
         };
     </script>
 
+    <!-- 🟢 FIREBASE SDK & DYNAMIC BACK BUTTON LOGIC 🟢 -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA",
+            authDomain: "rocketearnx-bf10e.firebaseapp.com",
+            databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "rocketearnx-bf10e",
+            storageBucket: "rocketearnx-bf10e.firebasestorage.app",
+            messagingSenderId: "282888117913",
+            appId: "1:282888117913:web:86f236892842abcf9e6208"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Variable to store login state
+        let isUserLoggedIn = false;
+
+        // Listen for authentication state changes automatically
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                isUserLoggedIn = true;
+            } else {
+                // User is signed out
+                isUserLoggedIn = false;
+            }
+        });
+
+        // Global function for the Back button
+        window.goBack = function() {
+            if (isUserLoggedIn) {
+                // Agar user logged in hai, toh dashboard par bhejein
+                window.location.href = '/dashboard'; // Agar aapka url /dashboard.html hai to wesa likhein
+            } else {
+                // Agar logged in nahi hai, toh index/login par bhejein
+                window.location.href = '/'; 
+            }
+        };
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
@@ -67,12 +114,12 @@
     <nav class="fixed top-0 w-full z-40 glass-nav">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- 🟢 Yahan Home ka URL clean ( / ) kar diya gaya hai 🟢 -->
-                <a href="/" class="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
+                <!-- 🟢 DYNAMIC BACK BUTTON 🟢 -->
+                <a href="javascript:void(0)" onclick="goBack()" class="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group cursor-pointer">
                     <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-purple-500/20 group-hover:border-purple-500/50 transition-all">
                         <i class="fa-solid fa-arrow-left text-sm"></i>
                     </div>
-                    <span class="font-space font-bold text-lg tracking-wide">Back to Home</span>
+                    <span class="font-space font-bold text-lg tracking-wide">Back</span>
                 </a>
                 <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/50 text-xl shadow-[0_0_15px_rgba(138,43,226,0.4)]">🚀</div>
             </div>
