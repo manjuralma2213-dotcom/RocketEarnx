@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Refer & Earn | RocketEarn X</title>
     
+    <!-- 🟢 GITHUB PAGES URL CLEANER 🟢 -->
+    <script>
+        window.onload = function() {
+            let path = window.location.pathname;
+            let cleanPath = path;
+
+            if (path.endsWith('/index.html')) {
+                cleanPath = path.replace('/index.html', '/');
+            } 
+            else if (path.endsWith('.html')) {
+                cleanPath = path.replace(/\.html$/, '');
+            }
+
+            if (cleanPath !== path) {
+                let newUrl = window.location.protocol + "//" + window.location.host + cleanPath + window.location.search + window.location.hash;
+                window.history.replaceState(null, '', newUrl);
+            }
+        };
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -40,7 +60,8 @@
     <nav class="w-full z-40 glass-nav sticky top-0">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <a href="dashboard.html" class="flex items-center gap-2 hover:text-purple-400 transition">
+                <!-- 🟢 Clean URL applied to Dashboard 🟢 -->
+                <a href="/dashboard" class="flex items-center gap-2 hover:text-purple-400 transition">
                     <i class="fa-solid fa-arrow-left text-xl"></i> <span class="font-bold text-lg hidden sm:block">Dashboard</span>
                 </a>
                 <h1 class="font-space font-bold text-xl sm:text-2xl tracking-wide text-white"><i class="fa-solid fa-users mr-2 text-purple-400"></i> TEAM NETWORK</h1>
@@ -176,9 +197,10 @@
 
     <!-- FIREBASE LOGIC -->
     <script type="module">
+        // 🟢 Added necessary Firestore imports (addDoc, increment, serverTimestamp) 🟢
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc, increment, serverTimestamp, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // Admin DB Connection
         const app = initializeApp({
@@ -187,10 +209,85 @@
         const auth = getAuth(app); const db = getFirestore(app);
         
         let myRefCode = "";
+        let onlineInterval = null;
+        let notifUnsubscribe = null;
+
+        // ==========================================
+        // 🟢 FEATURE 1: USER ONLINE STATUS 🟢
+        // ==========================================
+        function keepUserOnline(userId) {
+            updateDoc(doc(db, "users", userId), { lastActive: serverTimestamp() }).catch(e => console.log(e));
+            onlineInterval = setInterval(() => {
+                updateDoc(doc(db, "users", userId), { lastActive: serverTimestamp() }).catch(e => console.log(e));
+            }, 120000); 
+        }
+
+        // ==========================================
+        // 🟢 FEATURE 2: ADMIN NOTIFICATIONS 🟢
+        // ==========================================
+        function listenForAdminNotifications(currentUserEmail) {
+            const notifRef = collection(db, "notifications");
+            notifUnsubscribe = onSnapshot(notifRef, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const notif = change.doc.data();
+                        if (notif.targetEmail === "ALL" || notif.targetEmail === currentUserEmail) {
+                            showAdminNotification(notif.title, notif.message);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Beautiful Custom Modal for Notifications instead of Alert
+        window.showAdminNotification = (title, message) => {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-[500] flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm transition-opacity duration-300';
+            modal.innerHTML = `
+                <div class="bg-gradient-to-br from-[#1e1032] to-[#0a0514] p-8 rounded-3xl max-w-sm w-full border border-purple-500 shadow-[0_0_40px_rgba(138,43,226,0.6)] transform scale-0 transition-transform duration-300 flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500 text-3xl mb-4 animate-bounce">🔔</div>
+                    <h3 class="text-white font-space font-bold text-2xl mb-2">${title}</h3>
+                    <p class="text-gray-300 text-sm mb-8 leading-relaxed">${message}</p>
+                    <button onclick="this.closest('.fixed').remove()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-3.5 rounded-xl shadow-[0_0_15px_rgba(138,43,226,0.5)] hover:scale-105 transition-transform">Mark as Read</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            setTimeout(() => modal.firstElementChild.classList.replace('scale-0', 'scale-100'), 10);
+        };
+
+        // ==========================================
+        // 🟢 FEATURE 3: BUY INVESTMENT PLAN LOGIC 🟢
+        // ==========================================
+        window.buyInvestmentPlan = async (userEmail, userId, planName, planPrice, dailyIncome) => {
+            try {
+                await updateDoc(doc(db, "users", userId), {
+                    walletBalance: increment(-planPrice) 
+                });
+
+                await addDoc(collection(db, "user_investments"), {
+                    userId: userId,
+                    userEmail: userEmail,
+                    planName: planName,
+                    investAmount: planPrice,
+                    dailyIncome: dailyIncome,
+                    status: "active", 
+                    buyDate: serverTimestamp() 
+                });
+
+                alert("Plan Purchased Successfully!");
+            } catch (error) {
+                console.error("Error buying plan:", error);
+                alert("Transaction Failed.");
+            }
+        };
 
         // STRICT SECURITY: Must be logged in
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                // Background Trackers Setup
+                keepUserOnline(user.uid);
+                listenForAdminNotifications(user.email);
+
                 // Fetch User Details
                 onSnapshot(doc(db, "users", user.uid), async (d) => {
                     if(d.exists()) {
@@ -209,7 +306,9 @@
                             await updateDoc(doc(db, "users", user.uid), { referralCode: myRefCode });
                         }
                         
-                        document.getElementById('my-ref-link').value = `${window.location.origin}/index.html?ref=${myRefCode}`;
+                        // 🟢 Ref link me clean URL setup 🟢
+                        document.getElementById('my-ref-link').value = `${window.location.origin}/?ref=${myRefCode}`;
+                        
                         document.getElementById('ref-earned-top').innerText = data.referralEarnings || 0;
                         document.getElementById('stat-earned').innerText = data.referralEarnings || 0;
 
@@ -217,7 +316,8 @@
                     }
                 });
             } else {
-                window.location.href = "index.html";
+                // 🟢 Clean URL redirect to Home 🟢
+                window.location.href = "/";
             }
         });
 
