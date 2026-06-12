@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard | RocketEarn X</title>
     
+    <!-- 🟢 GITHUB PAGES URL CLEANER 🟢 -->
+    <script>
+        window.onload = function() {
+            let path = window.location.pathname;
+            let cleanPath = path;
+
+            if (path.endsWith('/index.html')) {
+                cleanPath = path.replace('/index.html', '/');
+            } 
+            else if (path.endsWith('.html')) {
+                cleanPath = path.replace(/\.html$/, '');
+            }
+
+            if (cleanPath !== path) {
+                let newUrl = window.location.protocol + "//" + window.location.host + cleanPath + window.location.search + window.location.hash;
+                window.history.replaceState(null, '', newUrl);
+            }
+        };
+    </script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
@@ -108,11 +128,15 @@
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <!-- Balance Card with Add Money & Withdraw -->
             <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
                 <div class="absolute -right-6 -top-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all"></div>
                 <div class="flex justify-between items-start mb-4"><p class="text-gray-400 text-sm font-bold uppercase tracking-wider">Current Balance</p><div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-wallet"></i></div></div>
                 <h2 class="text-4xl font-space font-bold text-white mb-1">₹<span id="main-balance">0.00</span></h2>
-                <div class="flex gap-3 mt-6"><button onclick="openWithdrawModal()" class="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold py-2.5 rounded-xl transition-colors"><i class="fa-solid fa-building-columns mr-1"></i> Withdraw Funds</button></div>
+                <div class="flex gap-2 mt-6">
+                    <button onclick="openAddMoneyModal()" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:scale-105 text-white font-bold py-2.5 rounded-xl transition-transform shadow-[0_0_15px_rgba(34,197,94,0.3)] text-sm"><i class="fa-solid fa-plus mr-1"></i> Add Money</button>
+                    <button onclick="openWithdrawModal()" class="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold py-2.5 rounded-xl transition-colors text-sm"><i class="fa-solid fa-building-columns mr-1"></i> Withdraw</button>
+                </div>
             </div>
 
             <div class="glass-card p-6 rounded-3xl relative overflow-hidden group border-purple-500/30">
@@ -168,6 +192,28 @@
         </div>
     </div>
 
+    <!-- ==================== NEW: ADD MONEY MODAL ==================== -->
+    <div id="add-money-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4 backdrop-blur-xl">
+        <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 sm:p-10 relative border-green-500/50 shadow-[0_0_50px_rgba(34,197,94,0.2)]">
+            <button onclick="closeAddMoneyModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center mb-6 mt-2">
+                <div class="w-16 h-16 mx-auto rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/50 text-green-400 text-3xl mb-4"><i class="fa-solid fa-wallet"></i></div>
+                <h2 class="font-space text-3xl font-bold text-white mb-1">Add Money</h2>
+                <p class="text-gray-400 text-sm">Min: ₹100 | Max: ₹50,000</p>
+            </div>
+            
+            <form onsubmit="proceedToAddMoney(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1 ml-1 uppercase">Amount to Deposit</label>
+                    <div class="relative"><div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 font-bold">₹</div><input type="number" id="deposit-amount-input" required min="100" max="50000" placeholder="e.g. 500" class="w-full input-glass rounded-xl py-3.5 pl-10 pr-4 text-white font-bold text-lg"></div>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(34,197,94,0.4)] flex justify-center items-center gap-2 mt-2">
+                    <span>Proceed to Pay</span> <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- PAYMENT MODAL -->
     <div id="payment-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4 backdrop-blur-xl">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-1 relative border-purple-500/50 shadow-[0_0_50px_rgba(138,43,226,0.2)] overflow-hidden">
@@ -178,7 +224,7 @@
                     <h2 class="font-space text-2xl font-bold text-white">Secure Checkout</h2>
                 </div>
                 <div class="flex justify-between items-center bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
-                    <div><p class="text-[10px] text-gray-400 uppercase tracking-wider mb-0.5">Upgrading to</p><p id="pay-plan-name" class="font-bold text-white text-lg leading-tight">---</p></div>
+                    <div><p class="text-[10px] text-gray-400 uppercase tracking-wider mb-0.5">Paying For</p><p id="pay-plan-name" class="font-bold text-white text-lg leading-tight">---</p></div>
                     <div class="text-right">
                         <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-0.5">Amount to Pay</p>
                         <p class="text-2xl font-bold text-gold-400 flex items-center justify-end gap-1">₹<span id="pay-amount">0</span> <i class="fa-solid fa-lock text-[12px] text-gray-500" title="Fixed Amount"></i></p>
@@ -200,7 +246,10 @@
                 <form onsubmit="submitPayment(event)" class="space-y-4">
                     <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-3">
                         <input type="checkbox" id="terms-agree" required class="custom-checkbox flex-shrink-0 mt-0.5">
-                        <label for="terms-agree" class="text-xs text-gray-300 leading-relaxed cursor-pointer select-none">I agree to the Privacy Policy and Terms & Conditions.</label>
+                        <!-- 🟢 CLICKABLE TERMS & PRIVACY LINKS ADDED HERE 🟢 -->
+                        <label for="terms-agree" class="text-xs text-gray-300 leading-relaxed cursor-pointer select-none">
+                            I agree to the <a href="privacy.html" target="_blank" class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">Privacy Policy</a> and <a href="terms.html" target="_blank" class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">Terms & Conditions</a>.
+                        </label>
                     </div>
                     <div>
                         <label class="block text-[11px] font-medium text-gray-300 mb-1.5 ml-1 uppercase tracking-wide">Enter 12-Digit UTR / Reference No.</label>
@@ -215,7 +264,7 @@
         </div>
     </div>
 
-    <!-- ==================== NEW: KYC / BANK & UPI MODAL (LIFETIME LOCK) ==================== -->
+    <!-- KYC / BANK & UPI MODAL (LIFETIME LOCK) -->
     <div id="kyc-overlay" class="auth-overlay fixed inset-0 z-[300] flex items-center justify-center bg-black/90 px-4 backdrop-blur-xl">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 relative border-green-500/50 shadow-[0_0_50px_rgba(34,197,94,0.2)]">
             <button onclick="closeKycModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all z-10"><i class="fa-solid fa-xmark"></i></button>
@@ -239,7 +288,7 @@
         </div>
     </div>
 
-    <!-- WITHDRAW MODAL (Cleaned Up - Only for Amount) -->
+    <!-- WITHDRAW MODAL -->
     <div id="withdraw-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4 backdrop-blur-xl">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 sm:p-10 relative border-blue-500/50 shadow-[0_0_50px_rgba(0,240,255,0.2)]">
             <button onclick="closeWithdrawModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -301,7 +350,6 @@
             <div class="w-16 h-16 mx-auto rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-3xl mb-4 border border-purple-500 animate-pulse"><i class="fa-solid fa-bell"></i></div>
             <h2 class="text-2xl font-bold text-white mb-2" id="alert-title">Notification</h2>
             <p class="text-gray-300 text-sm mb-6" id="alert-message">Message body...</p>
-            <!-- Got it! Button updated to handle dynamic actions like opening KYC -->
             <button id="global-alert-btn" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition">Got it!</button>
         </div>
     </div>
@@ -404,7 +452,6 @@
             }
         });
 
-        // 🟢 ADVANCED GLOBAL ALERT (Handles KYC Action)
         window.showGlobalAlert = function(title, msg, action = null) {
             document.getElementById('alert-title').innerText = title;
             document.getElementById('alert-message').innerText = msg;
@@ -457,7 +504,6 @@
                     document.getElementById('user-name').innerText = userData.name || "Member";
                     document.getElementById('game-wallet-bal').innerText = currentBalance.toFixed(2);
 
-                    // Locked Bank Logic
                     if(userData.bankDetails && userData.bankDetails.locked) {
                         userBankLocked = true;
                         document.getElementById('locked-acc-txt').innerText = `A/C: ${userData.bankDetails.acc}`;
@@ -640,6 +686,39 @@
             } catch(e) { alert("Error claiming. Try again. " + e.message); }
         }
 
+        // 🟢 ADD MONEY LOGIC
+        window.openAddMoneyModal = () => document.getElementById('add-money-overlay').classList.add('open');
+        window.closeAddMoneyModal = () => document.getElementById('add-money-overlay').classList.remove('open');
+
+        window.proceedToAddMoney = (e) => {
+            e.preventDefault();
+            const amt = parseFloat(document.getElementById('deposit-amount-input').value);
+            
+            if(amt < 100 || amt > 50000) {
+                alert("Please enter an amount between ₹100 and ₹50,000.");
+                return;
+            }
+            
+            closeAddMoneyModal();
+            
+            window.pendingPlanAmount = amt;
+            window.pendingPlanName = "Wallet Deposit";
+            window.pendingPlanDaily = 0;
+            window.pendingPlanValidity = 0;
+
+            document.getElementById('pay-plan-name').innerText = "Wallet Balance Add";
+            document.getElementById('pay-amount').innerText = amt;
+            document.getElementById('utr-input').value = "";
+            document.getElementById('payment-overlay').classList.add('open');
+
+            onSnapshot(doc(db, "settings", "general"), (docSnap) => {
+                if(docSnap.exists()) {
+                    const settings = docSnap.data(); adminUpi = settings.upiId || "Not Set"; document.getElementById('dynamic-upi').innerText = adminUpi;
+                    if(settings.qrUrl) { document.getElementById('dynamic-qr').src = settings.qrUrl; document.getElementById('dynamic-qr').classList.remove('hidden'); document.getElementById('no-qr-msg').classList.add('hidden'); }
+                }
+            });
+        };
+
         // 🟢 KYC / BANK SETUP LOGIC
         window.openKycModal = () => document.getElementById('kyc-overlay').classList.add('open');
         window.closeKycModal = () => document.getElementById('kyc-overlay').classList.remove('open');
@@ -674,13 +753,11 @@
             btn.disabled = false;
         }
 
-        // 🟢 WITHDRAW LOGIC (With Locked KYC Check)
+        // 🟢 WITHDRAW LOGIC
         window.openWithdrawModal = () => { 
-            // Agar Bank Details nahi bhari hain, toh "Got it" click karte hi KYC Form khulega
             if(!userData.bankDetails || !userData.bankDetails.locked) {
                 return showGlobalAlert("KYC Required", "Please complete your Bank & UPI KYC setup to enable withdrawals. This can only be done ONCE.", "openKyc");
             }
-            
             document.getElementById('withdraw-available').innerText = "₹" + currentBalance.toFixed(2); 
             document.getElementById('withdraw-overlay').classList.add('open'); 
         }
@@ -697,7 +774,6 @@
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`;
 
             try {
-                // Deduct Balance directly (Bank is already locked in DB)
                 await updateDoc(doc(db, "users", currentUser.uid), { walletBalance: currentBalance - amt });
                 
                 await addDoc(collection(db, "withdrawals"), {
@@ -713,7 +789,7 @@
             btn.innerHTML = `<span>Request Withdrawal</span> <i class="fa-solid fa-check-circle"></i>`;
         }
 
-        // PAYMENT / GAME LOGIC 
+        // PAYMENT / UTR SUBMIT LOGIC 
         window.closePaymentModal = () => document.getElementById('payment-overlay').classList.remove('open');
         window.copyUPI = () => { navigator.clipboard.writeText(adminUpi); alert('UPI ID Copied!'); }
 
@@ -732,7 +808,7 @@
                 await addDoc(collection(db, "deposits"), {
                     uid: currentUser.uid, email: currentUser.email, amount: window.pendingPlanAmount, utr: utr, planName: window.pendingPlanName, dailyReturn: window.pendingPlanDaily, validity: window.pendingPlanValidity, status: 'pending', createdAt: serverTimestamp()
                 });
-                showGlobalAlert("Submitted!", `Payment submitted! Once admin verifies your UTR, ${window.pendingPlanName} will instantly activate.`);
+                showGlobalAlert("Submitted!", `Payment submitted! Once admin verifies your UTR, your balance/plan will be activated.`);
                 closePaymentModal();
             } catch(e) { alert("Error: " + e.message); }
             btn.innerHTML = `<span>Submit & Verify Payment</span> <i class="fa-solid fa-arrow-right"></i>`; btn.disabled=false;
@@ -774,7 +850,7 @@
             }
         };
 
-        // 🟢 OPEN EDIT MODAL (Saara data load karega - ADMIN ONLY)
+        // 🟢 OPEN EDIT MODAL (ADMIN ONLY)
         window.openEditUser = (uid, name, mobile, wallet, pass) => { 
             document.getElementById('edit-uid').value = uid; 
             document.getElementById('edit-name').value = name; 
@@ -797,7 +873,9 @@
                     password: document.getElementById('edit-password').value 
                 }); 
                 
-                closeModal('edit-user-modal'); 
+                if(typeof closeModal !== 'undefined') closeModal('edit-user-modal'); 
+                else if(document.getElementById('edit-user-modal')) document.getElementById('edit-user-modal').classList.add('hidden');
+                
                 alert("Success! User Wallet, Password, and Details updated manually."); 
             } catch(e) { 
                 alert(e.message); 
@@ -805,7 +883,6 @@
             
             btn.innerHTML = "Save Everything"; btn.disabled = false;
         };
-
     </script>
 </body>
 </html>
