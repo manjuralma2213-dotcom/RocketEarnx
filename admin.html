@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RocketEarn X | Ultimate Admin Panel</title>
+    
+    <!-- 🟢 SAFE URL CLEANER (No 404 Error) 🟢 -->
+    <script>
+        window.onload = function() {
+            let path = window.location.pathname;
+            let cleanPath = path;
+
+            if (path.endsWith('/index.html')) {
+                cleanPath = path.replace('/index.html', '/');
+            } 
+            else if (path.endsWith('.html')) {
+                cleanPath = path.replace(/\.html$/, '');
+            }
+
+            if (cleanPath !== path) {
+                let newUrl = window.location.protocol + "//" + window.location.host + cleanPath + window.location.search + window.location.hash;
+                window.history.replaceState(null, '', newUrl);
+            }
+        };
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = { theme: { extend: { colors: { dark: '#05030a', purple: { 400: '#a855f7', 500: '#8a2be2', 600: '#6b21a8' }, gold: { 400: '#fcd34d', 500: '#ffd700', 600: '#f59e0b' }, cyan: { 400: '#22d3ee', 500: '#00f0ff' } }, fontFamily: { sans: ['Outfit', 'sans-serif'], space: ['Space Grotesk', 'sans-serif'] } } } }
+    </script>
+    
+    <style>
+        body { background-color: #05030a; color: #ffffff; overflow-x: hidden; }
+        .glass-panel { background: rgba(15, 10, 25, 0.95); backdrop-filter: blur(20px); border-right: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.3s ease-in-out; }
+        .glass-card { background: linear-gradient(160deg, rgba(30, 20, 50, 0.6), rgba(10, 5, 20, 0.95)); border: 1px solid rgba(138, 43, 226, 0.2); }
+        .stat-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; } ::-webkit-scrollbar-track { background: #05030a; } ::-webkit-scrollbar-thumb { background: rgba(138, 43, 226, 0.5); border-radius: 10px; }
+        th { background: rgba(138, 43, 226, 0.15); padding: 12px; text-align: left; font-size: 11px; color: #a855f7; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 13px; white-space: nowrap; }
+        tr:hover td { background: rgba(255, 255, 255, 0.05); }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; } .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .input-glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; padding: 10px 14px; border-radius: 8px; color: white; outline: none; transition: 0.3s; }
+        .input-glass:focus { border-color: #a855f7; } select.input-glass option { background-color: #05030a; color: white; }
+        .toggle-checkbox:checked { right: 0; border-color: #10B981; } .toggle-checkbox:checked + .toggle-label { background-color: #10B981; }
+    </style>
+</head>
+<body class="flex h-screen font-sans overflow-hidden">
+
+    <!-- MOBILE HEADER -->
+    <div class="lg:hidden fixed top-0 left-0 w-full h-16 glass-panel z-[60] flex items-center justify-between px-4 border-b border-white/10">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/50 text-sm">🚀</div>
+            <span class="font-space font-bold text-lg text-white">God <span class="text-gold-400">Mode</span></span>
+        </div>
+        <button onclick="toggleSidebar()" class="text-white text-2xl focus:outline-none"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-64 glass-panel h-full fixed lg:relative z-[70] flex flex-col transform -translate-x-full lg:translate-x-0 pt-16 lg:pt-0 shadow-[5px_0_30px_rgba(0,0,0,0.5)]">
+        <button onclick="toggleSidebar()" class="lg:hidden absolute top-4 right-4 text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+        
+        <div class="hidden lg:flex h-20 items-center justify-center border-b border-white/10 gap-2 shrink-0">
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/50 text-sm shadow-[0_0_15px_rgba(138,43,226,0.4)]">🚀</div>
+            <span class="font-space font-bold text-xl text-white">God <span class="text-gold-400">Mode</span></span>
+        </div>
+        
+        <div class="flex-1 py-6 px-4 flex flex-col gap-2 overflow-y-auto">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn active-nav w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium bg-purple-500/20 text-white border border-purple-500/30"><i class="fa-solid fa-chart-pie w-5"></i> Dashboard</button>
+            <button onclick="switchTab('users')" id="btn-users" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-users w-5"></i> Users Control</button>
+            <button onclick="switchTab('user-investments')" id="btn-user-investments" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-layer-group w-5"></i> Active Plans</button>
+            <button onclick="switchTab('kyc')" id="btn-kyc" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-building-columns w-5"></i> Bank & KYC</button>
+            <button onclick="switchTab('investments')" id="btn-investments" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-wallet w-5"></i> Deposits (UTRs)</button>
+            <button onclick="switchTab('withdrawals')" id="btn-withdrawals" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-money-bill-transfer w-5"></i> Withdrawals</button>
+            <button onclick="switchTab('games')" id="btn-games" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-gamepad w-5"></i> Game Center</button>
+            <button onclick="switchTab('notifications')" id="btn-notifications" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-bell w-5"></i> Notifications</button>
+            <button onclick="switchTab('settings')" id="btn-settings" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5"><i class="fa-solid fa-gear w-5"></i> Settings</button>
+        </div>
+        <div class="p-4 border-t border-white/10 shrink-0">
+            <button onclick="logoutAdmin()" class="w-full bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"><i class="fa-solid fa-power-off"></i> Logout</button>
+        </div>
+    </aside>
+
+    <div id="mobile-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-[65] hidden lg:hidden backdrop-blur-sm"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 h-full overflow-y-auto bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] relative pt-16 lg:pt-0">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-dark to-blue-900/10 z-0 pointer-events-none"></div>
+        
+        <div class="relative z-10 p-4 lg:p-8 max-w-[1600px] mx-auto">
+            <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-white/10 pb-4 gap-4">
+                <div><h2 class="text-xl sm:text-2xl font-space font-bold text-white">System Command Center</h2><p class="text-xs sm:text-sm text-gray-400" id="current-date"></p></div>
+                <div class="bg-white/5 px-4 py-2 rounded-xl border border-white/10 text-center flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-center">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest flex items-center"><i class="fa-solid fa-wifi text-green-500 animate-pulse mr-2"></i> Live Online</p>
+                    <p class="text-green-400 font-bold text-lg" id="real-live-online">0</p>
+                </div>
+            </header>
+
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="tab-content active">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
+                    <div class="stat-card p-4 lg:p-5 rounded-xl border-t-2 border-t-green-500"><p class="text-[10px] sm:text-xs text-gray-400">Total Deposits In</p><h3 class="text-xl sm:text-2xl font-bold text-white mt-1">₹<span id="dash-tot-dep">0</span></h3></div>
+                    <div class="stat-card p-4 lg:p-5 rounded-xl border-t-2 border-t-red-500"><p class="text-[10px] sm:text-xs text-gray-400">Total Withdrawals Out</p><h3 class="text-xl sm:text-2xl font-bold text-white mt-1">₹<span id="dash-tot-wit">0</span></h3></div>
+                    <div class="stat-card p-4 lg:p-5 rounded-xl border-t-2 border-t-gold-400"><p class="text-[10px] sm:text-xs text-gray-400">Net Platform Profit</p><h3 class="text-xl sm:text-2xl font-bold text-gold-400 mt-1">₹<span id="dash-tot-profit">0</span></h3></div>
+                    <div class="stat-card p-4 lg:p-5 rounded-xl border-t-2 border-t-cyan-500"><p class="text-[10px] sm:text-xs text-gray-400">Live Gaming Volume</p><h3 class="text-xl sm:text-2xl font-bold text-cyan-400 mt-1">₹<span id="dash-game-vol">0</span></h3></div>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                    <div class="stat-card p-4 rounded-xl"><p class="text-[10px] sm:text-xs text-gray-400">Total Members</p><h3 class="text-lg sm:text-xl font-bold text-white" id="dash-tot-users">0</h3></div>
+                    <div class="stat-card p-4 rounded-xl"><p class="text-[10px] sm:text-xs text-gray-400">Joined Today</p><h3 class="text-lg sm:text-xl font-bold text-green-400" id="dash-today-users">0</h3></div>
+                    <div class="stat-card p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30"><p class="text-[10px] sm:text-xs text-yellow-300">Pending Deposits</p><h3 class="text-lg sm:text-xl font-bold text-yellow-400" id="dash-pend-dep">0</h3></div>
+                    <div class="stat-card p-4 rounded-xl bg-orange-500/10 border border-orange-500/30"><p class="text-[10px] sm:text-xs text-orange-300">Pending Withdraws</p><h3 class="text-lg sm:text-xl font-bold text-orange-400" id="dash-pend-wit">0</h3></div>
+                </div>
+            </div>
+
+            <!-- USERS CONTROL -->
+            <div id="users" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
+                    <div class="p-4 border-b border-white/10 bg-white/5 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                        <h3 class="font-bold text-white">All Users Database</h3>
+                        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                            <select class="input-glass text-sm" onchange="filterStatusTable('users-table-body', this.value)"><option value="all">All Users</option><option value="active">Active</option><option value="banned">Banned</option></select>
+                            <input type="text" id="search-user" placeholder="Search..." class="input-glass text-sm" onkeyup="filterTable('search-user', 'users-table-body')">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto max-h-[650px]"><table class="w-full whitespace-nowrap"><thead class="sticky top-0 bg-dark z-10"><tr><th>S.No</th><th>User Info</th><th>Password</th><th>Wallet Balance</th><th>Joined</th><th>Status</th><th class="text-right">Action / Control</th></tr></thead><tbody id="users-table-body"></tbody></table></div>
+                </div>
+            </div>
+
+            <!-- USER INVESTMENTS (PLANS) -->
+            <div id="user-investments" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
+                    <div class="p-4 border-b border-white/10 bg-white/5 flex justify-between items-center">
+                        <h3 class="font-bold text-white">Live User Investments (Plans)</h3>
+                    </div>
+                    <div class="overflow-x-auto max-h-[600px]">
+                        <table class="w-full whitespace-nowrap">
+                            <thead class="sticky top-0 bg-dark z-10">
+                                <tr>
+                                    <th>User Info</th>
+                                    <th>Plan Name</th>
+                                    <th>Invested (₹)</th>
+                                    <th>Daily Income</th>
+                                    <th>Total Collected (₹)</th>
+                                    <th>Days Active</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-investments-body">
+                                <!-- Generated Dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BANK & KYC -->
+            <div id="kyc" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
+                    <div class="p-4 border-b border-white/10 bg-white/5 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                        <h3 class="font-bold text-white">Saved Bank Details (Locked KYC)</h3>
+                    </div>
+                    <div class="overflow-x-auto max-h-[600px]">
+                        <table class="w-full whitespace-nowrap">
+                            <thead class="sticky top-0 bg-dark z-10">
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>User Details</th>
+                                    <th>Bank Info (A/C)</th>
+                                    <th>IFSC / UPI</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Control</th>
+                                </tr>
+                            </thead>
+                            <tbody id="kyc-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEPOSITS -->
+            <div id="investments" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
+                    <div class="p-4 border-b border-white/10 bg-white/5 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                        <h3 class="font-bold text-white">Deposit Requests (UTRs)</h3>
+                        <select class="input-glass sm:w-48 text-sm" onchange="filterStatusTable('investments-table-body', this.value)"><option value="all">All Deposits</option><option value="pending">Pending UTRs</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
+                    </div>
+                    <div class="overflow-x-auto max-h-[600px]"><table class="w-full whitespace-nowrap"><thead class="sticky top-0 bg-dark z-10"><tr><th>S.No</th><th>Email</th><th>Plan & Amount</th><th>UTR Reference</th><th>Status & Date</th><th class="text-right">Process / Delete</th></tr></thead><tbody id="investments-table-body"></tbody></table></div>
+                </div>
+            </div>
+
+            <!-- WITHDRAWALS -->
+            <div id="withdrawals" class="tab-content">
+                <div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
+                    <div class="p-4 border-b border-white/10 bg-white/5 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                        <h3 class="font-bold text-white">Withdrawal History & Requests</h3>
+                        <select class="input-glass sm:w-48 text-sm" onchange="filterStatusTable('withdraw-table-body', this.value)"><option value="all">All Requests</option><option value="pending">Pending</option><option value="approved">Paid</option><option value="rejected">Refunded</option></select>
+                    </div>
+                    <div class="overflow-x-auto max-h-[600px]"><table class="w-full whitespace-nowrap"><thead class="sticky top-0 bg-dark z-10"><tr><th>S.No</th><th>User Email</th><th>Amount (₹)</th><th>Payment Details</th><th>Status</th><th class="text-right">Process / Refund</th></tr></thead><tbody id="withdraw-table-body"></tbody></table></div>
+                </div>
+            </div>
+
+            <!-- GAME ZONE CONTROL -->
+            <div id="games" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-3 glass-card p-6 rounded-2xl shadow-2xl border-t-2 border-t-cyan-500">
+                        <h3 class="font-bold text-cyan-400 mb-4 border-b border-white/10 pb-2"><i class="fa-solid fa-satellite-dish animate-pulse"></i> Live Game Monitor (Real-Time Bets)</h3>
+                        <div class="overflow-x-auto max-h-[200px]"><table class="w-full text-xs"><thead class="bg-dark"><tr><th>Game</th><th>Player</th><th>Bet Amount</th><th>Prediction / Bet</th><th>Time</th></tr></thead><tbody id="live-bets-body"><tr><td colspan="5" class="text-center text-gray-500 py-4">No active live bets running right now...</td></tr></tbody></table></div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl shadow-2xl h-max">
+                        <h3 class="font-bold text-white mb-4 border-b border-white/10 pb-2"><i class="fa-solid fa-upload text-purple-400"></i> Deploy New Game</h3>
+                        <form onsubmit="deployGame(event)" class="space-y-3">
+                            <div><input type="text" id="gm-name" required class="input-glass text-sm" placeholder="Game Name (e.g. Roulette)"></div>
+                            <div><input type="url" id="gm-img" required class="input-glass text-sm" placeholder="Thumbnail Image URL"></div>
+                            <div><input type="number" id="gm-fee" required class="input-glass text-sm" placeholder="Min Entry Fee / Bet (₹)"></div>
+                            
+                            <!-- 🟢 ADDED HTML FILE & CODE INPUT BOXES BACK 🟢 -->
+                            <div class="bg-dark/50 border border-white/10 p-3 rounded-lg mt-2">
+                                <label class="text-[10px] text-cyan-400 font-bold block mb-1">Game File (Upload .html)</label>
+                                <input type="file" id="gm-file" accept=".html" class="input-glass text-xs p-1 mb-2">
+                                <p class="text-[10px] text-center text-gray-500 mb-2">-- OR --</p>
+                                <label class="text-[10px] text-cyan-400 font-bold block mb-1">Raw HTML Code</label>
+                                <textarea id="gm-code" rows="3" class="input-glass text-xs font-mono" placeholder="Paste full HTML or <iframe> code here..."></textarea>
+                            </div>
+
+                            <div class="bg-dark/50 border border-white/10 p-3 rounded-lg mt-2">
+                                <label class="text-[10px] text-gold-400 font-bold block mb-1">Set Game Logic</label>
+                                <select id="gm-logic" class="input-glass text-xs bg-dark mb-2" onchange="document.getElementById('gm-prob-div').style.display = this.value === 'prob' ? 'block' : 'none'"><option value="lowest">Auto: Lowest Bet Wins</option><option value="force_loss">Force Loss (Users 100% Lose)</option><option value="prob">Random Probability Based</option></select>
+                                <div id="gm-prob-div" style="display:none;"><input type="number" id="gm-prob" class="input-glass text-xs" placeholder="Win Chance % (e.g. 20)"></div>
+                            </div>
+                            <button type="submit" id="gm-upload-btn" class="w-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-bold py-2.5 rounded-lg hover:scale-[1.02] transition">Deploy Game</button>
+                        </form>
+                    </div>
+
+                    <div class="lg:col-span-2 glass-card rounded-2xl overflow-hidden shadow-2xl flex flex-col h-max">
+                        <div class="p-4 border-b border-white/10 bg-white/5"><h3 class="font-bold text-white">Active Games Database</h3></div>
+                        <div class="overflow-x-auto max-h-[600px]"><table class="w-full whitespace-nowrap"><thead class="bg-dark sticky top-0 z-10"><tr><th>Game</th><th>Entry Fee</th><th>Logic</th><th>Status</th><th class="text-right">View / Control</th></tr></thead><tbody id="games-table-body"></tbody></table></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTIFICATIONS -->
+            <div id="notifications" class="tab-content">
+                <div class="glass-card p-6 rounded-2xl shadow-2xl max-w-2xl mx-auto border-t-2 border-t-purple-500">
+                    <h3 class="text-xl font-bold text-white mb-4"><i class="fa-solid fa-bullhorn text-purple-400"></i> Send Push Notification</h3>
+                    <p class="text-xs text-gray-400 mb-6">Send messages to all users or target a specific user.</p>
+                    
+                    <form onsubmit="sendNotification(event)" class="space-y-4">
+                        <div>
+                            <label class="text-xs text-gray-400">Title</label>
+                            <input type="text" id="notif-title" required class="input-glass mt-1 text-sm font-bold text-white" placeholder="e.g. Happy Diwali Bonus!">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400">Message</label>
+                            <textarea id="notif-msg" required rows="3" class="input-glass mt-1 text-sm text-white" placeholder="Write your notification message here..."></textarea>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl mt-2">
+                            <label class="text-xs text-cyan-400 font-bold">Target User (Optional)</label>
+                            <input type="text" id="notif-uid" class="input-glass mt-1 text-sm bg-dark" placeholder="Enter User Email to send to ONE user (Leave empty for ALL users)">
+                        </div>
+                        <button type="submit" id="btn-send-notif" class="w-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-bold py-3 rounded-xl hover:scale-[1.02] transition shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+                            <i class="fa-solid fa-paper-plane"></i> Send Notification Live
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SETTINGS -->
+            <div id="settings" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-6">
+                        <div class="glass-card p-6 rounded-2xl border-t-2 border-t-gold-400 shadow-2xl">
+                            <h3 class="text-lg font-bold text-white mb-4">Referral Reward Program</h3>
+                            <label class="text-xs text-gray-400">Bonus amount (₹) paid automatically to inviter upon first deposit approval:</label>
+                            <input type="number" id="set-ref-bonus" class="input-glass mt-2 font-bold text-gold-400 text-lg" placeholder="50">
+                        </div>
+                        <div class="glass-card p-6 rounded-2xl border-t-2 border-t-red-500 shadow-2xl">
+                            <h3 class="text-lg font-bold text-white mb-4">Master Security Control</h3>
+                            <div class="flex items-center justify-between bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
+                                <div><h4 class="font-bold text-white">Maintenance Mode</h4><p class="text-[10px] text-gray-400 mt-1">Shutdown entire website for users.</p></div>
+                                <div class="relative inline-block w-10 align-middle select-none">
+                                    <input type="checkbox" id="maint-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer"/><label for="maint-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-600 cursor-pointer"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl border-t-2 border-t-purple-500 shadow-2xl h-max">
+                        <h3 class="text-lg font-bold text-white mb-6">API & Integrations</h3>
+                        <div class="space-y-4">
+                            <div><label class="text-xs text-gray-400">OpenAI API Key (Bot)</label><input type="password" id="set-ai" class="input-glass mt-1 text-sm"></div>
+                            <div><label class="text-xs text-gray-400">YouTube URL</label><input type="text" id="set-yt" class="input-glass mt-1 text-sm"></div>
+                            <div><label class="text-xs text-gray-400">Telegram URL</label><input type="text" id="set-tg" class="input-glass mt-1 text-sm"></div>
+                        </div>
+                        <button onclick="saveAllSettings()" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 rounded-xl text-sm font-bold w-full mt-6 shadow-[0_0_20px_rgba(138,43,226,0.4)] hover:scale-105 transition-transform">Apply All Settings Live</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- EDIT USER MODAL (100% Direct Manual Control) -->
+    <div id="edit-user-modal" class="fixed inset-0 bg-black/80 z-[999] hidden flex justify-center items-center backdrop-blur-sm p-4">
+        <div class="glass-card p-6 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(138,43,226,0.2)]">
+            <h3 class="text-xl font-bold text-white mb-4">Edit User Account</h3>
+            <input type="hidden" id="edit-uid">
+            <div class="space-y-3">
+                <div><label class="text-xs text-gray-400">Name</label><input type="text" id="edit-name" class="input-glass mt-1 text-sm font-bold text-white"></div>
+                <div><label class="text-xs text-gray-400">Mobile Number</label><input type="text" id="edit-mobile" class="input-glass mt-1 text-sm font-bold text-white"></div>
+                <div class="bg-white/5 border border-white/10 p-3 rounded-lg"><label class="text-xs text-cyan-400 font-bold block mb-1">Wallet Balance (₹)</label><input type="number" id="edit-wallet" class="input-glass text-gold-400 font-bold text-lg bg-dark" placeholder="0"></div>
+                <div class="bg-red-500/10 border border-red-500/20 p-3 rounded-lg"><label class="text-xs text-red-400 font-bold block mb-1">Change Saved Password</label><input type="text" id="edit-password" class="input-glass text-sm font-mono bg-dark" placeholder="User's password"></div>
+            </div>
+            <div class="flex gap-3 mt-6"><button onclick="closeModal('edit-user-modal')" class="flex-1 bg-white/10 text-white py-2.5 rounded-lg text-sm font-bold hover:bg-white/20">Cancel</button><button onclick="saveUserEdit()" class="flex-1 bg-green-500 text-white py-2.5 rounded-lg text-sm font-bold shadow-[0_0_15px_rgba(34,197,94,0.4)] hover:bg-green-600">Save Data</button></div>
+        </div>
+    </div>
+
+    <!-- LIVE GAME CONTROL MODAL -->
+    <div id="live-control-modal" class="fixed inset-0 bg-black/80 z-[999] hidden flex justify-center items-center backdrop-blur-sm p-4">
+        <div class="glass-card p-6 rounded-2xl w-full max-w-lg shadow-[0_0_50px_rgba(0,240,255,0.2)]">
+            <h3 class="text-xl font-bold text-cyan-400 mb-2"><i class="fa-solid fa-satellite-dish animate-pulse"></i> Live Game Controller</h3>
+            <p class="text-xs text-gray-400 mb-4 font-bold" id="lc-game-name"></p>
+            <input type="hidden" id="lc-game-id">
+            
+            <div class="bg-dark/50 border border-white/10 rounded-xl p-4 mb-4">
+                <label class="text-xs text-white block mb-1">Set Master Winning Logic:</label>
+                <select id="lc-game-logic" class="input-glass font-bold text-xs mb-3 bg-dark" onchange="document.getElementById('lc-prob-div').style.display = this.value === 'prob' ? 'block' : 'none'; document.getElementById('lc-force-div').style.display = this.value === 'manual' ? 'block' : 'none';">
+                    <option value="lowest">🤖 Auto: Lowest Bet Wins (Admin Max Profit)</option><option value="force_loss">🔥 Force Loss (All Users Lose)</option><option value="prob">🎲 Probability Based (Random %)</option><option value="manual">🕹️ Manual: Force Specific Winner</option>
+                </select>
+                <div id="lc-prob-div" style="display:none;" class="mb-3"><label class="text-[10px] text-gray-400 block mb-1">Win Chance (%)</label><input type="number" id="lc-prob" class="input-glass text-xs" placeholder="e.g. 20"></div>
+                <div id="lc-force-div" style="display:none;" class="mb-3"><label class="text-[10px] text-cyan-400 font-bold block mb-1">Force Specific Outcome (e.g. Red, Green, 7)</label><input type="text" id="lc-forced-result" class="input-glass text-xs" placeholder="Enter Exact Winning Value"></div>
+            </div>
+
+            <div class="bg-white/5 border border-white/10 rounded-xl p-3 max-h-[150px] overflow-y-auto mb-4">
+                <p class="text-[10px] text-gold-400 font-bold mb-2">LIVE BETS ON THIS GAME:</p>
+                <div id="lc-live-bets" class="text-xs text-gray-300 space-y-1">Fetching live bets...</div>
+            </div>
+
+            <div class="flex gap-3 mt-4"><button onclick="closeModal('live-control-modal')" class="flex-1 bg-white/10 py-2 rounded-lg text-sm">Close</button><button onclick="saveLiveControl()" class="flex-1 bg-cyan-500 text-dark font-bold py-2 rounded-lg text-sm shadow-[0_0_15px_rgba(0,240,255,0.4)]">Apply Logic Live</button></div>
+        </div>
+    </div>
+
+    <!-- FIREBASE INTEGRATION SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, setDoc, getDoc, addDoc, deleteDoc, serverTimestamp, query, orderBy, limit, where, deleteField } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref as sRef, uploadBytes, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA", authDomain: "rocketearnx-bf10e.firebaseapp.com", databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "rocketearnx-bf10e", storageBucket: "rocketearnx-bf10e.firebasestorage.app", messagingSenderId: "282888117913", appId: "1:282888117913:web:86f236892842abcf9e6208" };
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const storage = getStorage(app);
+
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+        window.toggleSidebar = () => { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('mobile-overlay').classList.toggle('hidden'); };
+        window.logoutAdmin = () => { signOut(auth).then(() => { window.location.href = "login.html"; }); };
+
+        const getBadge = (s) => s==='pending'?'<span class="text-yellow-400 text-[10px] bg-yellow-500/10 border border-yellow-500/30 px-2 py-1 rounded">Pending</span>':(s==='approved'?'<span class="text-green-400 text-[10px] bg-green-500/10 border border-green-500/30 px-2 py-1 rounded">Approved</span>':'<span class="text-red-400 text-[10px] bg-red-500/10 border border-red-500/30 px-2 py-1 rounded">Rejected</span>');
+        const formatDate = (ts) => ts ? ts.toDate().toLocaleString() : 'N/A';
+        const isToday = (ts) => { if(!ts) return false; const d = ts.toDate(), t = new Date(); return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear(); };
+
+        window.deleteDocument = async (col, docId) => { if(!confirm("⚠️ Permanent deletion! Proceed?")) return; try { await deleteDoc(doc(db, col, docId)); } catch(e) { alert(e.message); } };
+        window.updateDocStatus = async (col, docId, dataObj) => { try { await updateDoc(doc(db, col, docId), dataObj); } catch(e) { alert(e.message); } };
+
+        // 🟢 SUPER OPTIMIZED: 3-IN-1 LISTENER FOR USERS, PLANS, AND KYC 🟢
+        onSnapshot(collection(db, "users"), (snapshot) => {
+            let tot = 0, tod = 0, liveOnline = 0; 
+            let usersHtml = ""; let plansHtml = ""; let kycHtml = "";
+            let uSno = 1, kSno = 1; 
+            const now = Date.now();
+
+            snapshot.forEach((dSnap) => {
+                const u = dSnap.data(); const id = dSnap.id;
+                tot++; if(isToday(u.createdAt)) tod++;
+                if(u.lastActive && (now - u.lastActive.toMillis()) < 5 * 60 * 1000) liveOnline++;
+
+                // --- 1. USERS TABLE ---
+                const stat = u.status === 'active' ? `<span class="text-green-400 text-[10px] bg-green-500/10 border border-green-500/30 px-2 py-1 rounded">ACTIVE</span>` : `<span class="text-red-400 text-[10px] bg-red-500/10 border border-red-500/30 px-2 py-1 rounded">BANNED</span>`;
+                usersHtml += `<tr data-status="${u.status}" class="searchable-row hover:bg-white/5"><td class="text-gray-500">${uSno++}</td><td><p class="font-bold text-white">${u.name}</p><p class="text-[10px] text-gray-400">${u.mobile} | ${u.email}</p></td><td class="text-gray-400 font-mono text-xs">${u.password || 'Hidden'}</td><td class="font-bold text-gold-400 text-sm">₹${u.walletBalance || 0}</td><td class="text-[10px] text-gray-400">${formatDate(u.createdAt)}</td><td>${stat}</td><td class="text-right whitespace-nowrap"><button onclick="openEditUser('${id}', '${u.name}', '${u.mobile}', ${u.walletBalance || 0}, '${u.password || ''}')" class="bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-2 py-1 rounded text-xs mr-1"><i class="fa-solid fa-pen"></i> Edit</button>${u.status === 'active' ? `<button onclick="updateDocStatus('users', '${id}', {status: 'banned'})" class="bg-orange-500/10 text-orange-400 hover:bg-orange-500 hover:text-white px-2 py-1 rounded text-xs mr-1">Ban</button>` : `<button onclick="updateDocStatus('users', '${id}', {status: 'active'})" class="bg-green-500/10 text-green-400 hover:bg-green-500 hover:text-white px-2 py-1 rounded text-xs mr-1">Unban</button>`}<button onclick="deleteDocument('users', '${id}')" class="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-2 py-1 rounded text-xs"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+
+                // --- 2. KYC TABLE (Locked details) ---
+                if(u.bankDetails) {
+                    const k = u.bankDetails;
+                    kycHtml += `<tr class="searchable-row hover:bg-white/5">
+                        <td class="text-gray-500">${kSno++}</td>
+                        <td class="font-medium text-gray-300 text-[11px]">${u.email}<br>${u.name}</td>
+                        <td class="text-[11px] text-white">A/C: <span class="font-bold text-gold-400">${k.acc}</span></td>
+                        <td class="text-[11px] text-white">IFSC: ${k.ifsc}<br>UPI: ${k.upi||'-'}</td>
+                        <td><span class="text-green-400 text-[10px] bg-green-500/10 border border-green-500/30 px-2 py-1 rounded">Locked</span></td>
+                        <td class="text-right whitespace-nowrap"><button onclick="resetKyc('${id}')" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white px-2 py-1 rounded text-[10px] font-bold">Unlock / Reset</button></td>
+                    </tr>`;
+                }
+
+                // --- 3. ACTIVE PLANS TABLE ---
+                if (u.activePlans) {
+                    for (let planId in u.activePlans) {
+                        const p = u.activePlans[planId];
+                        const daysPassed = p.validity - p.daysRemaining;
+                        const totalCollected = (daysPassed * p.dailyReturn).toFixed(2);
+                        const planStat = p.daysRemaining > 0 ? `<span class="text-green-400 bg-green-500/10 px-2 py-1 rounded text-[10px]">Active</span>` : `<span class="text-red-400 bg-red-500/10 px-2 py-1 rounded text-[10px]">Expired</span>`;
+
+                        plansHtml += `
+                        <tr class="hover:bg-white/5 border-b border-white/10">
+                            <td class="font-medium text-white text-[11px]">${u.email || u.mobile || 'Unknown'}</td>
+                            <td class="text-purple-300 font-bold">${p.name}</td>
+                            <td class="text-gold-400 font-bold">₹${p.price}</td>
+                            <td class="text-green-400">₹${p.dailyReturn}/day</td>
+                            <td class="text-cyan-400 font-bold">₹${totalCollected}</td>
+                            <td class="text-gray-400 text-xs">${daysPassed} / ${p.validity} Days</td>
+                            <td>${planStat}</td>
+                        </tr>`;
+                    }
+                }
+            });
+
+            document.getElementById('users-table-body').innerHTML = usersHtml; 
+            document.getElementById('dash-tot-users').innerText = tot; 
+            document.getElementById('dash-today-users').innerText = tod; 
+            document.getElementById('real-live-online').innerText = liveOnline > 0 ? liveOnline : 1; 
+
+            document.getElementById('kyc-table-body').innerHTML = kycHtml || `<tr><td colspan="6" class="text-center text-gray-500 py-4">No locked KYC records found.</td></tr>`;
+            document.getElementById('user-investments-body').innerHTML = plansHtml || `<tr><td colspan="7" class="text-center text-gray-500 py-4">No active investments found.</td></tr>`;
+        });
+
+        // UNLOCK KYC FUNCTION
+        window.resetKyc = async (uid) => {
+            if(confirm("Unlock user's Bank Details? They will have to submit details again from their dashboard.")) {
+                try {
+                    await updateDoc(doc(db, "users", uid), { bankDetails: deleteField(), kycStatus: deleteField() });
+                    alert("KYC Reset Successfully.");
+                } catch(e) { alert(e.message); }
+            }
+        };
+
+        // NOTIFICATIONS
+        window.sendNotification = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-send-notif');
+            btn.innerHTML = "Sending..."; btn.disabled = true;
+            try {
+                const title = document.getElementById('notif-title').value;
+                const msg = document.getElementById('notif-msg').value;
+                const targetEmail = document.getElementById('notif-uid').value.trim();
+                
+                await addDoc(collection(db, "notifications"), {
+                    title: title, message: msg, targetEmail: targetEmail === "" ? "ALL" : targetEmail, createdAt: serverTimestamp(), isRead: false
+                });
+                
+                alert(targetEmail === "" ? "Notification sent to ALL users!" : `Notification sent to ${targetEmail}`);
+                e.target.reset();
+            } catch(err) { alert("Error: " + err.message); }
+            btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Send Notification Live`; btn.disabled = false;
+        };
+
+        // DEPOSITS
+        onSnapshot(collection(db, "deposits"), (snapshot) => {
+            let tAmt = 0, pCnt = 0; let html = ""; let sno = 1;
+            snapshot.forEach((dSnap) => {
+                const d = dSnap.data(); const id = dSnap.id;
+                if(d.status === 'pending') pCnt++; if(d.status === 'approved') tAmt += Number(d.amount);
+                html += `<tr data-status="${d.status}" class="searchable-row hover:bg-white/5"><td class="text-gray-500">${sno++}</td><td class="font-medium text-gray-300 text-[11px]">${d.email}</td><td><span class="text-purple-300 text-xs">${d.planName} <br><b class="text-green-400">₹${d.amount}</b></span></td><td class="font-mono text-gold-400 text-[11px]">${d.utr}</td><td>${getBadge(d.status)}<br><span class="text-[9px] text-gray-500">${formatDate(d.createdAt)}</span></td><td class="text-right whitespace-nowrap">${d.status === 'pending' ? `<button onclick="approveDeposit('${id}', '${d.uid}', ${d.amount})" class="bg-green-500/10 text-green-400 hover:bg-green-500 hover:text-white px-2 py-1 rounded text-xs mr-1"><i class="fa-solid fa-check"></i></button><button onclick="updateDocStatus('deposits', '${id}', {status: 'rejected'})" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white px-2 py-1 rounded text-xs mr-1"><i class="fa-solid fa-xmark"></i></button>` : ''}<button onclick="deleteDocument('deposits', '${id}')" class="bg-gray-500/10 text-gray-400 hover:bg-red-500 hover:text-white px-2 py-1 rounded text-xs"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('investments-table-body').innerHTML = html; document.getElementById('dash-tot-dep').innerText = tAmt.toLocaleString(); document.getElementById('dash-pend-dep').innerText = pCnt; calcProfit();
+        });
+
+        // 🟢 WITHDRAWALS (FIXED TO SHOW BANK A/C & IFSC PROPERLY) 🟢
+        onSnapshot(collection(db, "withdrawals"), (snapshot) => {
+            let tAmt = 0, pCnt = 0; let html = ""; let sno = 1;
+            snapshot.forEach((dSnap) => {
+                const w = dSnap.data(); const id = dSnap.id;
+                if(w.status === 'pending') pCnt++; if(w.status === 'approved') tAmt += Number(w.amount);
+                html += `<tr data-status="${w.status}" class="searchable-row hover:bg-white/5"><td class="text-gray-500">${sno++}</td><td class="font-medium text-gray-300 text-[11px]">${w.email}</td><td class="font-bold text-cyan-400">₹${w.amount}</td><td class="text-[10px] text-gray-300">A/C: <span class="font-bold text-gold-400">${w.bankDetails?.acc||'-'}</span><br>IFSC: ${w.bankDetails?.ifsc||'-'}<br>UPI: ${w.bankDetails?.upi||'-'}</td><td>${getBadge(w.status)}</td><td class="text-right whitespace-nowrap">${w.status === 'pending' ? `<button onclick="updateDocStatus('withdrawals', '${id}', {status: 'approved'})" class="bg-green-500/10 text-green-400 hover:bg-green-500 hover:text-white px-2 py-1 rounded text-[10px] font-bold mr-1">PAID</button><button onclick="rejectWithdrawal('${id}', '${w.uid}', ${w.amount})" class="bg-orange-500/10 text-orange-400 hover:bg-orange-500 hover:text-white px-2 py-1 rounded text-[10px] font-bold mr-1">REFUND</button>` : ''}<button onclick="deleteDocument('withdrawals', '${id}')" class="bg-gray-500/10 text-gray-400 hover:bg-red-500 hover:text-white px-2 py-1 rounded text-xs ml-1"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('withdraw-table-body').innerHTML = html; document.getElementById('dash-tot-wit').innerText = tAmt.toLocaleString(); document.getElementById('dash-pend-wit').innerText = pCnt; calcProfit();
+        });
+
+        // GAMES DB
+        onSnapshot(collection(db, "games"), (snapshot) => {
+            let html = "";
+            snapshot.forEach((dSnap) => {
+                const g = dSnap.data(); const id = dSnap.id;
+                let logicText = "<span class='text-gray-500'>Lowest Bet Wins</span>";
+                if(g.logicMode === 'force_loss') logicText = "<span class='text-red-400'>Force Loss</span>";
+                else if(g.logicMode === 'prob') logicText = `<span class='text-cyan-400'>Prob: ${g.winProb}%</span>`;
+                else if(g.logicMode === 'manual') logicText = `<span class='text-purple-400 font-bold'>Manual: ${g.forcedResult}</span>`;
+                const stat = g.status === 'active' ? `<span class="text-green-400 text-[10px] border border-green-500/30 px-2 py-1 rounded">Live</span>` : `<span class="text-red-400 text-[10px] border border-red-500/30 px-2 py-1 rounded">Disabled</span>`;
+                
+                html += `<tr class="hover:bg-white/5 border-b border-white/10"><td><div class="flex items-center gap-2"><img src="${g.image}" class="w-8 h-8 rounded object-cover"><span class="font-bold text-white text-[11px]">${g.name}</span></div></td><td class="text-cyan-400 font-bold text-xs">₹${g.fee}</td><td class="text-[10px]">${logicText}</td><td>${stat}</td><td class="text-right whitespace-nowrap"><a href="${g.url}" target="_blank" class="text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded hover:bg-cyan-500 hover:text-dark text-xs mr-1"><i class="fa-solid fa-eye"></i></a><button onclick="openLiveControl('${id}', '${g.name}', '${g.logicMode}', ${g.winProb||0}, '${g.forcedResult||''}')" class="text-purple-400 bg-purple-500/10 px-2 py-1 rounded hover:bg-purple-500 hover:text-white text-xs mr-1"><i class="fa-solid fa-gamepad"></i> Control</button>${g.status === 'active' ? `<button onclick="updateDocStatus('games', '${id}', {status: 'disabled'})" class="text-orange-400 px-2 text-xs"><i class="fa-solid fa-ban"></i></button>` : `<button onclick="updateDocStatus('games', '${id}', {status: 'active'})" class="text-green-400 px-2 text-xs"><i class="fa-solid fa-play"></i></button>`}<button onclick="deleteDocument('games', '${id}')" class="text-red-500 px-2 text-xs ml-1"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('games-table-body').innerHTML = html;
+        });
+
+        // LIVE BETS
+        let liveBetUnsubscribe = null;
+        window.openLiveControl = (id, name, logic, prob, forced) => {
+            document.getElementById('lc-game-id').value = id; document.getElementById('lc-game-name').innerText = `Game: ${name}`; document.getElementById('lc-game-logic').value = logic || 'lowest'; document.getElementById('lc-prob').value = prob || 0; document.getElementById('lc-forced-result').value = forced || '';
+            document.getElementById('lc-prob-div').style.display = (logic === 'prob') ? 'block' : 'none'; document.getElementById('lc-force-div').style.display = (logic === 'manual') ? 'block' : 'none';
+            if(liveBetUnsubscribe) liveBetUnsubscribe();
+            liveBetUnsubscribe = onSnapshot(query(collection(db, "game_bets"), where("gameId", "==", id), orderBy("createdAt", "desc"), limit(20)), (snapshot) => {
+                let html = ""; let pool = {}; let totalVol = 0;
+                snapshot.forEach((d) => { const b = d.data(); html += `<div class="flex justify-between border-b border-white/5 py-1"><span>${b.userEmail.split('@')[0]}</span> <span class="text-cyan-400">${b.prediction}</span> <span class="text-gold-400">₹${b.amount}</span></div>`; if(!pool[b.prediction]) pool[b.prediction] = 0; pool[b.prediction] += Number(b.amount); totalVol += Number(b.amount); });
+                let statsHtml = `<p class="text-[11px] text-green-400 mb-2">Total Pool: ₹${totalVol}</p>`; for(let pred in pool) statsHtml += `<span class="bg-dark px-2 py-1 rounded text-[10px] mr-1 border border-white/10">${pred}: ₹${pool[pred]}</span>`;
+                document.getElementById('lc-live-bets').innerHTML = snapshot.empty ? "No active bets right now." : statsHtml + `<div class="mt-3">` + html + `</div>`;
+            });
+            document.getElementById('live-control-modal').classList.remove('hidden');
+        };
+        window.saveLiveControl = async () => { try { const id = document.getElementById('lc-game-id').value; const mode = document.getElementById('lc-game-logic').value; const data = { logicMode: mode }; if(mode === 'prob') data.winProb = Number(document.getElementById('lc-prob').value); if(mode === 'manual') data.forcedResult = document.getElementById('lc-forced-result').value; await updateDoc(doc(db, "games", id), data); closeModal('live-control-modal'); alert("Live Game Logic Updated!"); } catch(e) { alert(e.message); } };
+        onSnapshot(query(collection(db, "game_bets"), orderBy("createdAt", "desc"), limit(10)), (snapshot) => { let html = ""; let vol = 0; snapshot.forEach((d) => { const b = d.data(); vol += Number(b.amount); html += `<tr><td class="text-purple-300 font-bold">${b.gameName}</td><td>${b.userEmail.split('@')[0]}</td><td class="text-gold-400 font-bold">₹${b.amount}</td><td class="text-cyan-400">${b.prediction}</td><td class="text-gray-500">${formatDate(b.createdAt)}</td></tr>`; }); document.getElementById('live-bets-body').innerHTML = html || `<tr><td colspan="5" class="text-center text-gray-500 py-4">No active live bets running right now...</td></tr>`; document.getElementById('dash-game-vol').innerText = vol.toLocaleString(); });
+
+        // MISC CONTROLS
+        function calcProfit() { let dep = Number(document.getElementById('dash-tot-dep').innerText.replace(/,/g, '')) || 0; let wit = Number(document.getElementById('dash-tot-wit').innerText.replace(/,/g, '')) || 0; document.getElementById('dash-tot-profit').innerText = (dep - wit).toLocaleString(); }
+        
+        window.approveDeposit = async (docId, uid, amount) => { if(!confirm(`Approve UTR and top-up ₹${amount}?`)) return; try { await updateDoc(doc(db, "deposits", docId), { status: "approved" }); await updateDoc(doc(db, "users", uid), { walletBalance: increment(amount) }); const uData = (await getDoc(doc(db, "users", uid))).data(); if(uData.referredBy && !uData.hasDepositedBefore) { const refBonus = (await getDoc(doc(db, "settings", "general"))).data().referralBonus || 0; if(refBonus > 0) { await updateDoc(doc(db, "users", uData.referredBy), { walletBalance: increment(refBonus) }); await updateDoc(doc(db, "users", uid), { hasDepositedBefore: true }); } } } catch(e) { alert(e.message); } };
+        window.rejectWithdrawal = async (docId, uid, amount) => { if(!confirm(`Reject withdrawal and refund ₹${amount} to wallet?`)) return; try { await updateDoc(doc(db, "withdrawals", docId), { status: "rejected" }); await updateDoc(doc(db, "users", uid), { walletBalance: increment(amount) }); } catch(e) { alert(e.message); } };
+        window.openEditUser = (uid, n, m, w, p) => { document.getElementById('edit-uid').value=uid; document.getElementById('edit-name').value=n; document.getElementById('edit-mobile').value=m; document.getElementById('edit-wallet').value=w; document.getElementById('edit-password').value=p; document.getElementById('edit-user-modal').classList.remove('hidden'); };
+        window.saveUserEdit = async () => { try { await updateDoc(doc(db, "users", document.getElementById('edit-uid').value), { name: document.getElementById('edit-name').value, mobile: document.getElementById('edit-mobile').value, walletBalance: Number(document.getElementById('edit-wallet').value), password: document.getElementById('edit-password').value }); closeModal('edit-user-modal'); alert("User Wallet & Details Saved Manually!"); } catch(e) { alert(e.message); } };
+        window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+        
+        // 🟢 GAME DEPLOY LOGIC (FIXED HTML/CODE UPLOAD) 🟢
+        window.deployGame = async (e) => { 
+            e.preventDefault(); 
+            const btn = document.getElementById('gm-upload-btn'); btn.innerHTML = "Deploying..."; btn.disabled = true; 
+            try { 
+                const name = document.getElementById('gm-name').value; 
+                const img = document.getElementById('gm-img').value; 
+                const fee = Number(document.getElementById('gm-fee').value); 
+                const fileInput = document.getElementById('gm-file'); 
+                const rawCode = document.getElementById('gm-code').value; 
+                const logic = document.getElementById('gm-logic').value; 
+                const prob = Number(document.getElementById('gm-prob').value) || 0; 
+                
+                let finalUrl = ""; let htmlString = rawCode;
+
+                if (fileInput.files.length > 0) { 
+                    const sref = sRef(storage, 'games/' + Date.now() + '_' + fileInput.files[0].name); 
+                    await uploadBytes(sref, fileInput.files[0]); 
+                    finalUrl = await getDownloadURL(sref); 
+                    // Optional: read file as text if you want to save it directly into Firestore as `gameHtml` instead of a URL.
+                    // For now, storing as URL works perfectly if iframe uses src="url", but dashboard uses srcdoc="htmlCode".
+                    alert("Note: Uploaded file as URL. For Dashboard use 'Raw HTML Code' box directly.");
+                } 
+                
+                if (rawCode.trim() === "") { 
+                    alert("Provide Raw HTML Code in the box to deploy game properly."); btn.innerHTML = "Deploy Game"; btn.disabled = false; return; 
+                } 
+
+                await addDoc(collection(db, "games"), { 
+                    name, image: img, url: finalUrl, gameHtml: htmlString, fee, logicMode: logic, winProb: prob, playedCount: 0, status: 'active', createdAt: serverTimestamp() 
+                }); 
+                
+                alert("Game Deployed to Dashboard successfully!"); 
+                e.target.reset(); document.getElementById('gm-prob-div').style.display='none'; 
+            } catch(er) { alert(er.message); } 
+            
+            btn.innerHTML = "Deploy Game"; btn.disabled = false; 
+        };
+
+        const loadSettings = async () => { const sSnap = await getDoc(doc(db, "settings", "general")); if(sSnap.exists()) { const s = sSnap.data(); document.getElementById('set-yt').value = s.socialYoutube || ""; document.getElementById('set-tg').value = s.socialTelegram || ""; document.getElementById('set-ai').value = s.openAiKey || ""; document.getElementById('maint-toggle').checked = s.maintenance || false; document.getElementById('set-ref-bonus').value = s.referralBonus || 0; } };
+        window.saveAllSettings = async () => { try { await setDoc(doc(db, "settings", "general"), { socialYoutube: document.getElementById('set-yt').value, socialTelegram: document.getElementById('set-tg').value, openAiKey: document.getElementById('set-ai').value, referralBonus: Number(document.getElementById('set-ref-bonus').value), maintenance: document.getElementById('maint-toggle').checked }, { merge: true }); alert("Settings Applied Live!"); } catch(e) { alert(e.message); } };
+        loadSettings();
+    </script>
+
+    <script>
+        function switchTab(tabId) { document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(el => { el.classList.remove('bg-purple-500/20', 'text-white', 'border-purple-500/30', 'shadow-[0_0_10px_rgba(138,43,226,0.2)]'); el.classList.add('text-gray-400'); }); document.getElementById(tabId).classList.add('active'); const btn = document.getElementById('btn-' + tabId); btn.classList.remove('text-gray-400'); btn.classList.add('bg-purple-500/20', 'text-white', 'border-purple-500/30', 'shadow-[0_0_10px_rgba(138,43,226,0.2)]'); if(window.innerWidth < 1024) toggleSidebar(); }
+        function filterTable(inputId, tbodyId) { let filter = document.getElementById(inputId).value.toLowerCase(); let rows = document.getElementById(tbodyId).getElementsByTagName('tr'); for(let row of rows) row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none"; }
+        function filterStatusTable(tbodyId, status) { let rows = document.getElementById(tbodyId).getElementsByTagName('tr'); for(let row of rows) { if(status === 'all') row.style.display = ""; else row.style.display = row.getAttribute('data-status') === status ? "" : "none"; } }
+    </script>
+</body>
+</html>
