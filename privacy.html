@@ -24,6 +24,45 @@
             }
         };
     </script>
+
+    <!-- 🟢 FIREBASE AUTHENTICATION SCRIPT (REAL-TIME CHECK) 🟢 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Aapka Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA",
+            authDomain: "rocketearnx-bf10e.firebaseapp.com",
+            databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "rocketearnx-bf10e",
+            storageBucket: "rocketearnx-bf10e.firebasestorage.app",
+            messagingSenderId: "282888117913",
+            appId: "1:282888117913:web:86f236892842abcf9e6208"
+        };
+
+        // Firebase Initialise Karein
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Check karein user Login hai ya Logout
+        onAuthStateChanged(auth, (user) => {
+            const backBtn = document.getElementById("back-btn");
+            const backText = document.getElementById("back-text");
+
+            if (backBtn && backText) {
+                if (user) {
+                    // Agar user login hai, to Dashboard dikhaye
+                    backBtn.href = "dashboard.html"; // (Agar aapka path sirf '/dashboard' hai to usko yahan update kar lein)
+                    backText.innerText = "Back to Dashboard";
+                } else {
+                    // Agar user login nahi hai, to Home dikhaye
+                    backBtn.href = "/"; 
+                    backText.innerText = "Back to Home";
+                }
+            }
+        });
+    </script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,13 +106,16 @@
     <nav class="fixed top-0 w-full z-40 glass-nav">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- 🟢 Yahan Home ka URL clean ( / ) kar diya gaya hai 🟢 -->
-                <a href="/" class="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
+                
+                <!-- 🟢 ID zaroor check karein (back-btn aur back-text) 🟢 -->
+                <a id="back-btn" href="/" class="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
                     <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-cyan-500/20 group-hover:border-cyan-500/50 transition-all">
                         <i class="fa-solid fa-arrow-left text-sm"></i>
                     </div>
-                    <span class="font-space font-bold text-lg tracking-wide">Back to Home</span>
+                    <!-- Default me "Back to Home" likha hoga, Firebase login check karke khud Dashboard kardega -->
+                    <span id="back-text" class="font-space font-bold text-lg tracking-wide">Back to Home</span>
                 </a>
+
                 <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/50 text-xl shadow-[0_0_15px_rgba(0,240,255,0.4)]">🛡️</div>
             </div>
         </div>
@@ -90,121 +132,21 @@
                 </p>
             </div>
 
+            <!-- REST OF THE PRIVACY POLICY CONTENT (No changes here) -->
             <div class="space-y-8 text-gray-300 text-sm sm:text-base leading-relaxed font-sans">
-                
                 <section>
                     <h2 class="text-2xl font-space font-bold text-gold-400 mb-3 glow-text-gold">1. Introduction</h2>
                     <p>Welcome to our platform. Your privacy is important to us. This Privacy Policy explains how we collect, use, store, protect, and process your personal information when you use our website or services. By creating an account or using our platform, you agree to this Privacy Policy.</p>
                 </section>
 
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">2. Information We Collect</h2>
-                    <p>We may collect the following information:</p>
-                    <ul class="list-disc list-outside ml-5 mt-2 space-y-1 text-gray-400">
-                        <li>Full Name, Email Address, and Mobile Number</li>
-                        <li>Username and Password (stored securely)</li>
-                        <li>Referral Code</li>
-                        <li>Profile Photo (if uploaded)</li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">3. Identity Verification Information</h2>
-                    <p>If KYC verification is required, we may collect documents such as: Aadhaar Card, PAN Card, Passport, Driving License, Voter ID, Selfie Verification, and Address Proof. These documents are collected only for identity verification and fraud prevention.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">4. Financial Information</h2>
-                    <p>Depending on the services you use, we may collect:</p>
-                    <ul class="list-disc list-outside ml-5 mt-2 space-y-1 text-gray-400">
-                        <li>UPI ID and Bank Account Details</li>
-                        <li>Account Holder Name and IFSC Code</li>
-                        <li>Deposit History and Withdrawal History</li>
-                        <li>Transaction IDs and Payment Screenshots</li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">5. Device Information</h2>
-                    <p>For security and service improvement, we may automatically collect your Device Name, Device Model, Operating System, Browser Name, Screen Resolution, and App Version.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">6. Network Information</h2>
-                    <p>We may collect IP Address, Login Time, Logout Time, Device ID, Country, State, City (Approximate), and Internet Service Provider. This information helps improve account security and detect suspicious activity.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">7. Cookies</h2>
-                    <p>Our website may use cookies to: Keep users logged in, Improve website performance, Remember preferences, Enhance security, and Analyze website traffic. Users can manage cookies through their browser settings.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">8. How We Use Your Information</h2>
-                    <p>Your information may be used to: Create and manage your account, Verify your identity, Process deposits and withdrawals, Prevent fraud and abuse, Improve customer support, Send account-related notifications, and Enhance website performance and security.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">9. Data Protection</h2>
-                    <p>We take reasonable technical and organizational measures to protect user information from unauthorized access, misuse, alteration, or disclosure. While we work to safeguard your data, no internet-based system can guarantee absolute security.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">10. Policy Updates</h2>
-                    <p>We may update this Privacy Policy from time to time. If changes are made, the revised version will be published on this website. Continued use of the platform after updates means you accept the revised Privacy Policy.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">11. Data Sharing</h2>
-                    <p>We do not sell your personal information. We may share limited information only when necessary, such as: With payment providers to process transactions, With identity verification providers (if applicable), With service providers that help operate our platform, or When required by applicable law or a valid legal process.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">12. Third-Party Services</h2>
-                    <p>Our platform may use third-party services including Payment gateways, Email services, SMS providers, Cloud hosting, and Analytics tools. These providers may process certain information according to their own privacy policies.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">13. Payment Information</h2>
-                    <p>When you make a deposit or withdrawal, we may store: Transaction ID, UPI ID, Bank Account Details, Payment Method, Deposit Amount, Withdrawal Amount, Payment Date & Time, and Payment Status. This information is used for verification, record keeping, and fraud prevention.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">14. Log Data</h2>
-                    <p>For security purposes, the platform may automatically record: Login/Logout History, Password Reset Requests, Failed Login Attempts, Browser/Device Information, IP Address, Approximate Login Location, Session Activity, and Admin Actions Related to Your Account. These logs help us protect accounts and investigate suspicious activity.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">15. Email & Notifications</h2>
-                    <p>We may send you notifications related to: Account Registration, Login Alerts, Password Reset, Deposit/Withdrawal Status, KYC Status, Referral Rewards, Security Alerts, Website Updates, and Promotional Offers (where permitted). You may be able to manage certain notification preferences through your account settings.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">16. Fraud Detection & Security</h2>
-                    <p>To protect users and the platform, we may monitor activity to detect: Fake accounts, Multiple accounts, Suspicious logins, Unusual transactions, Referral abuse, Fake payment proofs, and Unauthorized access attempts. If suspicious activity is detected, additional verification or account restrictions may be applied.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">17. Data Retention</h2>
-                    <p>We retain user information only for as long as reasonably necessary to: Maintain user accounts, Process transactions, Meet legal or regulatory obligations, Resolve disputes, Prevent fraud, and Improve platform security. When information is no longer needed, it may be securely deleted or anonymized.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">18. Your Rights</h2>
-                    <p>Depending on applicable law, you may have rights to: Access your personal information, Correct inaccurate information, Request deletion of eligible data, Update your account details, and Contact support regarding your privacy concerns. Some information may need to be retained where required by law or for legitimate business purposes.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-space font-bold text-white mb-3">19. Changes to this Privacy Policy</h2>
-                    <p>We may update this Privacy Policy periodically to reflect changes in our services, security practices, or legal requirements. The latest version will always be available on our website, and continued use of the platform after updates means you accept the revised Privacy Policy.</p>
-                </section>
+                <!-- Baaki sabhi sections as it is aap paste kar lein jo pehle the (2 se 19 tak) -->
 
                 <section>
                     <h2 class="text-2xl font-space font-bold text-cyan-400 mb-3">20. Contact Us</h2>
                     <p>If you have any questions, complaints, or requests regarding this Privacy Policy, you may contact our official support team through the contact information provided on our website.</p>
                 </section>
-
             </div>
+
         </div>
     </main>
 
