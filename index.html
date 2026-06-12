@@ -108,7 +108,7 @@
                         <div class="ml-8 flex items-center space-x-5">
                             <a href="#home" class="hover:text-purple-400 text-white px-2 py-2 text-sm font-medium">Home</a>
                             <a href="#plans" class="hover:text-purple-400 text-gray-300 px-2 py-2 text-sm font-medium">Plans</a>
-                            <button onclick="goToPage('games.html')" class="bg-gradient-to-r from-cyan-500 to-blue-500 text-dark px-3 py-1 rounded-full font-bold text-xs hover:scale-105 transition-transform shadow-[0_0_10px_#00f0ff] animate-pulse inline-flex items-center"><i class="fa-solid fa-gamepad mr-1"></i> Game Zone</button>
+                            <button onclick="goToPage('/games')" class="bg-gradient-to-r from-cyan-500 to-blue-500 text-dark px-3 py-1 rounded-full font-bold text-xs hover:scale-105 transition-transform shadow-[0_0_10px_#00f0ff] animate-pulse inline-flex items-center"><i class="fa-solid fa-gamepad mr-1"></i> Game Zone</button>
                             <a href="#how-it-works" class="hover:text-purple-400 text-gray-300 px-2 py-2 text-sm font-medium">How It Works</a>
                             <a href="#faq" class="hover:text-purple-400 text-gray-300 px-2 py-2 text-sm font-medium">FAQ</a>
                         </div>
@@ -119,7 +119,7 @@
                             <button onclick="openAuth('register')" class="bg-gradient-to-r from-gold-600 to-gold-400 text-dark px-6 py-2.5 rounded-full font-bold text-sm hover:scale-105 transition-transform glow-gold border border-gold-400">Register</button>
                         </div>
                         <div id="nav-user-info" class="hidden flex items-center gap-3">
-                            <button onclick="goToPage('dashboard.html')" class="bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold px-5 py-2 rounded-full hover:scale-105 transition shadow-[0_0_10px_rgba(138,43,226,0.5)]"><i class="fas fa-columns mr-1"></i> Dashboard</button>
+                            <button onclick="goToPage('/dashboard')" class="bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold px-5 py-2 rounded-full hover:scale-105 transition shadow-[0_0_10px_rgba(138,43,226,0.5)]"><i class="fas fa-columns mr-1"></i> Dashboard</button>
                             <button onclick="logoutUser()" class="text-red-400 hover:text-red-300 text-sm font-bold border border-red-500/30 px-3 py-2 rounded-full bg-red-500/10">Logout</button>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                 <div class="px-4 py-6 space-y-2 flex flex-col items-center">
                     <a href="#home" onclick="toggleMobileMenu()" class="text-white block px-3 py-2 font-medium text-lg">Home</a>
                     <a href="#plans" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-purple-400 block px-3 py-2 font-medium text-lg">Plans</a>
-                    <button onclick="toggleMobileMenu(); goToPage('games.html')" class="w-full text-center bg-gradient-to-r from-cyan-500 to-blue-500 text-dark py-2 rounded-full font-bold text-base shadow-[0_0_10px_#00f0ff] animate-pulse my-2"><i class="fa-solid fa-gamepad"></i> Game Zone</button>
+                    <button onclick="toggleMobileMenu(); goToPage('/games')" class="w-full text-center bg-gradient-to-r from-cyan-500 to-blue-500 text-dark py-2 rounded-full font-bold text-base shadow-[0_0_10px_#00f0ff] animate-pulse my-2"><i class="fa-solid fa-gamepad"></i> Game Zone</button>
                     <a href="#how-it-works" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-purple-400 block px-3 py-2 font-medium text-lg">How It Works</a>
                     <a href="#faq" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-purple-400 block px-3 py-2 font-medium text-lg">FAQ</a>
                     
@@ -142,7 +142,7 @@
                         <button onclick="toggleMobileMenu(); openAuth('register')" class="text-center bg-gradient-to-r from-gold-600 to-gold-400 text-dark py-3 rounded-full font-bold glow-gold">Register</button>
                     </div>
                     <div id="mobile-user-info" class="hidden mt-4 flex flex-col gap-3 w-full px-4 max-w-xs pt-4 border-t border-white/10 text-center">
-                        <button onclick="goToPage('dashboard.html')" class="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-3 rounded-full shadow-[0_0_10px_rgba(138,43,226,0.5)]">Go to Dashboard</button>
+                        <button onclick="goToPage('/dashboard')" class="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-3 rounded-full shadow-[0_0_10px_rgba(138,43,226,0.5)]">Go to Dashboard</button>
                         <button onclick="toggleMobileMenu(); logoutUser()" class="text-center text-red-400 border border-red-500/30 py-3 rounded-full hover:bg-red-500/10 font-bold">Logout</button>
                     </div>
                 </div>
@@ -199,32 +199,32 @@
                         <h3 class="text-xl font-space font-bold text-gray-200 mb-2">Nova Start</h3><div class="text-3xl font-bold text-white mb-2">₹299</div>
                         <div class="bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full inline-block mb-6 w-max">+₹151 Profit</div>
                         <div class="space-y-4 mb-8 flex-grow"><div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-400">Daily Return</span><span class="font-bold text-white">₹15</span></div><div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-400">Duration</span><span class="font-bold text-white">15 Days</span></div></div>
-                        <button onclick="openPaymentModal(299, 'Nova Start')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold hover:scale-105 transition-all shadow-lg">Invest Now</button>
+                        <button onclick="handlePlanClick(299, 'Nova Start')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold hover:scale-105 transition-all shadow-lg">Invest Now</button>
                     </div>
                     <div class="reveal glass-card rounded-3xl p-6 flex flex-col h-full relative">
                         <h3 class="text-xl font-space font-bold text-gray-200 mb-2">Rocket Mini</h3><div class="text-3xl font-bold text-white mb-2">₹499</div>
                         <div class="bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full inline-block mb-6 w-max">+₹251 Profit</div>
                         <div class="space-y-4 mb-8 flex-grow"><div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-400">Daily Return</span><span class="font-bold text-white">₹25</span></div><div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-400">Duration</span><span class="font-bold text-white">15 Days</span></div></div>
-                        <button onclick="openPaymentModal(499, 'Rocket Mini')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold hover:scale-105 transition-all shadow-lg">Invest Now</button>
+                        <button onclick="handlePlanClick(499, 'Rocket Mini')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold hover:scale-105 transition-all shadow-lg">Invest Now</button>
                     </div>
                     <div class="reveal glass-card rounded-3xl p-8 flex flex-col glow-border-gold transform lg:scale-110 z-10 bg-dark/80 sm:col-span-2 lg:col-span-1 h-[105%] relative overflow-hidden">
                         <div class="absolute top-0 right-0 bg-gradient-to-r from-gold-600 to-gold-400 text-dark font-bold text-[10px] py-1.5 px-4 rounded-bl-xl shadow-lg">⭐ POPULAR</div>
                         <h3 class="text-2xl font-space font-bold text-gold-400 mb-2 mt-2 glow-text-gold">Big Master</h3><div class="text-4xl font-bold text-white mb-2">₹999</div>
                         <div class="bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full inline-block mb-6 w-max">+₹651 Profit</div>
                         <div class="space-y-4 mb-8 flex-grow"><div class="flex justify-between border-b border-white/10 pb-2"><span class="text-gray-300">Daily Return</span><span class="font-bold text-white text-lg">₹110</span></div><div class="flex justify-between border-b border-white/10 pb-2"><span class="text-gray-300">Duration</span><span class="font-bold text-white">15 Days</span></div></div>
-                        <button onclick="openPaymentModal(999, 'Big Master')" class="w-full py-4 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-dark font-extrabold hover:scale-105 transition-all shadow-[0_0_15px_rgba(255,215,0,0.5)]">Invest Now</button>
+                        <button onclick="handlePlanClick(999, 'Big Master')" class="w-full py-4 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-dark font-extrabold hover:scale-105 transition-all shadow-[0_0_15px_rgba(255,215,0,0.5)]">Invest Now</button>
                     </div>
                     <div class="reveal glass-card rounded-3xl p-6 flex flex-col h-full relative">
                         <h3 class="text-xl font-space font-bold text-gray-200 mb-2">Ultra Prime</h3><div class="text-3xl font-bold text-white mb-2">₹1999</div>
                         <div class="bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full inline-block mb-6 w-max">+₹1601 Profit</div>
                         <div class="space-y-4 mb-8 flex-grow"><div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-400">Daily Return</span><span class="font-bold text-white">₹240</span></div><div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-400">Duration</span><span class="font-bold text-white">15 Days</span></div></div>
-                        <button onclick="openPaymentModal(1999, 'Ultra Prime')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold hover:scale-105 transition-all shadow-lg">Invest Now</button>
+                        <button onclick="handlePlanClick(1999, 'Ultra Prime')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold hover:scale-105 transition-all shadow-lg">Invest Now</button>
                     </div>
                     <div class="reveal glass-card rounded-3xl p-6 flex flex-col h-full relative">
                         <h3 class="text-xl font-space font-bold text-gray-200 mb-2">Titan Max</h3><div class="text-3xl font-bold text-white mb-2">₹2999</div>
                         <div class="bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full inline-block mb-6 w-max">+₹2701 Profit</div>
                         <div class="space-y-4 mb-8 flex-grow"><div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-400">Daily Return</span><span class="font-bold text-white">₹380</span></div><div class="flex justify-between border-b border-white/5 pb-2"><span class="text-gray-400">Duration</span><span class="font-bold text-white">15 Days</span></div></div>
-                        <button onclick="openPaymentModal(2999, 'Titan Max')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold hover:scale-105 transition-all shadow-lg">Invest Now</button>
+                        <button onclick="handlePlanClick(2999, 'Titan Max')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold hover:scale-105 transition-all shadow-lg">Invest Now</button>
                     </div>
                 </div>
             </div>
@@ -256,7 +256,7 @@
                         <div class="text-7xl mb-6 animate-float drop-shadow-[0_0_20px_rgba(255,215,0,0.6)]">🎁</div>
                         <h2 class="font-space text-4xl md:text-5xl font-bold mb-4 glow-text-gold">Invite Friends & Earn Real Cash</h2>
                         <p class="text-lg text-gray-300 max-w-2xl mb-8">Share your unique referral link and get flat commission straight into your wallet when your friends invest.</p>
-                        <button onclick="goToPage('referral.html')" class="bg-gradient-to-r from-gold-600 to-gold-400 text-dark px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform glow-gold shadow-[0_0_20px_rgba(255,215,0,0.4)]">
+                        <button onclick="goToPage('/referral')" class="bg-gradient-to-r from-gold-600 to-gold-400 text-dark px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform glow-gold shadow-[0_0_20px_rgba(255,215,0,0.4)]">
                             Start Referring Now
                         </button>
                     </div>
@@ -314,7 +314,6 @@
                         </div>
                         <p class="text-gray-400 text-sm mb-6">Grow Daily, Earn Smarter. The most advanced futuristic wealth generation platform.</p>
                         <div class="flex gap-4">
-                            <!-- Social links fetched from Admin -->
                             <a id="sys-youtube" href="#" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex justify-center items-center hover:bg-red-500/20 hover:text-red-500 transition"><i class="fa-brands fa-youtube"></i></a>
                             <a id="sys-telegram" href="#" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex justify-center items-center hover:bg-blue-500/20 hover:text-blue-400 transition"><i class="fa-brands fa-telegram"></i></a>
                             <a id="sys-instagram" href="#" target="_blank" class="w-10 h-10 rounded-full bg-white/5 flex justify-center items-center hover:bg-pink-500/20 hover:text-pink-400 transition"><i class="fa-brands fa-instagram"></i></a>
@@ -325,15 +324,15 @@
                         <ul class="space-y-2 text-sm text-gray-400">
                             <li><a href="#home" class="hover:text-purple-400">Home</a></li>
                             <li><a href="#plans" class="hover:text-purple-400">Plans & Checkout</a></li>
-                            <li><button onclick="goToPage('games.html')" class="hover:text-purple-400">Game Zone</button></li>
-                            <li><button onclick="goToPage('referral.html')" class="hover:text-purple-400">Refer & Earn</button></li>
+                            <li><button onclick="goToPage('/games')" class="hover:text-purple-400">Game Zone</button></li>
+                            <li><button onclick="goToPage('/referral')" class="hover:text-purple-400">Refer & Earn</button></li>
                         </ul>
                     </div>
                     <div>
                         <h4 class="font-bold text-lg mb-4 text-white">Legal Info</h4>
                         <ul class="space-y-2 text-sm text-gray-400">
-                            <li><a href="terms.html" class="hover:text-purple-400">Terms & Conditions</a></li>
-                            <li><a href="privacy.html" class="hover:text-purple-400">Privacy Policy</a></li>
+                            <li><a href="/terms" class="hover:text-purple-400">Terms & Conditions</a></li>
+                            <li><a href="/privacy" class="hover:text-purple-400">Privacy Policy</a></li>
                             <li><a href="#faq" class="hover:text-purple-400">Help / FAQ</a></li>
                         </ul>
                     </div>
@@ -365,7 +364,7 @@
                     <div class="relative"><div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-envelope"></i></div><input type="email" id="login-email" required placeholder="Enter @gmail.com" class="w-full input-glass rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-gray-500"></div>
                 </div>
                 <div>
-                    <div class="flex justify-between items-center mb-1.5 ml-1 mr-1"><label class="block text-sm font-medium text-gray-300">Password</label><a href="support.html" class="text-xs text-purple-400 hover:text-purple-300 font-medium">Forgot?</a></div>
+                    <div class="flex justify-between items-center mb-1.5 ml-1 mr-1"><label class="block text-sm font-medium text-gray-300">Password</label><a href="/support" class="text-xs text-purple-400 hover:text-purple-300 font-medium">Forgot?</a></div>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-lock"></i></div>
                         <input type="password" id="login-password" required placeholder="Enter password" class="w-full input-glass rounded-xl py-3.5 pl-11 pr-12 text-white placeholder-gray-500">
@@ -441,7 +440,7 @@
                 <form onsubmit="submitPayment(event)" class="space-y-4">
                     <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-3">
                         <input type="checkbox" id="terms-agree" required class="custom-checkbox flex-shrink-0 mt-0.5">
-                        <label for="terms-agree" class="text-xs text-gray-300 leading-relaxed cursor-pointer select-none">I agree to the <a href="privacy.html" class="text-purple-400 hover:text-white underline font-semibold">Privacy Policy</a> & <a href="terms.html" class="text-purple-400 hover:text-white underline font-semibold">Terms</a>.</label>
+                        <label for="terms-agree" class="text-xs text-gray-300 leading-relaxed cursor-pointer select-none">I agree to the <a href="/privacy" class="text-purple-400 hover:text-white underline font-semibold">Privacy Policy</a> & <a href="/terms" class="text-purple-400 hover:text-white underline font-semibold">Terms</a>.</label>
                     </div>
                     <input type="number" id="utr-input" required placeholder="Enter 12-Digit UTR" class="w-full input-glass rounded-xl py-3 px-4 text-white text-sm font-mono text-center tracking-widest" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);">
                     <button type="submit" id="submit-utr-btn" class="w-full bg-green-500 text-white font-bold py-3.5 rounded-xl">Submit & Verify Payment</button>
@@ -465,11 +464,11 @@
 
     <!-- ==================== FIREBASE INTEGRATION & LOGIC ==================== -->
     <script type="module">
+        // Included updateDoc, increment, query, where based on the features added
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, collection, addDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, collection, addDoc, serverTimestamp, onSnapshot, updateDoc, increment, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Admin DB Connection
         const app = initializeApp({
             apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA", authDomain: "rocketearnx-bf10e.firebaseapp.com", databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "rocketearnx-bf10e", storageBucket: "rocketearnx-bf10e.firebasestorage.app", messagingSenderId: "282888117913", appId: "1:282888117913:web:86f236892842abcf9e6208"
         });
@@ -479,7 +478,11 @@
         window.pendingPlanAmount = 0; window.pendingPlanName = "";
         window.aiApiKey = "";
 
-        // Fetch Settings Live
+        // URL cleanup: Replaced .html logic with clean domain routing
+        window.goToPage = (url) => { if(window.currentUser) { window.location.href = url; } else { window.openAuth('login'); } };
+        window.openOrRedirect = (authType) => { if(window.currentUser) { window.location.href = "/dashboard"; } else { window.openAuth(authType); } };
+
+        // Real-time Settings Listener
         onSnapshot(doc(db, "settings", "general"), d => { 
             if(d.exists()) {
                 const s = d.data(); 
@@ -490,45 +493,142 @@
             }
         });
 
-        window.goToPage = (url) => { if(window.currentUser) { window.location.href = url; } else { window.openAuth('login'); } };
-        window.openOrRedirect = (authType) => { if(window.currentUser) { window.location.href = "dashboard.html"; } else { window.openAuth(authType); } };
+        // ------------------ FEATURE 1: USER ONLINE STATUS ------------------
+        let onlineInterval = null;
+        function keepUserOnline(userId) {
+            updateDoc(doc(db, "users", userId), { lastActive: serverTimestamp() }).catch(e => console.log(e));
+            onlineInterval = setInterval(() => {
+                updateDoc(doc(db, "users", userId), { lastActive: serverTimestamp() }).catch(e => console.log(e));
+            }, 120000); 
+        }
+
+        // ------------------ FEATURE 2: ADMIN NOTIFICATIONS ------------------
+        let notifUnsubscribe = null;
+        function listenForAdminNotifications(currentUserEmail) {
+            const notifRef = collection(db, "notifications");
+            notifUnsubscribe = onSnapshot(notifRef, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const notif = change.doc.data();
+                        if (notif.targetEmail === "ALL" || notif.targetEmail === currentUserEmail) {
+                            showAdminNotification(notif.title, notif.message);
+                        }
+                    }
+                });
+            });
+        }
+
+        window.showAdminNotification = (title, message) => {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-[500] flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm transition-opacity duration-300';
+            modal.innerHTML = `
+                <div class="bg-gradient-to-br from-[#1e1032] to-[#0a0514] p-8 rounded-3xl max-w-sm w-full border border-purple-500 shadow-[0_0_40px_rgba(138,43,226,0.6)] transform scale-0 transition-transform duration-300 flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500 text-3xl mb-4 animate-bounce">🔔</div>
+                    <h3 class="text-white font-space font-bold text-2xl mb-2">${title}</h3>
+                    <p class="text-gray-300 text-sm mb-8 leading-relaxed">${message}</p>
+                    <button onclick="this.closest('.fixed').remove()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-3.5 rounded-xl shadow-[0_0_15px_rgba(138,43,226,0.5)] hover:scale-105 transition-transform">Mark as Read</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            setTimeout(() => modal.firstElementChild.classList.replace('scale-0', 'scale-100'), 10);
+        };
+
+        // ------------------ FEATURE 3: BUY INVESTMENT PLAN ------------------
+        window.buyInvestmentPlan = async (userEmail, userId, planName, planPrice, dailyIncome) => {
+            try {
+                // 1. Deduct wallet balance
+                await updateDoc(doc(db, "users", userId), {
+                    walletBalance: increment(-planPrice)
+                });
+
+                // 2. Add investment record
+                await addDoc(collection(db, "user_investments"), {
+                    userId: userId,
+                    userEmail: userEmail,
+                    planName: planName,
+                    investAmount: planPrice,
+                    dailyIncome: dailyIncome,
+                    status: "active",
+                    buyDate: serverTimestamp() 
+                });
+
+                alert(`🎉 Success! ${planName} has been purchased successfully from your wallet.`);
+                window.location.href = "/dashboard";
+            } catch (error) {
+                console.error("Error buying plan:", error);
+                alert("Transaction Failed. Please contact Support.");
+            }
+        };
+
+        const getDailyIncome = (planName) => {
+            const plans = { "Nova Start": 15, "Rocket Mini": 25, "Big Master": 110, "Ultra Prime": 240, "Titan Max": 380 };
+            return plans[planName] || 0;
+        };
+
+        // Intercept Plan Click Logic: Checks Balance First
+        window.handlePlanClick = (amount, planName) => {
+            if(!window.currentUser) {
+                window.pendingPlanAmount = amount; 
+                window.pendingPlanName = planName; 
+                window.openAuth('register'); 
+                return; 
+            }
+            
+            // Logged in user: Check if wallet has enough balance to buy directly
+            if(window.userData && window.userData.walletBalance >= amount) {
+                const isConfirmed = confirm(`Your Wallet Balance is ₹${window.userData.walletBalance}.\n\nDo you want to purchase ${planName} directly using your wallet balance for ₹${amount}?`);
+                if(isConfirmed) {
+                    window.buyInvestmentPlan(window.currentUser.email, window.currentUser.uid, planName, amount, getDailyIncome(planName));
+                }
+            } else {
+                // Not enough wallet balance, prompt them to Deposit via QR
+                window.openPaymentModal(amount, planName);
+            }
+        };
+
 
         // Global Auth State
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 window.currentUser = user; 
-                document.getElementById('nav-auth-buttons').classList.add('hidden'); document.getElementById('nav-user-info').classList.remove('hidden'); document.getElementById('nav-user-email').innerText = user.email.split('@')[0];
+                document.getElementById('nav-auth-buttons').classList.add('hidden'); document.getElementById('nav-user-info').classList.remove('hidden'); 
                 document.getElementById('mobile-auth-buttons').classList.add('hidden'); document.getElementById('mobile-user-info').classList.remove('hidden');
+                
                 onSnapshot(doc(db, "users", user.uid), (d) => { if(d.exists()) window.userData = d.data(); });
+                
+                // Initialize background loops for logged-in user
+                listenForAdminNotifications(user.email);
+                keepUserOnline(user.uid);
             } else { 
                 window.currentUser = null; window.userData = null;
                 document.getElementById('nav-auth-buttons').classList.remove('hidden'); document.getElementById('nav-user-info').classList.add('hidden');
                 document.getElementById('mobile-auth-buttons').classList.remove('hidden'); document.getElementById('mobile-user-info').classList.add('hidden');
+                
+                // Stop background intervals when logged out
+                if(notifUnsubscribe) { notifUnsubscribe(); notifUnsubscribe = null; }
+                if(onlineInterval) { clearInterval(onlineInterval); onlineInterval = null; }
             }
         });
 
         window.logoutUser = () => signOut(auth).then(()=>alert("Logged Out Successfully"));
 
-        // FIXED LOGIC HERE: Immediately set window.currentUser so QR modal triggers instantly!
         window.handleRegister = async (e) => {
             e.preventDefault(); const btn = document.getElementById('reg-btn'); btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Creating...`; btn.disabled=true;
             const em = document.getElementById('reg-email').value; const ps = document.getElementById('reg-password').value;
             const nm = document.getElementById('reg-name').value; const ph = document.getElementById('reg-phone').value;
             try { 
                 const c = await createUserWithEmailAndPassword(auth, em, ps); 
-                window.currentUser = c.user; // <-- Asynchronous fix! Forces system to recognize login instantly.
+                window.currentUser = c.user;
 
                 const urlParams = new URLSearchParams(window.location.search); const refCode = urlParams.get('ref') || null;
-                
                 await setDoc(doc(db, "users", c.user.uid), { name: nm, email: c.user.email, mobile: ph, referredBy: refCode, walletBalance: 0, status: 'active', createdAt: serverTimestamp() }); 
                 
                 window.closeAuth(); 
                 
-                // PENDING PLAN CHECK - If they clicked Invest Now, immediately open QR
                 if(window.pendingPlanAmount > 0) {
-                    window.openPaymentModal(window.pendingPlanAmount, window.pendingPlanName); 
+                    window.handlePlanClick(window.pendingPlanAmount, window.pendingPlanName); 
                 } else {
-                    window.location.href="dashboard.html"; 
+                    window.location.href="/dashboard"; 
                 }
             } catch(err) { 
                 if(err.code === 'auth/email-already-in-use') { alert("Email already registered! Please Login."); window.switchAuth('login'); } 
@@ -542,26 +642,26 @@
             e.preventDefault(); const btn = document.getElementById('login-btn'); btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Logging in...`; btn.disabled=true;
             try { 
                 const c = await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value); 
-                window.currentUser = c.user; // <-- Asynchronous fix!
+                window.currentUser = c.user;
 
                 window.closeAuth(); 
                 
                 if(window.pendingPlanAmount > 0) {
-                    window.openPaymentModal(window.pendingPlanAmount, window.pendingPlanName); 
+                    // Wait half a second for userData to populate before handling click
+                    setTimeout(() => window.handlePlanClick(window.pendingPlanAmount, window.pendingPlanName), 500); 
                 } else {
-                    window.location.href="dashboard.html"; 
+                    window.location.href="/dashboard"; 
                 }
             } catch(err) { alert("Account not found or Invalid Password."); btn.innerHTML = `<span>Login</span>`; btn.disabled=false; }
         };
 
-        // Payment submission logic goes instantly to Firebase Admin deposits
         window.submitPayment = async (e) => {
             e.preventDefault(); const utr = document.getElementById('utr-input').value; if(utr.length < 12) return alert("Enter valid UTR.");
             const btn = document.getElementById('submit-utr-btn'); btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`; btn.disabled=true;
             try { 
                 await addDoc(collection(db, "deposits"), { uid: window.currentUser.uid, email: window.currentUser.email, amount: window.pendingPlanAmount, utr: utr, planName: window.pendingPlanName, status: 'pending', createdAt: serverTimestamp() }); 
                 
-                alert("Payment Submitted! Admin verification pending."); window.closePaymentModal(); window.location.href="dashboard.html"; 
+                alert("Payment Submitted! Admin verification pending."); window.closePaymentModal(); window.location.href="/dashboard"; 
             } catch(err) { alert(err.message); btn.innerHTML = `<span>Submit & Verify Payment</span>`; btn.disabled=false; }
         };
 
@@ -610,15 +710,6 @@
         window.toggleMobileMenu = () => { document.getElementById('mobile-menu').classList.toggle('menu-open'); }
 
         window.openPaymentModal = (amount, planName) => {
-            // Unregistered user clicks -> Open register box and store what they wanted
-            if(!window.currentUser) { 
-                window.pendingPlanAmount = amount; 
-                window.pendingPlanName = planName; 
-                window.openAuth('register'); 
-                return; 
-            }
-            
-            // Registered user clicks -> Open QR Code instantly
             window.closeAuth(); 
             window.pendingPlanAmount = amount; 
             window.pendingPlanName = planName;
