@@ -53,6 +53,7 @@
         .glass-card:hover { border-color: rgba(138, 43, 226, 0.6); transform: translateY(-3px) scale(1.01); box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2); }
         .glow-gold { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
         .glow-text-gold { text-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
+        .glow-text-cyan { text-shadow: 0 0 15px rgba(0, 240, 255, 0.8); }
         .glow-text-purple { text-shadow: 0 0 15px rgba(138, 43, 226, 0.8); }
         .glow-border-gold { border: 1px solid rgba(255, 215, 0, 0.8); box-shadow: 0 0 25px rgba(255, 215, 0, 0.3) inset, 0 0 25px rgba(255, 215, 0, 0.3); }
 
@@ -104,6 +105,12 @@
     </style>
 </head>
 <body class="bg-futuristic-gradient antialiased relative h-full">
+
+    <!-- 🟢 GLOBAL FULL-SCREEN LOADER (Jab tak check karega ki user logged in hai ya nahi) 🟢 -->
+    <div id="global-loader" class="fixed inset-0 z-[10000] bg-[#05030a] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/50 glow-gold text-4xl pulse-neon mb-6">🚀</div>
+        <div class="text-white font-space font-bold text-xl flex items-center gap-2">Verifying Secure Access <i class="fa-solid fa-circle-notch fa-spin text-purple-400"></i></div>
+    </div>
 
     <canvas id="particles" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1]"></canvas>
 
@@ -197,8 +204,8 @@
         <section class="py-8 border-y border-white/5 bg-white/[0.02] backdrop-blur-sm relative z-10">
             <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 text-center">
-                    <div class="glass-card p-4 rounded-2xl"><i class="fa-solid fa-users text-2xl text-purple-400 mb-2"></i><h3 class="text-xl lg:text-3xl font-space font-bold text-white">58,420</h3><p class="text-xs text-gray-400 uppercase">Members</p></div>
-                    <div class="glass-card p-4 rounded-2xl"><i class="fa-solid fa-wallet text-2xl text-blue-400 mb-2"></i><h3 class="text-xl lg:text-3xl font-space font-bold text-white">₹85L+</h3><p class="text-xs text-gray-400 uppercase">Deposits</p></div>
+                    <div class="glass-card p-4 rounded-2xl"><i class="fa-solid fa-users text-2xl text-purple-400 mb-2"></i><h3 id="stat-members" class="text-xl lg:text-3xl font-space font-bold text-white">58,420</h3><p class="text-xs text-gray-400 uppercase">Members</p></div>
+                    <div class="glass-card p-4 rounded-2xl"><i class="fa-solid fa-wallet text-2xl text-blue-400 mb-2"></i><h3 id="stat-deposits" class="text-xl lg:text-3xl font-space font-bold text-white">₹85L+</h3><p class="text-xs text-gray-400 uppercase">Deposits</p></div>
                     <div class="glass-card p-4 rounded-2xl"><i class="fa-solid fa-money-bill-transfer text-2xl text-green-400 mb-2"></i><h3 class="text-xl lg:text-3xl font-space font-bold text-white">₹42L+</h3><p class="text-xs text-gray-400 uppercase">Withdraws</p></div>
                     <div class="glass-card p-4 rounded-2xl"><i class="fa-solid fa-gift text-2xl text-gold-400 mb-2"></i><h3 class="text-xl lg:text-3xl font-space font-bold text-white">₹15L+</h3><p class="text-xs text-gray-400 uppercase">Rewards</p></div>
                     <div class="glass-card p-4 rounded-2xl col-span-2 lg:col-span-1"><i class="fa-solid fa-globe text-2xl text-cyan-400 mb-2"></i><h3 id="online-users-count" class="text-xl lg:text-3xl font-space font-bold text-white">1,245</h3><p class="text-xs text-gray-400 uppercase">Online</p></div>
@@ -263,6 +270,58 @@
                     <div class="reveal relative z-10 glass-card p-6 rounded-2xl"><div class="w-14 h-14 mx-auto rounded-full bg-gold-500/20 flex items-center justify-center text-xl mb-4 border border-gold-500/50"><i class="fa-solid fa-wallet text-gold-400"></i></div><h4 class="font-bold text-lg text-white mb-1">Payment</h4></div>
                     <div class="reveal relative z-10 glass-card p-6 rounded-2xl md:mt-8"><div class="w-14 h-14 mx-auto rounded-full bg-cyan-500/20 flex items-center justify-center text-xl mb-4 border border-cyan-500/50"><i class="fa-solid fa-bolt text-cyan-400"></i></div><h4 class="font-bold text-lg text-white mb-1">Earn Daily</h4></div>
                     <div class="reveal relative z-10 glass-card p-6 rounded-2xl"><div class="w-14 h-14 mx-auto rounded-full bg-green-500/20 flex items-center justify-center text-xl mb-4 border border-green-500/50"><i class="fa-solid fa-money-bill-transfer text-green-400"></i></div><h4 class="font-bold text-lg text-white mb-1">Withdraw</h4></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🟢 GAME ZONE PREVIEW SECTION 🟢 -->
+        <section id="game-zone" class="py-20 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                    <h2 class="font-space text-4xl md:text-5xl font-bold mb-4">Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 glow-text-cyan">Game Zone</span> 🎮</h2>
+                    <p class="text-gray-400 text-lg">Play exciting mini-games and multiply your wallet balance instantly.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Game 1 -->
+                    <div class="reveal glass-card rounded-3xl p-6 text-center border-cyan-500/30 hover:border-cyan-400 transition-all group">
+                        <div class="w-24 h-24 mx-auto bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-full flex items-center justify-center text-5xl mb-6 shadow-[0_0_30px_rgba(0,240,255,0.2)] group-hover:scale-110 transition-transform">🎲</div>
+                        <h3 class="text-2xl font-space font-bold text-white mb-2">Lucky Dice</h3>
+                        <p class="text-gray-400 text-sm mb-4">Roll the dice and guess the outcome to win up to 3x rewards.</p>
+                        <div class="flex justify-between items-center bg-black/40 rounded-xl p-3 mb-6">
+                            <span class="text-xs text-gray-400">Entry Fee</span>
+                            <span class="text-sm font-bold text-cyan-400"><i class="fa-solid fa-gear fa-spin text-xs mr-1"></i> Admin Set</span>
+                        </div>
+                        <button onclick="goToPage('/games')" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold hover:scale-105 transition-transform shadow-[0_0_15px_rgba(0,240,255,0.4)]">Play Now</button>
+                    </div>
+
+                    <!-- Game 2 -->
+                    <div class="reveal glass-card rounded-3xl p-6 text-center border-gold-500/30 hover:border-gold-400 transition-all group">
+                        <div class="w-24 h-24 mx-auto bg-gradient-to-br from-gold-500/20 to-orange-500/20 rounded-full flex items-center justify-center text-5xl mb-6 shadow-[0_0_30px_rgba(255,215,0,0.2)] group-hover:scale-110 transition-transform">🎰</div>
+                        <h3 class="text-2xl font-space font-bold text-white mb-2">Spin & Win</h3>
+                        <p class="text-gray-400 text-sm mb-4">Spin the lucky wheel and grab massive jackpot multipliers.</p>
+                        <div class="flex justify-between items-center bg-black/40 rounded-xl p-3 mb-6">
+                            <span class="text-xs text-gray-400">Entry Fee</span>
+                            <span class="text-sm font-bold text-gold-400"><i class="fa-solid fa-gear fa-spin text-xs mr-1"></i> Admin Set</span>
+                        </div>
+                        <button onclick="goToPage('/games')" class="w-full py-3 rounded-xl bg-gradient-to-r from-gold-500 to-orange-600 text-white font-bold hover:scale-105 transition-transform shadow-[0_0_15px_rgba(255,215,0,0.4)]">Play Now</button>
+                    </div>
+
+                    <!-- Game 3 -->
+                    <div class="reveal glass-card rounded-3xl p-6 text-center border-purple-500/30 hover:border-purple-400 transition-all group">
+                        <div class="w-24 h-24 mx-auto bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center text-5xl mb-6 shadow-[0_0_30px_rgba(168,85,247,0.2)] group-hover:scale-110 transition-transform">🎯</div>
+                        <h3 class="text-2xl font-space font-bold text-white mb-2">Color Predictor</h3>
+                        <p class="text-gray-400 text-sm mb-4">Guess the right color pattern and double your wallet balance.</p>
+                        <div class="flex justify-between items-center bg-black/40 rounded-xl p-3 mb-6">
+                            <span class="text-xs text-gray-400">Entry Fee</span>
+                            <span class="text-sm font-bold text-purple-400"><i class="fa-solid fa-gear fa-spin text-xs mr-1"></i> Admin Set</span>
+                        </div>
+                        <button onclick="goToPage('/games')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold hover:scale-105 transition-transform shadow-[0_0_15px_rgba(168,85,247,0.4)]">Play Now</button>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <button onclick="goToPage('/games')" class="bg-white/5 border border-white/10 text-white px-8 py-3 rounded-full font-bold hover:bg-white/10 transition-colors">View All Games <i class="fa-solid fa-arrow-right ml-2"></i></button>
                 </div>
             </div>
         </section>
@@ -371,10 +430,12 @@
         </footer>
     </div>
 
-    <!-- ORIGINAL LOGIN OVERLAY -->
+    <!-- 🟢 LOGIN OVERLAY 🟢 -->
     <div id="login-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/60 px-4">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 sm:p-10 relative">
-            <button onclick="closeAuth()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <!-- 🟢 SKIP BUTTON INSTEAD OF X 🟢 -->
+            <button onclick="skipWelcomeAuth()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-sm font-medium border border-gray-600 px-4 py-1.5 rounded-full hover:bg-white/10 transition-all z-10">Skip for now</button>
+            
             <div class="flex justify-center mb-6 mt-2"><div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/50 glow-gold text-3xl pulse-neon">🚀</div></div>
             <div class="text-center mb-8"><h2 class="font-space text-3xl font-bold text-white mb-2">Welcome Back</h2><p class="text-gray-400 text-sm">Login to access your dashboard.</p></div>
             
@@ -384,7 +445,7 @@
                     <div class="relative"><div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-envelope"></i></div><input type="email" id="login-email" required placeholder="Enter @gmail.com" class="w-full input-glass rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-gray-500"></div>
                 </div>
                 <div>
-                    <!-- 🟢 FORGOT PASSWORD BUTTON UPDATE YAHAN HAI 🟢 -->
+                    <!-- 🟢 FORGOT PASSWORD BUTTON (NO REDIRECT) 🟢 -->
                     <div class="flex justify-between items-center mb-1.5 ml-1 mr-1">
                         <label class="block text-sm font-medium text-gray-300">Password</label>
                         <button type="button" onclick="resetPassword()" class="text-xs text-purple-400 hover:text-purple-300 font-medium">Forgot?</button>
@@ -402,10 +463,12 @@
         </div>
     </div>
 
-    <!-- ORIGINAL REGISTER OVERLAY -->
+    <!-- 🟢 REGISTER OVERLAY 🟢 -->
     <div id="register-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/60 px-4 py-10 overflow-y-auto hide-scroll">
         <div class="auth-box w-full max-w-lg glass-card rounded-3xl p-8 sm:p-10 relative my-auto border-cyan-500/30 shadow-[0_0_40px_rgba(0,240,255,0.15)]">
-            <button onclick="closeAuth()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <!-- 🟢 SKIP BUTTON INSTEAD OF X 🟢 -->
+            <button onclick="skipWelcomeAuth()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-sm font-medium border border-gray-600 px-4 py-1.5 rounded-full hover:bg-white/10 transition-all z-10">Skip for now</button>
+            
             <div class="text-center mb-8 mt-2">
                 <div class="w-16 h-16 mx-auto rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/50 text-cyan-400 text-3xl mb-4"><i class="fa-solid fa-user-astronaut"></i></div>
                 <h2 class="font-space text-3xl font-bold text-white mb-2">Create Account</h2><p class="text-gray-400 text-sm">Join 50,000+ members and start earning today.</p>
@@ -488,7 +551,6 @@
 
     <!-- ==================== FIREBASE INTEGRATION & LOGIC ==================== -->
     <script type="module">
-        // 🟢 sendPasswordResetEmail IMPORT KIYA GAYA HAI 🟢
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, collection, addDoc, serverTimestamp, onSnapshot, updateDoc, increment, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -515,42 +577,30 @@
             }
         });
 
-        let onlineInterval = null;
-        function keepUserOnline(userId) {
-            updateDoc(doc(db, "users", userId), { lastActive: serverTimestamp() }).catch(e => console.log(e));
-            onlineInterval = setInterval(() => {
-                updateDoc(doc(db, "users", userId), { lastActive: serverTimestamp() }).catch(e => console.log(e));
-            }, 120000); 
-        }
+        // 🟢 AUTH STATE HANDLER (NO INDEX ACCESS IF LOGGED IN) 🟢
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Agar user logged in hai, toh instantly dashboard pe redirect!
+                window.location.replace("/dashboard");
+            } else {
+                // Not logged in -> Loader hatao aur index page dikhao
+                document.getElementById('global-loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('global-loader').style.display = 'none', 500);
 
-        let notifUnsubscribe = null;
-        function listenForAdminNotifications(currentUserEmail) {
-            const notifRef = collection(db, "notifications");
-            notifUnsubscribe = onSnapshot(notifRef, (snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === "added") {
-                        const notif = change.doc.data();
-                        if (notif.targetEmail === "ALL" || notif.targetEmail === currentUserEmail) {
-                            showAdminNotification(notif.title, notif.message);
-                        }
-                    }
-                });
-            });
-        }
+                window.currentUser = null; window.userData = null;
+                document.getElementById('nav-auth-buttons').classList.remove('hidden'); document.getElementById('nav-user-info').classList.add('hidden');
+                document.getElementById('mobile-auth-buttons').classList.remove('hidden'); document.getElementById('mobile-user-info').classList.add('hidden');
+                
+                // 🟢 AUTO POPUP LOGIC 🟢
+                if(!sessionStorage.getItem('skipAuth')) {
+                    setTimeout(() => window.openAuth('register'), 500); // Popup comes 0.5s after loader hides
+                }
+            }
+        });
 
-        window.showAdminNotification = (title, message) => {
-            const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 z-[500] flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm transition-opacity duration-300';
-            modal.innerHTML = `
-                <div class="bg-gradient-to-br from-[#1e1032] to-[#0a0514] p-8 rounded-3xl max-w-sm w-full border border-purple-500 shadow-[0_0_40px_rgba(138,43,226,0.6)] transform scale-0 transition-transform duration-300 flex flex-col items-center text-center">
-                    <div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500 text-3xl mb-4 animate-bounce">🔔</div>
-                    <h3 class="text-white font-space font-bold text-2xl mb-2">${title}</h3>
-                    <p class="text-gray-300 text-sm mb-8 leading-relaxed">${message}</p>
-                    <button onclick="this.closest('.fixed').remove()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-3.5 rounded-xl shadow-[0_0_15px_rgba(138,43,226,0.5)] hover:scale-105 transition-transform">Mark as Read</button>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            setTimeout(() => modal.firstElementChild.classList.replace('scale-0', 'scale-100'), 10);
+        window.skipWelcomeAuth = () => {
+            sessionStorage.setItem('skipAuth', 'true');
+            window.closeAuth();
         };
 
         window.buyInvestmentPlan = async (userEmail, userId, planName, planPrice, dailyIncome) => {
@@ -598,26 +648,6 @@
             }
         };
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                window.currentUser = user; 
-                document.getElementById('nav-auth-buttons').classList.add('hidden'); document.getElementById('nav-user-info').classList.remove('hidden'); 
-                document.getElementById('mobile-auth-buttons').classList.add('hidden'); document.getElementById('mobile-user-info').classList.remove('hidden');
-                
-                onSnapshot(doc(db, "users", user.uid), (d) => { if(d.exists()) window.userData = d.data(); });
-                
-                listenForAdminNotifications(user.email);
-                keepUserOnline(user.uid);
-            } else { 
-                window.currentUser = null; window.userData = null;
-                document.getElementById('nav-auth-buttons').classList.remove('hidden'); document.getElementById('nav-user-info').classList.add('hidden');
-                document.getElementById('mobile-auth-buttons').classList.remove('hidden'); document.getElementById('mobile-user-info').classList.add('hidden');
-                
-                if(notifUnsubscribe) { notifUnsubscribe(); notifUnsubscribe = null; }
-                if(onlineInterval) { clearInterval(onlineInterval); onlineInterval = null; }
-            }
-        });
-
         window.logoutUser = () => signOut(auth).then(()=>alert("Logged Out Successfully"));
 
         window.handleRegister = async (e) => {
@@ -662,16 +692,16 @@
             } catch(err) { alert("Account not found or Invalid Password."); btn.innerHTML = `<span>Login</span>`; btn.disabled=false; }
         };
 
-        // 🟢 DIRECT FORGOT PASSWORD EMAIL LOGIC YAHAN HAI 🟢
+        // 🟢 DIRECT FORGOT PASSWORD EMAIL LOGIC 🟢
         window.resetPassword = async () => {
             const emailInput = document.getElementById('login-email').value.trim();
             if(!emailInput) {
-                alert("Please enter your registered Email address above first to reset password.");
+                alert("Please enter your registered Email address in the box above first, then click 'Forgot?'.");
                 return;
             }
             try {
                 await sendPasswordResetEmail(auth, emailInput);
-                alert(`Password reset link sent to ${emailInput}!\nPlease check your inbox and spam folder.`);
+                alert(`Password reset link sent to ${emailInput}!\n\nPlease check your inbox and spam folder to create a new password.`);
             } catch(err) {
                 if(err.code === 'auth/user-not-found') {
                     alert("This email is not registered with us.");
@@ -806,13 +836,29 @@
         ];
         revData.forEach(r => { reviewsContainer.innerHTML += `<div class="glass-card p-6 rounded-2xl min-w-[300px] snap-center flex flex-col"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full ${r.c} flex justify-center items-center font-bold text-lg text-white shadow-lg border border-white/20">${r.n[0]}</div><div><h4 class="font-bold text-white text-sm">${r.n}</h4><span class="text-gold-400 text-xs tracking-widest">★★★★★</span></div></div><p class="text-gray-300 italic text-sm flex-1">"${r.r}"</p></div>`; });
 
+        // 🟢 LIVE DYNAMIC STATS SIMULATION 🟢
+        let baseMembers = parseInt(localStorage.getItem('sim_members')) || 58420;
+        let baseDeposits = parseInt(localStorage.getItem('sim_deposits')) || 8500000;
+        
+        document.getElementById('stat-members').innerText = baseMembers.toLocaleString();
+        document.getElementById('stat-deposits').innerText = "₹" + (baseDeposits/100000).toFixed(2) + "L+";
+
+        setInterval(() => {
+            if(Math.random() > 0.6) {
+                baseMembers += Math.floor(Math.random() * 3) + 1;
+                baseDeposits += Math.floor(Math.random() * 4000) + 500;
+                localStorage.setItem('sim_members', baseMembers);
+                localStorage.setItem('sim_deposits', baseDeposits);
+                document.getElementById('stat-members').innerText = baseMembers.toLocaleString();
+                document.getElementById('stat-deposits').innerText = "₹" + (baseDeposits/100000).toFixed(2) + "L+";
+            }
+        }, 5000);
+
+        // Live Payout Toasts
         const listEl = document.getElementById('dynamic-payout-list'); const tCont = document.getElementById('toast-container');
         const namesPool = ["Aarav", "Aditya", "Vikram", "Sneha", "Karan", "Pooja", "Rahul", "Neha", "Divya", "Suresh", "Manish", "Kavita"];
         const avatarPool = ["avatar-bg-1", "avatar-bg-2", "avatar-bg-3", "avatar-bg-4", "avatar-bg-5"];
-        let lastUser = "";
-        
-        let pendingToasts = [];
-        let isToastShowing = false;
+        let lastUser = ""; let pendingToasts = []; let isToastShowing = false;
 
         function showLiveActions() {
             let u = namesPool[Math.floor(Math.random()*namesPool.length)];
