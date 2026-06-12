@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard | RocketEarn X</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -15,10 +13,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        dark: '#05030a', purple: { 400: '#a855f7', 500: '#8a2be2', 600: '#6b21a8' },
-                        gold: { 400: '#fcd34d', 500: '#ffd700', 600: '#f59e0b' }, cyan: { 400: '#22d3ee', 500: '#00f0ff' }
-                    },
+                    colors: { dark: '#05030a', purple: { 400: '#a855f7', 500: '#8a2be2', 600: '#6b21a8' }, gold: { 400: '#fcd34d', 500: '#ffd700', 600: '#f59e0b' }, cyan: { 400: '#22d3ee', 500: '#00f0ff' } },
                     fontFamily: { sans: ['Outfit', 'sans-serif'], space: ['Space Grotesk', 'sans-serif'] },
                     backgroundImage: { 'futuristic-gradient': 'radial-gradient(circle at top right, rgba(138,43,226,0.15), transparent 40%), radial-gradient(circle at bottom left, rgba(0,240,255,0.1), transparent 40%)' }
                 }
@@ -32,29 +27,19 @@
         .glass-card { background: linear-gradient(160deg, rgba(30, 20, 50, 0.5), rgba(10, 5, 20, 0.9)); backdrop-filter: blur(12px); border: 1px solid rgba(138, 43, 226, 0.2); transition: all 0.3s ease; }
         .glass-card:hover { border-color: rgba(138, 43, 226, 0.6); box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2); }
         .glow-gold { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-        
         .hide-scroll::-webkit-scrollbar { display: none; }
-        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        
         .auth-overlay { opacity: 0; visibility: hidden; transition: all 0.3s ease; backdrop-filter: blur(15px); }
         .auth-overlay.open { opacity: 1; visibility: visible; }
         .auth-box { transform: scale(0.95); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .auth-overlay.open .auth-box { transform: scale(1); opacity: 1; }
-        
-        .input-glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
-        .input-glass:focus { background: rgba(255, 255, 255, 0.05); border-color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); outline: none; }
-        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        
+        .input-glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; padding: 12px 16px; border-radius: 12px; color: white; outline: none; }
+        .input-glass:focus { border-color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+        #mobile-menu { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: top; }
         @keyframes popIn { 0% { transform: scale(0.8) translateY(-50px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
         .alert-popup { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        
-        #mobile-menu { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: top; }
-        
-        /* QR Frame */
-        .qr-frame { background: white; padding: 10px; border-radius: 15px; display: inline-block; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
     </style>
 </head>
-<body class="bg-futuristic-gradient antialiased relative h-full">
+<body class="bg-futuristic-gradient antialiased relative h-full flex flex-col min-h-screen">
 
     <canvas id="particles" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1]"></canvas>
 
@@ -62,13 +47,16 @@
     <nav class="fixed top-0 w-full z-50 glass-nav" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-50 bg-inherit">
             <div class="flex items-center justify-between h-20">
-                <a href="index.html" class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                <a href="dashboard.html" class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
                     <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/50 glow-gold text-xl">🚀</div>
                     <span class="font-space font-bold text-xl sm:text-2xl tracking-wide text-white">RocketEarn <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">X</span></span>
                 </a>
                 
                 <div class="hidden md:flex items-center gap-4">
-                    <a href="#game-zone-section" class="bg-gradient-to-r from-cyan-500 to-blue-500 text-dark px-4 py-2 rounded-full font-bold text-sm hover:scale-105 transition-transform shadow-[0_0_10px_#00f0ff] animate-pulse mr-2"><i class="fa-solid fa-gamepad"></i> Game Zone</a>
+                    <!-- ALAG PAGE LINKS -->
+                    <a href="game.html" class="bg-gradient-to-r from-cyan-500 to-blue-500 text-dark px-4 py-2 rounded-full font-bold text-sm hover:scale-105 transition-transform shadow-[0_0_10px_#00f0ff] animate-pulse mr-2"><i class="fa-solid fa-gamepad"></i> Game Zone</a>
+                    <a href="referral.html" class="text-gray-300 hover:text-white font-bold text-sm mr-2 transition-colors"><i class="fa-solid fa-users text-purple-400"></i> Refer & Earn</a>
+                    
                     <div class="flex items-center gap-2 text-white bg-white/5 px-4 py-2 rounded-full border border-white/10 shadow-inner">
                         <i class="fa-solid fa-wallet text-gold-400"></i> <span class="font-bold font-space tracking-wider">₹<span id="nav-balance">0.00</span></span>
                     </div>
@@ -77,7 +65,7 @@
                     </button>
                 </div>
                 <div class="md:hidden flex items-center gap-4">
-                    <a href="#game-zone-section" class="text-cyan-400 text-xl animate-pulse"><i class="fa-solid fa-gamepad"></i></a>
+                    <a href="game.html" class="text-cyan-400 text-xl animate-pulse"><i class="fa-solid fa-gamepad"></i></a>
                     <div class="text-white font-bold font-space text-lg">₹<span id="nav-mobile-balance">0.00</span></div>
                     <button id="menu-btn" onclick="toggleMobileMenu(event)" class="text-gray-300 hover:text-white focus:outline-none transition-transform duration-300">
                         <i id="menu-icon" class="fa-solid fa-bars text-2xl"></i>
@@ -88,9 +76,9 @@
         
         <div id="mobile-menu" class="md:hidden glass-nav absolute w-full left-0 shadow-2xl border-b border-white/10 z-40 transform -translate-y-[150%] opacity-0 pointer-events-none">
             <div class="px-4 py-6 space-y-2 flex flex-col items-center bg-[#05030a]/90 backdrop-blur-xl">
-                <a href="index.html" class="text-white block px-3 py-2 font-medium text-lg hover:text-purple-400 transition-colors">Home</a>
-                <a href="#game-zone-section" onclick="toggleMobileMenu()" class="w-full text-center bg-gradient-to-r from-cyan-500 to-blue-500 text-dark py-2 rounded-full font-bold text-lg shadow-[0_0_10px_#00f0ff] animate-pulse my-2"><i class="fa-solid fa-gamepad"></i> Game Zone</a>
-                <a href="#refer-section" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-purple-400 block px-3 py-2 font-medium text-lg transition-colors">Refer & Earn</a>
+                <a href="dashboard.html" class="text-white block px-3 py-2 font-medium text-lg hover:text-purple-400 transition-colors">Dashboard</a>
+                <a href="game.html" class="w-full text-center bg-gradient-to-r from-cyan-500 to-blue-500 text-dark py-2 rounded-full font-bold text-lg shadow-[0_0_10px_#00f0ff] animate-pulse my-2"><i class="fa-solid fa-gamepad"></i> Game Zone</a>
+                <a href="referral.html" class="text-gray-300 hover:text-purple-400 block px-3 py-2 font-medium text-lg transition-colors"><i class="fa-solid fa-users"></i> Refer & Earn</a>
                 <div class="mt-4 border-t border-white/10 w-full pt-4 text-center">
                     <button onclick="handleLogout()" class="text-red-400 font-bold text-lg hover:text-red-300 transition-colors"><i class="fa-solid fa-power-off"></i> Logout</button>
                 </div>
@@ -99,22 +87,11 @@
     </nav>
 
     <!-- DASHBOARD CONTENT -->
-    <div class="pt-28 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="pt-28 pb-10 flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         
-        <!-- Welcome Banner -->
-        <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <h1 class="font-space text-3xl sm:text-4xl font-bold text-white">Welcome back, <span class="text-purple-400" id="user-name">Loading...</span>! 👋</h1>
-                <p class="text-gray-400 mt-1">Here is your real-time financial overview.</p>
-            </div>
-            <!-- Corporate Support Info -->
-            <div class="bg-blue-500/10 border border-blue-500/30 px-4 py-2 rounded-xl flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-headset"></i></div>
-                <div>
-                    <p class="text-[10px] text-gray-400 uppercase font-bold">Corporate Support</p>
-                    <a href="https://wa.me/919876543210" target="_blank" class="text-sm font-bold text-white hover:text-green-400 transition"><i class="fa-brands fa-whatsapp text-green-400"></i> Contact Us</a>
-                </div>
-            </div>
+        <div class="mb-8">
+            <h1 class="font-space text-3xl sm:text-4xl font-bold text-white">Welcome back, <span class="text-purple-400" id="user-name">...</span>! 👋</h1>
+            <p class="text-gray-400 mt-1">Here is your real-time financial overview.</p>
         </div>
 
         <!-- Stats Grid -->
@@ -147,40 +124,12 @@
             </div>
         </div>
 
-        <!-- 🟢 NEW: REFER & EARN SECTION ON DASHBOARD 🟢 -->
-        <div id="refer-section" class="glass-card rounded-3xl p-6 sm:p-8 mb-12 border-gold-500/40 shadow-[0_0_30px_rgba(255,215,0,0.1)] relative">
-            <h2 class="font-space text-2xl font-bold text-white mb-2"><i class="fa-solid fa-users text-gold-400 mr-2"></i> Refer & Earn Network</h2>
-            <p class="text-gray-400 mb-6 text-sm">Share your link. When friends join and invest, you earn instant commissions.</p>
-            
-            <div class="flex flex-col md:flex-row items-center gap-8">
-                <!-- QR Code -->
-                <div class="qr-frame hidden md:block">
-                    <img id="dash-ref-qr" src="" alt="Referral QR" class="w-32 h-32 object-contain">
-                </div>
-                
-                <!-- Links & Actions -->
-                <div class="flex-1 w-full">
-                    <label class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-2 block">Your Unique Invite Link</label>
-                    <div class="flex bg-black/50 border border-white/10 rounded-xl p-2 mb-4">
-                        <input type="text" id="dash-ref-link" readonly class="bg-transparent text-gray-300 w-full outline-none px-2 font-mono text-sm" value="Loading...">
-                        <button onclick="copyDashRefLink()" id="dash-copy-btn" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-bold transition flex gap-2 items-center">
-                            <i id="dash-copy-icon" class="fa-solid fa-copy"></i> <span class="hidden sm:inline">Copy</span>
-                        </button>
-                    </div>
-                    
-                    <button onclick="shareOnWhatsApp()" class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition flex gap-2 items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.3)]">
-                        <i class="fa-brands fa-whatsapp text-xl"></i> Share via WhatsApp
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 🟢 UPDATED: DAILY CLAIM SECTION (Must claim or lose) 🟢 -->
+        <!-- 🟢 DAILY CLAIM SECTION (Must claim or lose) 🟢 -->
         <div class="glass-card rounded-3xl p-6 sm:p-8 mb-12 flex flex-col md:flex-row items-center justify-between border-cyan-500/30 shadow-[0_0_30px_rgba(0,240,255,0.1)] relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 z-0 pointer-events-none"></div>
             <div class="relative z-10 text-center md:text-left mb-6 md:mb-0">
                 <h3 class="font-space text-2xl font-bold text-white mb-1">Daily Automated Earnings</h3>
-                <p class="text-red-400 text-sm font-bold bg-red-500/10 px-3 py-1 rounded-lg inline-block border border-red-500/20 mt-1"><i class="fa-solid fa-triangle-exclamation"></i> Warning: If you don't collect daily, you lose that day's profit!</p>
+                <p class="text-red-400 text-sm font-bold bg-red-500/10 px-3 py-1 rounded-lg inline-block border border-red-500/20 mt-1"><i class="fa-solid fa-triangle-exclamation"></i> Warning: Collect daily, or you lose that day's profit!</p>
             </div>
             <div class="relative z-10 w-full md:w-auto text-center">
                 <p class="text-sm text-gray-400 mb-2 uppercase tracking-widest font-bold">Ready to Collect</p>
@@ -190,27 +139,39 @@
             </div>
         </div>
 
-        <!-- Active Plans List -->
+        <!-- Active Plans List (INSTANT NO DATA MSG) -->
         <div class="mb-16">
             <h2 class="font-space text-2xl font-bold text-white mb-6 border-b border-white/10 pb-2">My Active Investments</h2>
             <div id="my-plans-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Fallback empty state -->
                 <div class="col-span-1 md:col-span-2 glass-card rounded-2xl p-8 text-center border-dashed border-white/20">
-                    <i class="fa-solid fa-spinner fa-spin text-3xl text-purple-400 mb-4"></i>
-                    <h3 class="text-xl font-bold text-white mb-2">Loading your plans...</h3>
+                    <div class="text-4xl mb-4 opacity-50">📁</div>
+                    <h3 class="text-xl font-bold text-white mb-2">No Active Investment Data Found</h3>
+                    <p class="text-gray-400">Buy a plan below to start your passive income journey.</p>
                 </div>
             </div>
         </div>
 
-        <!-- 🟢 NEW: GAME ZONE SECTION DIRECTLY ON DASHBOARD 🟢 -->
-        <div id="game-zone-section" class="mb-16 pt-8 border-t border-white/10">
-            <div class="text-center max-w-3xl mx-auto mb-8">
-                <h2 class="font-space text-3xl sm:text-4xl font-bold mb-3"><i class="fa-solid fa-gamepad text-cyan-400"></i> Free Entry <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Game Zone</span></h2>
-                <p class="text-gray-400">No entry fee required. Open the game and play with your wallet balance directly inside.</p>
+        <!-- QUICK REFERRAL LINK -->
+        <div class="glass-card p-6 rounded-2xl border border-gold-500/30 mb-16 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-link text-gold-400 mr-2"></i> Your Invite Link</h3>
+                <p class="text-sm text-gray-400">Copy instantly and share with friends.</p>
             </div>
-            
-            <div id="dash-games-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Games will load here -->
-                <div class="col-span-full text-center py-10"><i class="fa-solid fa-spinner fa-spin text-3xl text-cyan-400"></i><p class="mt-2 text-gray-400">Syncing live games...</p></div>
+            <div class="flex bg-black/50 border border-white/10 rounded-xl p-2 w-full sm:w-auto">
+                <input type="text" id="dash-ref-link" readonly class="bg-transparent text-gray-300 w-full outline-none px-2 font-mono text-sm" value="Generating...">
+                <button onclick="copyDashRefLink()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-bold transition">Copy</button>
+            </div>
+        </div>
+
+        <!-- 🟢 NEW: GAME ZONE BANNER 🟢 -->
+        <div class="glass-card rounded-3xl p-8 mb-16 border-cyan-500/30 text-center relative overflow-hidden group cursor-pointer shadow-[0_0_40px_rgba(0,240,255,0.1)]" onclick="window.location.href='game.html'">
+            <div class="absolute inset-0 bg-gradient-to-r from-cyan-900/30 to-blue-900/30 z-0 group-hover:scale-105 transition-transform duration-500"></div>
+            <div class="relative z-10">
+                <i class="fa-solid fa-gamepad text-5xl text-cyan-400 mb-4 animate-bounce"></i>
+                <h2 class="font-space text-3xl sm:text-4xl font-bold text-white mb-2">Game Zone</h2>
+                <p class="text-cyan-300 font-bold mb-6 tracking-wide">Play 500+ Live Games & Multiply Your Wallet Cash</p>
+                <button class="bg-gradient-to-r from-cyan-500 to-blue-600 text-dark font-extrabold px-10 py-3 rounded-full hover:scale-105 transition-transform shadow-[0_0_20px_#00f0ff]">Enter Game Zone <i class="fa-solid fa-arrow-right ml-2"></i></button>
             </div>
         </div>
 
@@ -221,13 +182,27 @@
                 <p class="text-gray-400">You can buy the SAME plan multiple times to multiply your daily earnings.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 items-center" id="plansContainer">
-                <div class="col-span-5 text-center py-10"><i class="fa-solid fa-spinner fa-spin text-3xl text-purple-500"></i><p class="mt-2 text-gray-400">Syncing live plans...</p></div>
+                <div class="col-span-5 text-center py-10"><i class="fa-solid fa-spinner fa-spin text-3xl text-purple-500"></i><p class="mt-2 text-gray-400">Loading plans...</p></div>
             </div>
         </div>
     </div>
 
-    <!-- ==================== MODALS ==================== -->
-    
+    <!-- 🟢 FLOATING AI BOT BUTTON 🟢 -->
+    <button onclick="alert('AI Bot Feature is coming soon! (Link your AI here)')" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full flex items-center justify-center text-white text-2xl shadow-[0_0_25px_rgba(0,240,255,0.6)] z-[100] animate-bounce hover:scale-110 transition-transform border border-white/20">
+        <i class="fa-solid fa-robot"></i>
+    </button>
+
+    <!-- 🟢 COPYRIGHT FOOTER 🟢 -->
+    <footer class="w-full bg-[#05030a] border-t border-white/10 py-8 mt-10 relative z-10 text-center">
+        <div class="flex justify-center gap-6 mb-4">
+            <a href="terms.html" class="text-sm text-gray-400 hover:text-purple-400 transition font-medium">Terms & Conditions</a>
+            <a href="privacy.html" class="text-sm text-gray-400 hover:text-purple-400 transition font-medium">Privacy Policy</a>
+            <a href="about.html" class="text-sm text-gray-400 hover:text-purple-400 transition font-medium">About Us</a>
+        </div>
+        <p class="text-gray-500 text-sm font-space">© 2026 RocketEarn X. All rights reserved.</p>
+        <p class="text-gray-600 text-xs mt-1">Secured & Encrypted 256-Bit</p>
+    </footer>
+
     <!-- ADD MONEY MODAL -->
     <div id="add-money-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4 backdrop-blur-xl">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 sm:p-10 relative border-green-500/50 shadow-[0_0_50px_rgba(34,197,94,0.2)]">
@@ -250,11 +225,10 @@
         </div>
     </div>
 
-    <!-- KYC / BANK & UPI MODAL (LIFETIME LOCK) - UPDATED FOR MANDATORY BANK -->
+    <!-- KYC / BANK & UPI MODAL (LIFETIME LOCK) -->
     <div id="kyc-overlay" class="auth-overlay fixed inset-0 z-[300] flex items-center justify-center bg-black/90 px-4 backdrop-blur-xl">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 relative border-green-500/50 shadow-[0_0_50px_rgba(34,197,94,0.2)] max-h-[90vh] overflow-y-auto hide-scroll">
             <button onclick="closeKycModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all z-10"><i class="fa-solid fa-xmark"></i></button>
-            
             <div class="text-center mb-6 mt-2">
                 <div class="w-16 h-16 mx-auto rounded-full bg-green-500/20 flex items-center justify-center text-green-400 text-3xl mb-4 border border-green-500/50"><i class="fa-solid fa-building-columns"></i></div>
                 <h2 class="text-2xl font-bold text-white mb-2">Payout Details</h2>
@@ -262,26 +236,12 @@
             </div>
             
             <form onsubmit="submitKyc(event)" class="space-y-4">
-                <div>
-                    <label class="block text-[10px] text-gray-400 uppercase ml-1 mb-1">Bank Account Number (Mandatory)</label>
-                    <input type="number" id="kyc-acc" required placeholder="Enter Bank Account" class="w-full input-glass rounded-xl py-3 px-4 text-white text-sm">
-                </div>
-                <div>
-                    <label class="block text-[10px] text-gray-400 uppercase ml-1 mb-1">Confirm Bank Account</label>
-                    <input type="number" id="kyc-confirm-acc" required placeholder="Re-enter Bank Account" class="w-full input-glass rounded-xl py-3 px-4 text-white text-sm">
-                </div>
-                <div>
-                    <label class="block text-[10px] text-gray-400 uppercase ml-1 mb-1">Bank IFSC Code (Mandatory)</label>
-                    <input type="text" id="kyc-ifsc" required placeholder="e.g. SBIN0001234" class="w-full input-glass rounded-xl py-3 px-4 text-white text-sm uppercase">
-                </div>
-                <div>
-                    <label class="block text-[10px] text-gray-400 uppercase ml-1 mb-1">UPI ID (Optional)</label>
-                    <input type="text" id="kyc-upi" placeholder="e.g. 9876543210@ybl" class="w-full input-glass rounded-xl py-3 px-4 text-white text-sm">
-                </div>
-                
+                <div><label class="block text-[10px] text-gray-400 uppercase ml-1 mb-1">Bank Account Number (Mandatory)</label><input type="number" id="kyc-acc" required placeholder="Enter Bank Account" class="input-glass text-sm"></div>
+                <div><label class="block text-[10px] text-gray-400 uppercase ml-1 mb-1">Confirm Bank Account</label><input type="number" id="kyc-confirm-acc" required placeholder="Re-enter Bank Account" class="input-glass text-sm"></div>
+                <div><label class="block text-[10px] text-gray-400 uppercase ml-1 mb-1">Bank IFSC Code (Mandatory)</label><input type="text" id="kyc-ifsc" required placeholder="e.g. SBIN0001234" class="input-glass text-sm uppercase"></div>
+                <div><label class="block text-[10px] text-gray-400 uppercase ml-1 mb-1">UPI ID (Optional)</label><input type="text" id="kyc-upi" placeholder="e.g. 9876543210@ybl" class="input-glass text-sm"></div>
                 <hr class="border-white/10 my-4">
-                <input type="password" id="kyc-pass" required placeholder="Enter Login Password to Lock" class="w-full input-glass rounded-xl py-3 px-4 text-white text-sm border-red-500/50">
-                
+                <input type="password" id="kyc-pass" required placeholder="Enter Login Password to Lock" class="input-glass text-sm border-red-500/50">
                 <button type="submit" id="kyc-btn" class="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(16,185,129,0.4)] flex justify-center items-center gap-2 mt-2">
                     <i class="fa-solid fa-lock"></i> Save & Lock Permanently
                 </button>
@@ -289,7 +249,7 @@
         </div>
     </div>
 
-    <!-- WITHDRAW MODAL (Can withdraw to Bank OR UPI) -->
+    <!-- WITHDRAW MODAL -->
     <div id="withdraw-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4 backdrop-blur-xl">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-8 sm:p-10 relative border-blue-500/50 shadow-[0_0_50px_rgba(0,240,255,0.2)]">
             <button onclick="closeWithdrawModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -300,19 +260,13 @@
             </div>
             
             <form onsubmit="handleWithdraw(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-medium text-gray-300 mb-1 ml-1 uppercase">Amount to Withdraw</label>
-                    <div class="relative"><div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 font-bold">₹</div><input type="number" id="withdraw-amount" required min="999" placeholder="Min Withdraw ₹999" class="w-full input-glass rounded-xl py-3.5 pl-10 pr-4 text-white font-bold text-lg"></div>
-                </div>
-
-                <div id="bank-locked-area" class="bg-green-500/10 border border-green-500/30 p-4 rounded-xl text-center mb-3">
+                <div><div class="relative"><div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 font-bold">₹</div><input type="number" id="withdraw-amount" required min="999" placeholder="Min Withdraw ₹999" class="input-glass pl-10 pr-4 text-white font-bold text-lg"></div></div>
+                <div class="bg-green-500/10 border border-green-500/30 p-4 rounded-xl text-center mb-3">
                     <i class="fa-solid fa-lock text-green-400 text-xl mb-1.5"></i>
                     <p class="text-[11px] text-gray-300 mb-2 uppercase tracking-wide">Locked Destination</p>
                     <p class="text-sm font-bold text-white mb-0.5" id="locked-acc-txt">Bank A/C: XXXX</p>
                     <p class="text-sm font-bold text-white" id="locked-upi-txt">UPI: XXXX</p>
-                    <p class="text-[10px] text-gray-400 mt-2">Amount will be sent to available method.</p>
                 </div>
-
                 <button type="submit" id="withdraw-btn" class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(0,240,255,0.4)] flex justify-center items-center gap-2 mt-2">
                     <span>Request Withdrawal</span> <i class="fa-solid fa-check-circle"></i>
                 </button>
@@ -320,7 +274,7 @@
         </div>
     </div>
 
-    <!-- PAYMENT / UTR MODAL -->
+    <!-- PAYMENT / UTR MODAL (WITH STATIC QR CODE) -->
     <div id="payment-overlay" class="auth-overlay fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4 backdrop-blur-xl">
         <div class="auth-box w-full max-w-md glass-card rounded-3xl p-1 relative border-purple-500/50 shadow-[0_0_50px_rgba(138,43,226,0.2)] overflow-hidden">
             <div class="bg-[#0a0514] rounded-[22px] p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto hide-scroll">
@@ -331,45 +285,19 @@
                 </div>
                 <div class="flex justify-between items-center bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
                     <div><p class="text-[10px] text-gray-400 uppercase tracking-wider mb-0.5">Paying For</p><p id="pay-plan-name" class="font-bold text-white text-lg leading-tight">---</p></div>
-                    <div class="text-right">
-                        <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-0.5">Amount to Pay</p>
-                        <p class="text-2xl font-bold text-gold-400 flex items-center justify-end gap-1">₹<span id="pay-amount">0</span> <i class="fa-solid fa-lock text-[12px] text-gray-500" title="Fixed Amount"></i></p>
-                    </div>
-                </div>
-
-                <div id="qr-container" class="relative bg-white p-2 rounded-2xl mx-auto w-52 h-52 mb-2 flex items-center justify-center shadow-[0_0_30px_rgba(138,43,226,0.2)] border-2 border-purple-500/30 overflow-hidden group">
-                    <img id="dynamic-qr" src="" alt="UPI QR" class="w-full h-full object-contain mix-blend-multiply relative z-0 hidden">
-                    <div id="no-qr-msg" class="text-xs text-black font-bold text-center">Loading Admin QR...</div>
+                    <div class="text-right"><p class="text-[10px] text-gray-400 uppercase tracking-wider mb-0.5">Amount to Pay</p><p class="text-2xl font-bold text-gold-400 flex items-center justify-end gap-1">₹<span id="pay-amount">0</span></p></div>
                 </div>
                 
-                <div class="text-center mb-6">
-                    <p class="text-white font-bold text-lg cursor-pointer hover:text-purple-400 transition" onclick="copyUPI()">UPI ID: <span id="dynamic-upi" class="text-purple-400">Loading...</span> <i class="fa-regular fa-copy ml-1"></i></p>
+                <!-- 🟢 ADDED HARDCODED QR CODE FROM YOUR LINK 🟢 -->
+                <div id="qr-container" class="relative bg-white p-2 rounded-2xl mx-auto w-52 h-52 mb-2 flex items-center justify-center shadow-[0_0_30px_rgba(138,43,226,0.2)] border-2 border-purple-500/30 overflow-hidden">
+                    <img src="https://i.ibb.co/DHBD8FCj/IMG-20260610-WA0006.jpg" alt="Admin QR" class="w-full h-full object-contain relative z-10">
                 </div>
-
+                
+                <div class="text-center mb-6"><p class="text-white font-bold text-lg cursor-pointer hover:text-purple-400 transition" onclick="copyUPI()">UPI ID: <span id="dynamic-upi" class="text-purple-400">Loading...</span> <i class="fa-regular fa-copy ml-1"></i></p></div>
                 <form onsubmit="submitPayment(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-[11px] font-medium text-gray-300 mb-1.5 ml-1 uppercase tracking-wide">Enter 12-Digit UTR / Ref No.</label>
-                        <input type="number" id="utr-input" required placeholder="e.g. 312456789012" class="w-full input-glass rounded-xl py-3 px-4 text-white text-sm tracking-widest font-mono shadow-inner" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);">
-                    </div>
-                    <button type="submit" id="submit-utr-btn" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3.5 rounded-xl hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(16,185,129,0.3)] flex justify-center items-center gap-2 mt-2"><span>Submit & Verify Payment</span> <i class="fa-solid fa-arrow-right"></i></button>
+                    <div><label class="block text-[11px] font-medium text-gray-300 mb-1.5 ml-1 uppercase tracking-wide">Enter 12-Digit UTR / Ref No.</label><input type="number" id="utr-input" required placeholder="e.g. 312456789012" class="input-glass tracking-widest font-mono" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);"></div>
+                    <button type="submit" id="submit-utr-btn" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3.5 rounded-xl hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(16,185,129,0.3)]">Submit & Verify Payment <i class="fa-solid fa-arrow-right ml-2"></i></button>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- GAME MODAL (FREE ENTRY, JUST OPENS THE GAME IFRAME) -->
-    <div id="game-overlay" class="auth-overlay fixed inset-0 z-[250] flex items-center justify-center bg-black/90 px-4 backdrop-blur-xl">
-        <div class="auth-box w-full max-w-5xl h-[85vh] glass-card rounded-3xl p-1 relative border-cyan-500/50 shadow-[0_0_50px_rgba(0,240,255,0.2)] flex flex-col">
-            <div class="bg-black/50 rounded-t-[22px] p-4 flex justify-between items-center border-b border-white/10 shrink-0">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-gamepad text-cyan-400 text-2xl animate-pulse"></i>
-                    <h3 class="font-bold text-white text-xl" id="m-game-name">Live Game</h3>
-                </div>
-                <button onclick="closeGameModal()" class="w-10 h-10 rounded-full bg-white/5 hover:bg-red-500/20 hover:text-red-500 transition border border-white/10 flex items-center justify-center text-gray-400"><i class="fa-solid fa-power-off"></i></button>
-            </div>
-            <!-- Iframe loads game directly -->
-            <div class="flex-1 bg-white rounded-b-[22px] overflow-hidden">
-                <iframe id="game-iframe" class="w-full h-full border-0" sandbox="allow-scripts allow-same-origin"></iframe>
             </div>
         </div>
     </div>
@@ -384,177 +312,99 @@
         </div>
     </div>
 
-    <!-- UI & BACKGROUND SCRIPTS -->
+    <!-- UI & FIREBASE SCRIPTS -->
     <script>
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = document.getElementById('menu-icon');
-        let isMenuOpen = false;
-
-        function toggleMobileMenu(event) {
-            if(event) event.stopPropagation(); 
-            isMenuOpen = !isMenuOpen;
-            if (isMenuOpen) {
-                mobileMenu.classList.remove('-translate-y-[150%]', 'opacity-0', 'pointer-events-none');
-                mobileMenu.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
-                menuIcon.classList.replace('fa-bars', 'fa-xmark');
-            } else {
-                mobileMenu.classList.add('-translate-y-[150%]', 'opacity-0', 'pointer-events-none');
-                mobileMenu.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
-                menuIcon.classList.replace('fa-xmark', 'fa-bars');
-            }
-        }
-
+        const mobileMenu = document.getElementById('mobile-menu'); const menuIcon = document.getElementById('menu-icon'); let isMenuOpen = false;
+        function toggleMobileMenu(e) { if(e) e.stopPropagation(); isMenuOpen = !isMenuOpen; if(isMenuOpen) { mobileMenu.classList.remove('-translate-y-[150%]', 'opacity-0', 'pointer-events-none'); mobileMenu.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto'); menuIcon.classList.replace('fa-bars', 'fa-xmark'); } else { mobileMenu.classList.add('-translate-y-[150%]', 'opacity-0', 'pointer-events-none'); mobileMenu.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto'); menuIcon.classList.replace('fa-xmark', 'fa-bars'); } }
+        
+        // Background particles
         const canvas = document.getElementById('particles'); const ctx = canvas.getContext('2d'); let width, height, particlesArray = [];
         function initCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; particlesArray = []; for(let i=0; i<30; i++) particlesArray.push({ x: Math.random() * width, y: Math.random() * height, size: Math.random() * 2, speedX: Math.random() * 0.5 - 0.25, speedY: Math.random() * 0.5 - 0.25, color: Math.random() > 0.5 ? 'rgba(138,43,226,0.3)' : 'rgba(0,240,255,0.3)' }); }
         function drawParticles() { ctx.clearRect(0, 0, width, height); particlesArray.forEach(p => { p.x += p.speedX; p.y += p.speedY; if(p.x<0||p.x>width) p.speedX*=-1; if(p.y<0||p.y>height) p.speedY*=-1; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); }); requestAnimationFrame(drawParticles); }
         window.addEventListener('resize', initCanvas); initCanvas(); drawParticles();
     </script>
 
-    <!-- FIREBASE INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, onSnapshot, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const app = initializeApp({
-            apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA",
-            authDomain: "rocketearnx-bf10e.firebaseapp.com",
-            databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "rocketearnx-bf10e",
-            storageBucket: "rocketearnx-bf10e.firebasestorage.app",
-            messagingSenderId: "282888117913",
-            appId: "1:282888117913:web:86f236892842abcf9e6208"
-        });
-        
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        const app = initializeApp({ apiKey: "AIzaSyAOIMAgYyPo2_SDamITiwUX-Q9fTPj-2HA", authDomain: "rocketearnx-bf10e.firebaseapp.com", databaseURL: "https://rocketearnx-bf10e-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "rocketearnx-bf10e", storageBucket: "rocketearnx-bf10e.firebasestorage.app", messagingSenderId: "282888117913", appId: "1:282888117913:web:86f236892842abcf9e6208" });
+        const auth = getAuth(app); const db = getFirestore(app);
 
-        let currentUser = null;
-        let userData = {};
-        let activePlansData = {};
-        let currentBalance = 0;
-        let totalEarned = 0;
-        let totalClaimableAmount = 0;
-        
-        window.pendingPlanAmount = 0;
-        window.pendingPlanName = "";
-        window.pendingPlanDaily = 0;
-        window.pendingPlanValidity = 0;
-        window.adminGamesMap = {}; // For Dashboard Games
-        
-        let adminUpi = "Loading...";
+        let currentUser = null; let userData = {}; let activePlansData = {}; let currentBalance = 0; let totalEarned = 0; let totalClaimableAmount = 0;
+        window.pendingPlanAmount = 0; window.pendingPlanName = ""; window.pendingPlanDaily = 0; window.pendingPlanValidity = 0; let adminUpi = "Loading...";
 
-        // AUTH LISTENER
+        const defaultPlans = [
+            { name: "Nova Start", price: 299, dailyROI: 30, validity: 15 },
+            { name: "Rocket Mini", price: 499, dailyROI: 50, validity: 15 },
+            { name: "Big Master", price: 999, dailyROI: 110, validity: 15, popular: true },
+            { name: "Ultra Prime", price: 1999, dailyROI: 240, validity: 15 },
+            { name: "Titan Max", price: 2999, dailyROI: 380, validity: 15 }
+        ];
+
+        window.showGlobalAlert = function(title, msg, action = null) { document.getElementById('alert-title').innerText = title; document.getElementById('alert-message').innerText = msg; document.getElementById('global-alert-btn').onclick = () => { document.getElementById('global-alert-overlay').classList.replace('flex', 'hidden'); if(action === 'openKyc') window.openKycModal(); }; document.getElementById('global-alert-overlay').classList.replace('hidden', 'flex'); }
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                const userRef = doc(db, "users", user.uid);
-                
-                // Real-time Ban Check & Signup Bonus (₹30-₹50)
-                onSnapshot(userRef, async (docSnap) => {
+                // 🟢 INSTANT REFERRAL LINK GENERATION (No Loading Text) 🟢
+                const refCode = user.uid.substring(0,6).toUpperCase();
+                document.getElementById('dash-ref-link').value = `${window.location.origin}/index.html?ref=${refCode}`;
+
+                onSnapshot(doc(db, "users", user.uid), async (docSnap) => {
                     if(docSnap.exists()) {
                         let data = docSnap.data();
-                        if(data.isBanned) {
-                            alert("Account BANNED by Admin.");
-                            signOut(auth).then(() => { window.location.href = "index.html"; });
-                            return; 
-                        }
+                        if(data.isBanned) { signOut(auth).then(() => { window.location.href = "index.html"; }); return; }
                         
-                        // Signup Bonus ₹30 to ₹50 logic
-                        if(!data.signupBonusClaimed) {
-                            const randomBonus = Math.floor(Math.random() * (50 - 30 + 1)) + 30;
-                            await updateDoc(userRef, {
-                                walletBalance: (data.walletBalance || 0) + randomBonus,
-                                signupBonusClaimed: true
-                            });
-                            showGlobalAlert("Welcome Bonus!", `🎉 ₹${randomBonus} Signup Bonus added to your wallet!`);
+                        userData = data; currentBalance = data.walletBalance || 0; totalEarned = data.totalEarned || 0; activePlansData = data.activePlans || {}; 
+                        
+                        // 🟢 INSTANT NAME LOAD 🟢
+                        document.getElementById('user-name').innerText = data.name || "Member";
+                        document.getElementById('nav-balance').innerText = currentBalance.toFixed(2); document.getElementById('nav-mobile-balance').innerText = currentBalance.toFixed(2); document.getElementById('main-balance').innerText = currentBalance.toFixed(2); document.getElementById('total-earned').innerText = totalEarned.toFixed(2); 
+
+                        if(data.bankDetails && data.bankDetails.locked) {
+                            document.getElementById('locked-acc-txt').innerText = `Bank A/C: ${data.bankDetails.acc}`;
+                            document.getElementById('locked-upi-txt').innerText = `UPI: ${data.bankDetails.upi || 'N/A'}`;
                         }
+                        renderPlansHTML();
                     }
                 });
 
-                listenToUserData(user.uid);
-                listenToNotifications(user.uid);
-            } else {
-                window.location.href = "index.html"; 
-            }
+                onSnapshot(query(collection(db, "notifications"), where("targetEmail", "in", [user.email, "ALL"])), (snapshot) => {
+                    snapshot.docChanges().forEach((change) => { if (change.type === "added") { const notif = change.doc.data(); if(!notif.isRead) { showGlobalAlert(notif.title, notif.message); updateDoc(doc(db, "notifications", change.doc.id), { isRead: true }); } } });
+                });
+            } else { window.location.href = "index.html"; }
         });
 
-        // NOTIFICATIONS
-        window.showGlobalAlert = function(title, msg, action = null) {
-            document.getElementById('alert-title').innerText = title;
-            document.getElementById('alert-message').innerText = msg;
-            document.getElementById('global-alert-btn').onclick = () => {
-                document.getElementById('global-alert-overlay').classList.replace('flex', 'hidden');
-                if(action === 'openKyc') window.openKycModal();
-            };
-            document.getElementById('global-alert-overlay').classList.replace('hidden', 'flex');
-        }
-
-        function listenToNotifications(uid) {
-            onSnapshot(query(collection(db, "notifications"), where("uid", "==", uid)), (snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === "added") {
-                        const notif = change.doc.data();
-                        if(!notif.read) {
-                            showGlobalAlert(notif.title, notif.message);
-                            updateDoc(doc(db, "notifications", change.doc.id), { read: true });
-                        }
-                    }
-                });
-            });
-        }
-
-        // USER DATA SYNC
-        function listenToUserData(uid) {
-            onSnapshot(doc(db, "users", uid), (docSnap) => {
-                if(docSnap.exists()) {
-                    userData = docSnap.data();
-                    currentBalance = userData.walletBalance || 0;
-                    totalEarned = userData.totalEarned || 0;
-                    activePlansData = userData.activePlans || {}; 
-
-                    document.getElementById('nav-balance').innerText = currentBalance.toFixed(2);
-                    document.getElementById('nav-mobile-balance').innerText = currentBalance.toFixed(2);
-                    document.getElementById('main-balance').innerText = currentBalance.toFixed(2);
-                    document.getElementById('total-earned').innerText = totalEarned.toFixed(2);
-                    document.getElementById('user-name').innerText = userData.name || "Member";
-
-                    // KYC Setup
-                    if(userData.bankDetails && userData.bankDetails.locked) {
-                        document.getElementById('locked-acc-txt').innerText = `Bank A/C: ${userData.bankDetails.acc}`;
-                        document.getElementById('locked-upi-txt').innerText = `UPI: ${userData.bankDetails.upi || 'N/A'}`;
-                    }
-                    
-                    // Refer & Earn Setup
-                    const refCode = userData.referralCode || uid.substring(0,6).toUpperCase();
-                    const refLink = `${window.location.origin}/index.html?ref=${refCode}`;
-                    document.getElementById('dash-ref-link').value = refLink;
-                    document.getElementById('dash-ref-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(refLink)}`;
-                    
-                    // WhatsApp Share binding
-                    window.shareOnWhatsApp = () => {
-                        const text = `Join RocketEarn X and start earning! Use my link: ${refLink}`;
-                        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-                    };
-
-                    renderPlansHTML();
-                }
-            });
-        }
-
         window.handleLogout = () => { if(confirm("Logout from RocketEarn?")) signOut(auth); };
-        window.copyDashRefLink = () => { 
-            const linkInput = document.getElementById('dash-ref-link');
-            linkInput.select(); document.execCommand("copy");
-            document.getElementById('dash-copy-icon').className = "fa-solid fa-check";
-            setTimeout(()=> document.getElementById('dash-copy-icon').className = "fa-solid fa-copy", 2000);
-        };
+        window.copyDashRefLink = () => { document.getElementById('dash-ref-link').select(); document.execCommand("copy"); alert("Link Copied!"); };
 
-        // FETCH PLANS
+        // 🟢 PLANS RENDER (WITH FALLBACK) 🟢
+        function renderPlansHTML() {
+            const container = document.getElementById('my-plans-container'); container.innerHTML = ''; let planCount = 0;
+            for(let planId in activePlansData) {
+                const plan = activePlansData[planId];
+                if(plan.daysRemaining <= 0) continue; 
+                planCount++;
+                container.innerHTML += `
+                    <div id="card-${planId}" class="glass-card p-5 rounded-2xl border border-white/10">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-white text-lg">${plan.name}</h4><span class="bg-white/10 px-3 py-1 rounded-full text-xs text-green-400 font-bold">₹${plan.dailyReturn}/day</span>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-1">Days Left: <span class="text-white">${plan.daysRemaining} / ${plan.validity}</span></p>
+                        <p class="text-sm text-gray-400">Timer: <span id="timer-${planId}" class="text-white font-mono font-bold">Loading...</span></p>
+                    </div>`;
+            }
+            document.getElementById('active-plans-count').innerText = planCount;
+            // EMPTY STATE UPDATED AS REQUESTED
+            if(planCount === 0) container.innerHTML = `<div class="col-span-1 md:col-span-2 glass-card rounded-2xl p-8 text-center border-dashed border-white/20"><div class="text-4xl mb-4 opacity-50">📁</div><h3 class="text-xl font-bold text-white mb-2">No Active Investment Data Found</h3><p class="text-gray-400">Buy a plan below to start your passive income journey.</p></div>`;
+        }
+
+        // LOAD PLANS LIST
         onSnapshot(collection(db, "plans"), (snap) => {
             let container = document.getElementById('plansContainer'); let html = ""; let plansToRender = [];
-            snap.forEach(doc => { plansToRender.push({ id: doc.id, ...doc.data() }); });
-            plansToRender.sort((a, b) => a.price - b.price);
+            if(snap.empty) { plansToRender = defaultPlans; } else { snap.forEach(doc => { plansToRender.push({ id: doc.id, ...doc.data() }); }); plansToRender.sort((a, b) => a.price - b.price); }
 
             plansToRender.forEach((p, idx) => {
                 let isPopular = p.popular || (idx === 2);
@@ -573,41 +423,8 @@
                     <button onclick="window.buyPlan('${p.name}', ${p.price}, ${p.dailyROI}, ${p.validity})" class="w-full py-3 rounded-xl ${btnColor} font-bold hover:scale-105 transition-all shadow-lg">Buy Plan</button>
                 </div>`;
             });
-            if(plansToRender.length > 0) container.innerHTML = html;
-        });
-
-        // 🟢 GAMES ON DASHBOARD (FREE ENTRY)
-        onSnapshot(collection(db, "games"), (snap) => {
-            const container = document.getElementById('dash-games-container');
-            if(snap.empty) {
-                container.innerHTML = `<div class="col-span-full text-center py-10"><p class="text-gray-500">No games available currently.</p></div>`;
-                return;
-            }
-            let html = "";
-            snap.forEach(doc => {
-                const game = doc.data();
-                window.adminGamesMap[doc.id] = game.gameHtml; // Save game code
-                html += `
-                <div class="glass-card rounded-3xl p-6 flex flex-col items-center text-center border-cyan-500/30">
-                    <div class="w-16 h-16 rounded-full bg-cyan-500/20 flex items-center justify-center text-3xl mb-4 border border-cyan-500/50"><i class="fa-solid fa-gamepad text-cyan-400"></i></div>
-                    <h3 class="text-xl font-space font-bold text-white mb-2">${game.name}</h3>
-                    <span class="bg-green-500/20 border border-green-500/50 text-green-400 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase">Free to Enter</span>
-                    <button onclick="openDashGame('${game.name}', '${doc.id}')" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-dark font-extrabold hover:scale-105 transition">Play Now</button>
-                </div>`;
-            });
             container.innerHTML = html;
         });
-
-        window.openDashGame = (name, id) => {
-            const gameHtml = window.adminGamesMap[id] || "<h2>Game Code Error</h2>";
-            document.getElementById('m-game-name').innerText = name;
-            document.getElementById('game-iframe').srcdoc = gameHtml;
-            document.getElementById('game-overlay').classList.add('open');
-        };
-        window.closeGameModal = () => { 
-            document.getElementById('game-overlay').classList.remove('open'); 
-            document.getElementById('game-iframe').removeAttribute('srcdoc'); 
-        };
 
         // BUY PLAN LOGIC
         window.buyPlan = async function(planName, price, dailyReturn, validity) {
@@ -615,67 +432,24 @@
                 if(confirm(`Buy ${planName} for ₹${price} using Wallet Balance?`)) {
                     try {
                         const newBalance = currentBalance - price;
-                        const planId = 'plan_' + Date.now(); // Allows multiple purchases of same plan
+                        const planId = 'plan_' + Date.now(); 
                         const newPlan = { name: planName, price: price, dailyReturn: dailyReturn, validity: validity, daysRemaining: validity, purchasedAt: Date.now(), lastClaimed: Date.now() };
-                        
                         const newActivePlans = { ...activePlansData, [planId]: newPlan };
                         await updateDoc(doc(db, "users", currentUser.uid), { walletBalance: newBalance, activePlans: newActivePlans });
                         showGlobalAlert("Success!", `${planName} activated! Your daily returns have started.`);
                     } catch(e) { alert("Error buying plan."); }
                 }
             } else {
-                // Open deposit modal if low balance
-                window.pendingPlanAmount = price;
-                window.pendingPlanName = planName;
-                window.pendingPlanDaily = dailyReturn;
-                window.pendingPlanValidity = validity;
-                document.getElementById('pay-plan-name').innerText = planName;
-                document.getElementById('pay-amount').innerText = price;
-                document.getElementById('utr-input').value = "";
-                document.getElementById('payment-overlay').classList.add('open');
-
-                onSnapshot(doc(db, "settings", "general"), (docSnap) => {
-                    if(docSnap.exists()) {
-                        const settings = docSnap.data(); adminUpi = settings.upiId || "Not Set"; document.getElementById('dynamic-upi').innerText = adminUpi;
-                        if(settings.qrUrl) { document.getElementById('dynamic-qr').src = settings.qrUrl; document.getElementById('dynamic-qr').classList.remove('hidden'); document.getElementById('no-qr-msg').classList.add('hidden'); }
-                    }
-                });
+                window.pendingPlanAmount = price; window.pendingPlanName = planName; window.pendingPlanDaily = dailyReturn; window.pendingPlanValidity = validity;
+                document.getElementById('pay-plan-name').innerText = planName; document.getElementById('pay-amount').innerText = price; document.getElementById('utr-input').value = ""; document.getElementById('payment-overlay').classList.add('open');
+                onSnapshot(doc(db, "settings", "general"), (docSnap) => { if(docSnap.exists()) { const settings = docSnap.data(); adminUpi = settings.upiId || "Not Set"; document.getElementById('dynamic-upi').innerText = adminUpi; } });
             }
         };
 
-        function renderPlansHTML() {
-            const container = document.getElementById('my-plans-container');
-            container.innerHTML = '';
-            let planCount = 0;
-
-            for(let planId in activePlansData) {
-                const plan = activePlansData[planId];
-                if(plan.daysRemaining <= 0) continue; // Hide expired plans
-
-                planCount++;
-                container.innerHTML += `
-                    <div id="card-${planId}" class="glass-card p-5 rounded-2xl border border-white/10">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-white text-lg">${plan.name}</h4>
-                            <span class="bg-white/10 px-3 py-1 rounded-full text-xs text-green-400 font-bold">₹${plan.dailyReturn}/day</span>
-                        </div>
-                        <p class="text-sm text-gray-400 mb-1">Days Left: <span class="text-white">${plan.daysRemaining} / ${plan.validity}</span></p>
-                        <p class="text-sm text-gray-400">Timer: <span id="timer-${planId}" class="text-white font-mono font-bold">Loading...</span></p>
-                    </div>
-                `;
-            }
-            document.getElementById('active-plans-count').innerText = planCount;
-
-            if(planCount === 0) {
-                container.innerHTML = `<div class="col-span-1 md:col-span-2 glass-card rounded-2xl p-8 text-center"><h3 class="text-xl font-bold text-white">No Active Plans</h3></div>`;
-            }
-        }
-
-        // 🟢 DAILY CLAIM TIMER LOGIC (Must claim every 24h, or lose day)
+        // DAILY CLAIM TIMER
         setInterval(() => {
             if(!currentUser) return;
-            const now = Date.now();
-            let readyAmount = 0;
+            const now = Date.now(); let readyAmount = 0;
 
             for(let planId in activePlansData) {
                 const plan = activePlansData[planId];
@@ -683,11 +457,10 @@
 
                 const msIn24h = 24 * 60 * 60 * 1000;
                 const msSinceLastClaim = now - plan.lastClaimed;
-                const timerEl = document.getElementById('timer-' + planId);
-                const cardEl = document.getElementById('card-' + planId);
+                const timerEl = document.getElementById('timer-' + planId); const cardEl = document.getElementById('card-' + planId);
 
                 if(msSinceLastClaim >= msIn24h) {
-                    readyAmount += plan.dailyReturn; // 1 day's return ready
+                    readyAmount += plan.dailyReturn;
                     if(timerEl) timerEl.innerText = "Ready to Claim! ✅";
                     if(cardEl) { cardEl.classList.replace('border-white/10', 'border-green-500/50'); }
                 } else {
@@ -713,30 +486,18 @@
             }
         }, 1000);
 
-        // 🟢 CLAIM REWARD ACTION
         window.claimDailyReward = async function() {
             if(totalClaimableAmount <= 0 || !currentUser) return;
-            const btn = document.getElementById('claim-btn');
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Claiming...`;
-
+            const btn = document.getElementById('claim-btn'); btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Claiming...`;
             try {
-                const now = Date.now();
-                const newActivePlans = { ...activePlansData };
-                
+                const now = Date.now(); const newActivePlans = { ...activePlansData };
                 for(let planId in newActivePlans) {
                     const plan = newActivePlans[planId];
                     if(plan.daysRemaining > 0 && (now - plan.lastClaimed) >= (24 * 60 * 60 * 1000)) {
-                        // RESTART THE 24H TIMER FROM *NOW* (This enforces the "Lose if missed" rule)
-                        newActivePlans[planId].lastClaimed = now; 
-                        newActivePlans[planId].daysRemaining -= 1;
+                        newActivePlans[planId].lastClaimed = now; newActivePlans[planId].daysRemaining -= 1;
                     }
                 }
-
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    walletBalance: currentBalance + totalClaimableAmount,
-                    totalEarned: totalEarned + totalClaimableAmount,
-                    activePlans: newActivePlans
-                });
+                await updateDoc(doc(db, "users", currentUser.uid), { walletBalance: currentBalance + totalClaimableAmount, totalEarned: totalEarned + totalClaimableAmount, activePlans: newActivePlans });
                 showGlobalAlert("Success!", `₹${totalClaimableAmount} added to wallet! Next claim in 24 hours.`);
             } catch(e) { alert("Error claiming. Try again."); }
         }
@@ -745,77 +506,41 @@
         window.openAddMoneyModal = () => document.getElementById('add-money-overlay').classList.add('open');
         window.closeAddMoneyModal = () => document.getElementById('add-money-overlay').classList.remove('open');
         window.proceedToAddMoney = (e) => {
-            e.preventDefault();
-            const amt = parseFloat(document.getElementById('deposit-amount-input').value);
+            e.preventDefault(); const amt = parseFloat(document.getElementById('deposit-amount-input').value);
             if(amt < 100 || amt > 50000) return alert("Enter amount between ₹100 and ₹50,000.");
-            
-            closeAddMoneyModal();
-            window.pendingPlanAmount = amt;
-            window.pendingPlanName = "Wallet Deposit";
-            document.getElementById('pay-plan-name').innerText = "Wallet Deposit";
-            document.getElementById('pay-amount').innerText = amt;
-            document.getElementById('utr-input').value = "";
-            document.getElementById('payment-overlay').classList.add('open');
-
-            onSnapshot(doc(db, "settings", "general"), (docSnap) => {
-                if(docSnap.exists()) {
-                    const settings = docSnap.data(); adminUpi = settings.upiId || "Not Set"; document.getElementById('dynamic-upi').innerText = adminUpi;
-                    if(settings.qrUrl) { document.getElementById('dynamic-qr').src = settings.qrUrl; document.getElementById('dynamic-qr').classList.remove('hidden'); document.getElementById('no-qr-msg').classList.add('hidden'); }
-                }
-            });
+            closeAddMoneyModal(); window.pendingPlanAmount = amt; window.pendingPlanName = "Wallet Deposit"; document.getElementById('pay-plan-name').innerText = "Wallet Deposit"; document.getElementById('pay-amount').innerText = amt; document.getElementById('utr-input').value = ""; document.getElementById('payment-overlay').classList.add('open');
+            onSnapshot(doc(db, "settings", "general"), (docSnap) => { if(docSnap.exists()) { const settings = docSnap.data(); adminUpi = settings.upiId || "Not Set"; document.getElementById('dynamic-upi').innerText = adminUpi; } });
         };
 
-        // 🟢 KYC / WITHDRAW SETUP
+        // KYC & WITHDRAW
         window.openKycModal = () => document.getElementById('kyc-overlay').classList.add('open');
         window.closeKycModal = () => document.getElementById('kyc-overlay').classList.remove('open');
-
         window.submitKyc = async (e) => {
-            e.preventDefault();
-            const acc = document.getElementById('kyc-acc').value;
-            const confirmAcc = document.getElementById('kyc-confirm-acc').value;
-            const ifsc = document.getElementById('kyc-ifsc').value;
-            const upi = document.getElementById('kyc-upi').value; // Optional
-            const pass = document.getElementById('kyc-pass').value;
-
+            e.preventDefault(); const acc = document.getElementById('kyc-acc').value; const confirmAcc = document.getElementById('kyc-confirm-acc').value; const ifsc = document.getElementById('kyc-ifsc').value; const upi = document.getElementById('kyc-upi').value; const pass = document.getElementById('kyc-pass').value;
             if(acc !== confirmAcc) return alert("Bank Account numbers do not match!");
-
-            const btn = document.getElementById('kyc-btn');
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying...`; btn.disabled = true;
-
+            const btn = document.getElementById('kyc-btn'); btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying...`; btn.disabled = true;
             try {
                 await signInWithEmailAndPassword(auth, currentUser.email, pass);
                 const finalBankDetails = { acc: acc, ifsc: ifsc, upi: upi, locked: true };
                 await updateDoc(doc(db, "users", currentUser.uid), { bankDetails: finalBankDetails, kycStatus: 'approved' });
-                closeKycModal();
-                showGlobalAlert("KYC Approved", "Your details are locked permanently! You can now withdraw funds.");
+                closeKycModal(); showGlobalAlert("KYC Approved", "Your details are locked permanently! You can now withdraw funds.");
             } catch(err) { alert("Incorrect Password."); }
-            
             btn.innerHTML = `<i class="fa-solid fa-lock"></i> Save & Lock Permanently`; btn.disabled = false;
         }
 
         window.openWithdrawModal = () => { 
-            if(!userData.bankDetails || !userData.bankDetails.locked) {
-                return showGlobalAlert("Bank Details Required", "Please save your Bank/UPI details first to enable withdrawals. This is a one-time process.", "openKyc");
-            }
-            document.getElementById('withdraw-available').innerText = "₹" + currentBalance.toFixed(2); 
-            document.getElementById('withdraw-overlay').classList.add('open'); 
+            if(!userData.bankDetails || !userData.bankDetails.locked) return showGlobalAlert("Bank Details Required", "Please save your Bank/UPI details first to enable withdrawals.", "openKyc");
+            document.getElementById('withdraw-available').innerText = "₹" + currentBalance.toFixed(2); document.getElementById('withdraw-overlay').classList.add('open'); 
         }
         window.closeWithdrawModal = () => document.getElementById('withdraw-overlay').classList.remove('open'); 
-        
         window.handleWithdraw = async function(e) {
-            e.preventDefault();
-            const amt = parseFloat(document.getElementById('withdraw-amount').value);
-            if(amt < 999) return alert("Minimum withdraw is ₹999.");
-            if(amt > currentBalance) return alert("Insufficient balance.");
-
-            const btn = document.getElementById('withdraw-btn');
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`; btn.disabled = true;
-
+            e.preventDefault(); const amt = parseFloat(document.getElementById('withdraw-amount').value);
+            if(amt < 999) return alert("Minimum withdraw is ₹999."); if(amt > currentBalance) return alert("Insufficient balance.");
+            const btn = document.getElementById('withdraw-btn'); btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`; btn.disabled = true;
             try {
                 await updateDoc(doc(db, "users", currentUser.uid), { walletBalance: currentBalance - amt });
                 await addDoc(collection(db, "withdrawals"), { uid: currentUser.uid, email: currentUser.email, amount: amt, bankDetails: userData.bankDetails, status: 'pending', requestTime: serverTimestamp() });
-                showGlobalAlert("Success", `Withdrawal of ₹${amt} initiated! Waiting for Admin Approval.`);
-                closeWithdrawModal(); document.getElementById('withdraw-amount').value = "";
+                showGlobalAlert("Success", `Withdrawal of ₹${amt} initiated! Waiting for Admin Approval.`); closeWithdrawModal(); document.getElementById('withdraw-amount').value = "";
             } catch(e) { alert("Error: " + e.message); }
             btn.innerHTML = `<span>Request Withdrawal</span> <i class="fa-solid fa-check-circle"></i>`; btn.disabled = false;
         }
@@ -823,21 +548,14 @@
         // PAYMENT UTR
         window.closePaymentModal = () => document.getElementById('payment-overlay').classList.remove('open');
         window.copyUPI = () => { navigator.clipboard.writeText(adminUpi); alert('UPI ID Copied!'); }
-
         window.submitPayment = async function(e) {
-            e.preventDefault();
-            const utr = document.getElementById('utr-input').value;
-            if(utr.length < 12) return alert("Enter valid 12-digit UTR.");
-
-            const btn = document.getElementById('submit-utr-btn');
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`; btn.disabled=true;
-
+            e.preventDefault(); const utr = document.getElementById('utr-input').value; if(utr.length < 12) return alert("Enter valid 12-digit UTR.");
+            const btn = document.getElementById('submit-utr-btn'); btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`; btn.disabled=true;
             try {
                 await addDoc(collection(db, "deposits"), { uid: currentUser.uid, email: currentUser.email, amount: window.pendingPlanAmount, utr: utr, planName: window.pendingPlanName, dailyReturn: window.pendingPlanDaily || 0, validity: window.pendingPlanValidity || 0, status: 'pending', createdAt: serverTimestamp() });
-                showGlobalAlert("Submitted!", `Payment submitted! Admin will verify your UTR soon.`);
-                closePaymentModal();
+                showGlobalAlert("Submitted!", `Payment submitted! Admin will verify your UTR soon.`); closePaymentModal();
             } catch(e) { alert("Error: " + e.message); }
-            btn.innerHTML = `<span>Submit & Verify Payment</span> <i class="fa-solid fa-arrow-right"></i>`; btn.disabled=false;
+            btn.innerHTML = `Submit & Verify Payment <i class="fa-solid fa-arrow-right ml-2"></i>`; btn.disabled=false;
         }
     </script>
 </body>
