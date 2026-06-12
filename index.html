@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RocketEarn X | Grow Daily, Earn Smarter</title>
     
+    <!-- 🟢 GITHUB PAGES URL CLEANER 🟢 -->
+    <script>
+        window.onload = function() {
+            let path = window.location.pathname;
+            let cleanPath = path;
+
+            if (path.endsWith('/index.html')) {
+                cleanPath = path.replace('/index.html', '/');
+            } 
+            else if (path.endsWith('.html')) {
+                cleanPath = path.replace(/\.html$/, '');
+            }
+
+            if (cleanPath !== path) {
+                let newUrl = window.location.protocol + "//" + window.location.host + cleanPath + window.location.search + window.location.hash;
+                window.history.replaceState(null, '', newUrl);
+            }
+        };
+    </script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
@@ -364,7 +384,11 @@
                     <div class="relative"><div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-envelope"></i></div><input type="email" id="login-email" required placeholder="Enter @gmail.com" class="w-full input-glass rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-gray-500"></div>
                 </div>
                 <div>
-                    <div class="flex justify-between items-center mb-1.5 ml-1 mr-1"><label class="block text-sm font-medium text-gray-300">Password</label><a href="/support" class="text-xs text-purple-400 hover:text-purple-300 font-medium">Forgot?</a></div>
+                    <!-- 🟢 FORGOT PASSWORD BUTTON UPDATE YAHAN HAI 🟢 -->
+                    <div class="flex justify-between items-center mb-1.5 ml-1 mr-1">
+                        <label class="block text-sm font-medium text-gray-300">Password</label>
+                        <button type="button" onclick="resetPassword()" class="text-xs text-purple-400 hover:text-purple-300 font-medium">Forgot?</button>
+                    </div>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-lock"></i></div>
                         <input type="password" id="login-password" required placeholder="Enter password" class="w-full input-glass rounded-xl py-3.5 pl-11 pr-12 text-white placeholder-gray-500">
@@ -464,9 +488,9 @@
 
     <!-- ==================== FIREBASE INTEGRATION & LOGIC ==================== -->
     <script type="module">
-        // Included updateDoc, increment, query, where based on the features added
+        // 🟢 sendPasswordResetEmail IMPORT KIYA GAYA HAI 🟢
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, collection, addDoc, serverTimestamp, onSnapshot, updateDoc, increment, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const app = initializeApp({
@@ -478,11 +502,9 @@
         window.pendingPlanAmount = 0; window.pendingPlanName = "";
         window.aiApiKey = "";
 
-        // URL cleanup: Replaced .html logic with clean domain routing
         window.goToPage = (url) => { if(window.currentUser) { window.location.href = url; } else { window.openAuth('login'); } };
         window.openOrRedirect = (authType) => { if(window.currentUser) { window.location.href = "/dashboard"; } else { window.openAuth(authType); } };
 
-        // Real-time Settings Listener
         onSnapshot(doc(db, "settings", "general"), d => { 
             if(d.exists()) {
                 const s = d.data(); 
@@ -493,7 +515,6 @@
             }
         });
 
-        // ------------------ FEATURE 1: USER ONLINE STATUS ------------------
         let onlineInterval = null;
         function keepUserOnline(userId) {
             updateDoc(doc(db, "users", userId), { lastActive: serverTimestamp() }).catch(e => console.log(e));
@@ -502,7 +523,6 @@
             }, 120000); 
         }
 
-        // ------------------ FEATURE 2: ADMIN NOTIFICATIONS ------------------
         let notifUnsubscribe = null;
         function listenForAdminNotifications(currentUserEmail) {
             const notifRef = collection(db, "notifications");
@@ -533,15 +553,11 @@
             setTimeout(() => modal.firstElementChild.classList.replace('scale-0', 'scale-100'), 10);
         };
 
-        // ------------------ FEATURE 3: BUY INVESTMENT PLAN ------------------
         window.buyInvestmentPlan = async (userEmail, userId, planName, planPrice, dailyIncome) => {
             try {
-                // 1. Deduct wallet balance
                 await updateDoc(doc(db, "users", userId), {
                     walletBalance: increment(-planPrice)
                 });
-
-                // 2. Add investment record
                 await addDoc(collection(db, "user_investments"), {
                     userId: userId,
                     userEmail: userEmail,
@@ -565,7 +581,6 @@
             return plans[planName] || 0;
         };
 
-        // Intercept Plan Click Logic: Checks Balance First
         window.handlePlanClick = (amount, planName) => {
             if(!window.currentUser) {
                 window.pendingPlanAmount = amount; 
@@ -573,21 +588,16 @@
                 window.openAuth('register'); 
                 return; 
             }
-            
-            // Logged in user: Check if wallet has enough balance to buy directly
             if(window.userData && window.userData.walletBalance >= amount) {
                 const isConfirmed = confirm(`Your Wallet Balance is ₹${window.userData.walletBalance}.\n\nDo you want to purchase ${planName} directly using your wallet balance for ₹${amount}?`);
                 if(isConfirmed) {
                     window.buyInvestmentPlan(window.currentUser.email, window.currentUser.uid, planName, amount, getDailyIncome(planName));
                 }
             } else {
-                // Not enough wallet balance, prompt them to Deposit via QR
                 window.openPaymentModal(amount, planName);
             }
         };
 
-
-        // Global Auth State
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 window.currentUser = user; 
@@ -596,7 +606,6 @@
                 
                 onSnapshot(doc(db, "users", user.uid), (d) => { if(d.exists()) window.userData = d.data(); });
                 
-                // Initialize background loops for logged-in user
                 listenForAdminNotifications(user.email);
                 keepUserOnline(user.uid);
             } else { 
@@ -604,7 +613,6 @@
                 document.getElementById('nav-auth-buttons').classList.remove('hidden'); document.getElementById('nav-user-info').classList.add('hidden');
                 document.getElementById('mobile-auth-buttons').classList.remove('hidden'); document.getElementById('mobile-user-info').classList.add('hidden');
                 
-                // Stop background intervals when logged out
                 if(notifUnsubscribe) { notifUnsubscribe(); notifUnsubscribe = null; }
                 if(onlineInterval) { clearInterval(onlineInterval); onlineInterval = null; }
             }
@@ -647,12 +655,30 @@
                 window.closeAuth(); 
                 
                 if(window.pendingPlanAmount > 0) {
-                    // Wait half a second for userData to populate before handling click
                     setTimeout(() => window.handlePlanClick(window.pendingPlanAmount, window.pendingPlanName), 500); 
                 } else {
                     window.location.href="/dashboard"; 
                 }
             } catch(err) { alert("Account not found or Invalid Password."); btn.innerHTML = `<span>Login</span>`; btn.disabled=false; }
+        };
+
+        // 🟢 DIRECT FORGOT PASSWORD EMAIL LOGIC YAHAN HAI 🟢
+        window.resetPassword = async () => {
+            const emailInput = document.getElementById('login-email').value.trim();
+            if(!emailInput) {
+                alert("Please enter your registered Email address above first to reset password.");
+                return;
+            }
+            try {
+                await sendPasswordResetEmail(auth, emailInput);
+                alert(`Password reset link sent to ${emailInput}!\nPlease check your inbox and spam folder.`);
+            } catch(err) {
+                if(err.code === 'auth/user-not-found') {
+                    alert("This email is not registered with us.");
+                } else {
+                    alert(err.message);
+                }
+            }
         };
 
         window.submitPayment = async (e) => {
